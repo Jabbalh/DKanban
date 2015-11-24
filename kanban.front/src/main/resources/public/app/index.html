@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="DKanbanApp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<title>D-Kanban</title>
+
+<!-- CSS  -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link href="../asset/css/materialize.css" type="text/css"
+	rel="stylesheet" media="screen,projection" />
+
+<!-- CSS App -->
+<link rel="stylesheet" type="text/css" href="../asset/css/style.css">
+<link rel="stylesheet" type="text/css" href="../asset/css/themes.css">
+<link rel="stylesheet" type="text/css" href="../asset/css/kanban.css">
+</head>
+<body>	
+	<div class="navbar-fixed">		
+		<nav class="light-blue lighten-1" role="navigation">
+			<ul id="slide-out" class="side-nav">
+					<li><a href="#!">First Sidebar Link</a></li>
+					<li><a href="#!">Second Sidebar Link</a></li>
+				</ul>
+				<a href="#" data-activates="slide-out"
+					class="button-collapse show-on-large"><i
+					class="medium mdi-navigation-menu"></i></a>
+			<div class="nav-wrapper container">				
+					<h5>Distributed Kanban</h5>
+				
+			</div>
+		</nav>
+	</div>
+
+
+	<div class="section">
+		<ng-view />
+	</div>
+
+
+
+	<!--  Scripts-->
+	<script type="text/javascript"
+		src="../asset/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../asset/bower_components/materialize.js"></script>
+
+	<!-- Javascript Libs -->
+	<script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+	<script type="text/javascript"
+		src="../asset/bower_components/vertx-eventbus.js"></script>
+
+	<script type="text/javascript"
+		src="../asset/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="../asset/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+	<script type="text/javascript"
+		src="../asset/bower_components/angular-1.4.7/angular.js"></script>
+	<script type="text/javascript"
+		src="../asset/bower_components/angular-1.4.7/angular-route.js"></script>
+	<script type="text/javascript"
+		src="../asset/bower_components/angular-1.4.7/angular-sanitize.js"></script>
+	<script type="text/javascript"
+		src="../asset/bower_components/angular-1.4.7/angular-resource.js"></script>
+	<script type="text/javascript"
+		src="../asset/bower_components/angular-1.4.7/angular-animate.js"></script>
+
+
+	<script type="text/javascript"
+		src="../asset/bower_components/ngDraggable-master/ngDraggable.js"></script>
+
+
+
+
+
+	<!-- Javascript -->
+	<script type="text/javascript" src="app.js"></script>
+	<script type="text/javascript"
+		src="/app/controllers/KanbanController.js"></script>
+
+	<!-- Javascript -->
+	<script type="text/javascript" src="../asset/bower_components/init.js"></script>
+
+</body>
+</html>

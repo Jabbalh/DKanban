@@ -1,0 +1,15 @@
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\db\User.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\bus\constants\IndexName.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\ui\Card.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\ui\Kanban.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\ui\ComplexColumn.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\ui\CardAppli.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\db\StateTicket.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\bus\constants\Sort.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\common\utils\VerticleUtils.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\db\Ticket.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\ui\Zone.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\bus\constants\EventBusNames.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\ui\CardTicket.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\ui\SimpleColumn.java
+D:\Projets\Kanban\workspace\kanban.root\kanban.common\src\main\java\kanban\entity\db\Application.java
