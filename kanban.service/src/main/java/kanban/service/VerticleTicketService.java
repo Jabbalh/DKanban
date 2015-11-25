@@ -26,15 +26,15 @@ public class VerticleTicketService extends AbstractVerticle {
 		
 		vertx.eventBus().consumer(EventBusNames.KANBAN_TICKET_BY_USER, (Message<String> m) -> handleTicketByUser(m));		
 		vertx.eventBus().consumer(EventBusNames.TICKET_LIST, x -> {
-			mongoService.findAll(DbUtils.index(Ticket.class), Ticket.class, new JsonObject(), r -> {
+			mongoService.findAll(Ticket.class, new JsonObject(), r -> {
 				x.reply(Json.encodePrettily(r));
 			});
 		});
 		
 		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_STATE, 	(Message<String> m) -> updateTicketState(m));
 		
-		vertx.eventBus().consumer(EventBusNames.TICKET_INSERT_ALL, 	(Message<JsonObject> m) -> insertTicket(m));
-		
+		vertx.eventBus().consumer(EventBusNames.TICKET_INSERT_ALL, 	(Message<JsonObject> m) -> saveTicket(m,true));
+		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_ALL, 	(Message<JsonObject> m) -> saveTicket(m, false));
 		
 	}
 	
@@ -62,32 +62,43 @@ public class VerticleTicketService extends AbstractVerticle {
 				});		
 	}
 	
-	private void insertTicket(Message<JsonObject> message) {
-		System.out.println("insertTicket -> " + message.body().encodePrettily());
+	private void saveTicket(Message<JsonObject> message, boolean insert) {		
 		JsonObject data = message.body();
 		CardTicket card = Json.decodeValue(data.getJsonObject("ticket").encodePrettily(), CardTicket.class);
-		Ticket ticket = new Ticket();
-		ticket.setReference(card.getRef());
-		ticket.set_id(card.getRef());
-		ticket.setApplication(ApplicationData.get().getApplications().stream().filter(x -> x.getName().equals(card.getAppli())).findFirst().get());
-		ticket.setCaisse(card.getCaisse());
-		ticket.setDescription(card.getDescription());
-		ticket.setSummary(card.getSummary());
-		ticket.setZoneTicket(UiUtils.getZoneApp(data.getJsonObject("zone").getString("libelle")).getZoneTicket());		
-		User u = new User();
-		u.set_id(card.getOwner());
-		ticket.setOwner(u);
 		
-		mongoService.insert(DbUtils.index(Ticket.class), ticket, x -> {
-			if (x.succeeded()) {
-				System.out.println("insertTicket - mongo -> OK");
+		String login = card.getOwner();
+		vertx.eventBus().send(EventBusNames.USER_FIND_BY_LOGIN, login, user -> {
+			Ticket ticket = new Ticket();
+			ticket.setReference(card.getRef());
+			ticket.set_id(card.getRef());
+			ticket.setApplication(ApplicationData.get().getApplications().stream().filter(x -> x.getName().equals(card.getAppli())).findFirst().get());
+			ticket.setCaisse(card.getCaisse());
+			ticket.setDescription(card.getDescription());
+			ticket.setSummary(card.getSummary());
+			ticket.setZoneTicket(UiUtils.getZoneApp(data.getString("zone")).getZoneTicket());				
+			ticket.setOwner(Json.decodeValue(user.result().body().toString(),User.class));
+			
+			if (insert){
+				mongoService.insert(ticket, x -> {
+					if (x.succeeded()) {		
+						System.out.println("insertTicket -> OK");
+						message.reply("OK");
+					} else {
+						System.out.println("insertTicket -> NOK");
+						message.reply("NOK");
+					}
+					
+				});
 			} else {
-				System.out.println("insertTicket - mongo -> NOK -> " + x.cause());
+				mongoService.update(ticket, x -> {
+					message.reply((x) ? "OK" : "NOK");
+				});
 			}
 			
-		});
-		
+		});						
 	}
+	
+	
 	
 	/**
 	 * Bus renvoyant la liste des tickets par utilisateur
@@ -98,7 +109,7 @@ public class VerticleTicketService extends AbstractVerticle {
 		request.put("owner.login", message.body());
 		request.put("sort", "statesticket");
 		
-		mongoService.findAll(DbUtils.index(Ticket.class), Ticket.class, request, x -> message.reply(Json.encodePrettily(x)));
+		mongoService.findAll(Ticket.class, request, x -> message.reply(Json.encodePrettily(x)));
 	}
 	
 	

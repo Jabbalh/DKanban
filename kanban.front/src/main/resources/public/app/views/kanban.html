@@ -58,13 +58,13 @@
 				          </div>
 								-->
 						<div class="row small-margin">
-							<div class="col s5" style="border-right: 1px solid">
-								<span class="blue-text text-darken-2">{{ticket.ref}}</span>
+							<div class="col left" style="border-right: 1px solid">
+								<span class="blue-text text-darken-2" ng-click="ctrl.updateTicket(ticket,other.id)">{{ticket.ref}}</span>
 							</div>
-							<div class="col s3" style="border-right: 1px solid">
+							<div class="col" style="border-right: 1px solid">
 								<span class="blue-text text-darken-2">{{ticket.caisse}}</span>
 							</div>
-							<div class="col s4">
+							<div class="col right">
 								<span class="blue-text text-darken-2">{{ticket.appli}}</span>
 							</div>
 						</div>
@@ -96,47 +96,61 @@
 				<div class="row">
 					<div class="input-field col s4">
 						<input id="ref" type="text" class="validate" ng-model="ctrl.ticket.ticket.ref"> 
-						<label for="ref">Référence</label>
+						<label for="ref" class="active">Référence</label>
 					</div>
 					<div class="input-field col s4">
 						<input id="caisse" type="text" class="validate" ng-model="ctrl.ticket.ticket.caisse"> 
-						<label for="caisse">Caisse</label>
+						<label for="caisse" class="active">Caisse</label>
 					</div>
-					<div class="input-field col s4">
-						<input id="appli" type="text" class="validate" ng-model="ctrl.ticket.ticket.appli"> 
-						<label for="appli">Application</label>
+					<div class="input-field col s4">												
+						<select ng-model="ctrl.ticket.ticket.appli"  
+								style="visibility: visible; display: inline-block;" >
+						  		<option 						  			
+						  			ng-repeat="item in ctrl.listes.applications" 
+						  			id="{{item}}" 
+						  			value="{{item}}" >{{item}}</option>
+						  </select> 
+						
+						<label for="appli" class="active">Application</label>
 					</div>
 				</div>	
 				<div class="row">
-					<div class="input-field col s4">
-						<input id="proprietaire" type="text" class="validate" ng-model="ctrl.ticket.ticket.owner" > 
+					<div class="input-field col s4">						
+						<select ng-model="ctrl.ticket.ticket.owner"  
+						  		  style="visibility: visible; display: inline-block;">
+						  		<option 						  			
+						  			ng-repeat="item in ctrl.listes.users" 
+						  			id="{{item.login}}" 
+						  			value="{{item.login}}" >{{item.login}}</option>
+						  </select>
 						<label for="proprietaire" class="active">Propriétaire</label>
 					</div>
 					<div class="input-field col s4">
 						<input id="state" type="text" class="validate" ng-model="ctrl.ticket.ticket.state"> 
-						<label for="state">state</label>
+						<label for="state" class="active">state</label>
 					</div>
-					<div class="input-field col s4">
-						 <!-- Dropdown Trigger -->
-						  <select 	ng-model="ctrl.ticket.zone"  style="visibility: visible; display: inline-block;"
-						  			ng-options="header.libelle for header in ctrl.headers"  						  			
-						  			></select> 
-						 <label for="zone" class="active">Zone</label>
-					  	
+					<div class="input-field col s4">						 
+						  <select ng-model="ctrl.ticket.zone"  
+						  		  style="visibility: visible; display: inline-block;">
+						  		<option 						  			
+						  			ng-repeat="header in ctrl.headers" 
+						  			id="{{header.libelle}}" 
+						  			value="{{header.libelle}}" >{{header.libelle}}</option>
+						  </select> 
+						 <label for="zone" class="active">Zone</label>					  	
 					</div>	
-					
-									
+								
 				</div>	
 				<div class="row">
 					<div class="input-field col s12">
 						<input id="summary" type="text" class="validate" ng-model="ctrl.ticket.ticket.summary"> 
-						<label for="summary">Résumé</label>
+						<label for="summary"  class="active">Résumé</label>
 					</div>									
 				</div>				
 				<div class="row">
 					<div class="input-field col s12">
-						<input id="description" type="text" class="validate" ng-model="ctrl.ticket.ticket.description"> 
-						<label for="description">Description</label>
+						<textarea id="description" class="materialize-textarea validate" ng-model="ctrl.ticket.ticket.description" /> 
+						<label for="description"  class="active">Description</label>
 					</div>
 				</div>				
 			</form>

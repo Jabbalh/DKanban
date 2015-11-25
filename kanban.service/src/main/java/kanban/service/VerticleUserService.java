@@ -10,7 +10,6 @@ import kanban.bus.constants.EventBusNames;
 import kanban.bus.constants.Sort;
 import kanban.entity.db.User;
 import kanban.service.contract.IMongoService;
-import kanban.service.utils.DbUtils;
 
 public class VerticleUserService extends AbstractVerticle {
 
@@ -19,7 +18,8 @@ public class VerticleUserService extends AbstractVerticle {
 	
 	@Override	
 	public void start(){
-		vertx.eventBus().consumer(EventBusNames.USER_LIST, 	(Message<String> m) -> userList(m));
+		vertx.eventBus().consumer(EventBusNames.USER_LIST, 			(Message<String> m) -> userList(m));
+		vertx.eventBus().consumer(EventBusNames.USER_FIND_BY_LOGIN, (Message<String> m) -> userFindByLogin(m));
 	}
 	
 	/**
@@ -28,7 +28,15 @@ public class VerticleUserService extends AbstractVerticle {
 	 */
 	private void userList(Message<String> message) {
 		JsonObject sort = new JsonObject().put("sort", "firstName");
-		mongoService.findAll(DbUtils.index(User.class), User.class, sort,Sort.ASC ,x -> message.reply(Json.encodePrettily(x)));
+		mongoService.findAll( User.class, sort,Sort.ASC ,x -> message.reply(Json.encodePrettily(x)));
+	}
+	
+	private void userFindByLogin(Message<String> message){
+		mongoService.findOne(User.class, new JsonObject().put("login", message.body()), x -> {
+			
+			message.reply(Json.encodePrettily(x));
+		});
 	}
 	
 }
+

@@ -48,7 +48,7 @@ public class ApplicationService extends AbstractVerticle {
 	 */
 	private void initApplication(Message<Object> message) {
 		System.out.println("INIT_APPLICATION -> initApplication");
-		mongoService.findAll(DbUtils.index(ApplicationParameter.class), ApplicationParameter.class, x -> {
+		mongoService.findAll(ApplicationParameter.class, x -> {
 			for (ApplicationParameter item : x){
 				System.out.println(Json.encodePrettily(item));
 			}
@@ -85,7 +85,7 @@ public class ApplicationService extends AbstractVerticle {
 		
 		if (!ApplicationData.get().isInit()){
 			mongoService.delete(DbUtils.index(ApplicationParameter.class), () -> {
-				mongoService.insert(DbUtils.index(ApplicationParameter.class), ApplicationData.get(), x -> {				
+				mongoService.insert(ApplicationData.get(), x -> {				
 					if (x.succeeded()) {
 						System.out.println("Application initialized");
 						ApplicationData.get().setInit(true);
@@ -150,7 +150,7 @@ public class ApplicationService extends AbstractVerticle {
 		mongoService.delete(index, () -> {			
 			for (T u : liste) {
 				System.out.println("Before insert of " + message.apply(u));
-				mongoService.insert(index, u, genericCallback(message.apply(u)));
+				mongoService.insert(u, genericCallback(message.apply(u)));
 			}
 			
 		});

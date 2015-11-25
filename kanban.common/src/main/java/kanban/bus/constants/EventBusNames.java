@@ -21,5 +21,11 @@ public class EventBusNames {
 	 * BUS relatif aux utilisateurs
 	 */
 	public final static String USER_LIST = "USER_LIST";
+	public final static String USER_FIND_BY_LOGIN = "USER_FIND_BY_LOGIN";
+	
+	/**
+	 * BUS relatif aux applications
+	 */
+	public final static String APPLICATION_LIST = "APPLICATION_LIST";
 	
 }

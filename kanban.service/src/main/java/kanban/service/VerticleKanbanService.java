@@ -18,7 +18,6 @@ import kanban.entity.ui.ComplexColumn;
 import kanban.entity.ui.SimpleColumn;
 import kanban.entity.ui.Zone;
 import kanban.service.contract.IMongoService;
-import kanban.service.utils.DbUtils;
 import kanban.service.utils.UiUtils;
 
 public class VerticleKanbanService extends AbstractVerticle {
@@ -55,7 +54,7 @@ public class VerticleKanbanService extends AbstractVerticle {
 	 */
 	private void handleByUser(Message<String> message) {			
 		
-		mongoService.findAll(DbUtils.index(Ticket.class), Ticket.class,new JsonObject().put("owner.login", message.body()) , x -> {			
+		mongoService.findAll(Ticket.class,new JsonObject().put("owner.login", message.body()) , x -> {			
 			String login = message.body();
 			Zone zone = new Zone();
 			zone.setFirst(new SimpleColumn(UUID.randomUUID().toString(), login, 1));

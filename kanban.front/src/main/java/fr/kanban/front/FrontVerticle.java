@@ -1,5 +1,6 @@
 package fr.kanban.front;
 
+import fr.kanban.front.application.ApplicationHandler;
 import fr.kanban.front.auth.AuthenticateHandler;
 import fr.kanban.front.kanban.KanbanHandler;
 import fr.kanban.front.socket.SockBusServer;
@@ -17,9 +18,7 @@ public class FrontVerticle extends AbstractVerticle {
 
 	
 	private SockBusServer sockBuServer;
-	private KanbanHandler kanbanHandler;
-	private TicketHandler ticketHandler;
-	private UserHandler userHandler;
+	
 	
 	@Override	
 	public void start() {
@@ -28,9 +27,10 @@ public class FrontVerticle extends AbstractVerticle {
 		
 		new AuthenticateHandler().initAuth(router, vertx);
 		
-		kanbanHandler = new KanbanHandler();
-		userHandler = new UserHandler();
-		ticketHandler = new TicketHandler();
+		KanbanHandler kanbanHandler = new KanbanHandler();
+		UserHandler userHandler = new UserHandler();
+		TicketHandler ticketHandler = new TicketHandler();
+		ApplicationHandler appHandler = new ApplicationHandler();
 		
 		/**
 		 * Création des routes static pour les resources JS/CSS/etc
@@ -49,6 +49,20 @@ public class FrontVerticle extends AbstractVerticle {
 		router.route().handler(BodyHandler.create());
 		router.route().handler(context -> {
 			context.response().headers().add(HttpHeaders.CONTENT_TYPE, "application/json");
+			context.response()
+			// do not allow proxies to cache the data
+	          .putHeader("Cache-Control", "no-store, no-cache")
+	          // prevents Internet Explorer from MIME - sniffing a
+	          // response away from the declared content-type
+	          .putHeader("X-Content-Type-Options", "nosniff")
+	          // Strict HTTPS (for about ~6Months)
+	          .putHeader("Strict-Transport-Security", "max-age=" + 15768000)
+	          // IE8+ do not allow opening of attachments in the context of this resource
+	          .putHeader("X-Download-Options", "noopen")
+	          // enable XSS for IE
+	          .putHeader("X-XSS-Protection", "1; mode=block")
+	          // deny frames
+	          .putHeader("X-FRAME-OPTIONS", "DENY");
 			if (UiConstantes.getSessionData(context.session()).getCurrentUser() == null) {
 				SessionData sessionData = UiConstantes.getSessionData(context.session());
 				sessionData.setCurrentUser(new User("user1", "user1", "User 1", "User 1"));
@@ -93,6 +107,10 @@ public class FrontVerticle extends AbstractVerticle {
 		 */
 		router.get("/api/user/list").handler(userHandler::apiUserList);
 		
+		/**
+		 * ####### Routes relatives à la gestion des applications #######  
+		 */
+		router.get("/api/application/list").handler(appHandler::apiApplicationList);
 		
 		/**
 		 * ####### Routes relatives à la gestion du kanban #######  

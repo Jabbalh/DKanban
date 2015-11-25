@@ -2,6 +2,7 @@ package fr.kanban.main;
 
 import fr.kanban.front.FrontVerticle;
 import io.vertx.core.AbstractVerticle;
+import kanban.service.VerticleApplicationService;
 import kanban.service.VerticleKanbanService;
 import kanban.service.VerticleTicketService;
 import kanban.service.VerticleUserService;
@@ -40,6 +41,7 @@ public class MainVerticle extends AbstractVerticle {
 		VerticleUtils.DeployeVertical(vertx, VerticleKanbanService.class);		
 		VerticleUtils.DeployeVertical(vertx, VerticleTicketService.class);
 		VerticleUtils.DeployeVertical(vertx, VerticleUserService.class);
+		VerticleUtils.DeployeVertical(vertx, VerticleApplicationService.class);
 	}
 	
 }

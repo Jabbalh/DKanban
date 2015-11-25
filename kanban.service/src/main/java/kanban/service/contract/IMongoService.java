@@ -11,7 +11,7 @@ import kanban.bus.constants.Sort;
 
 public interface IMongoService {
 
-	<T> void insert(String index, T entity, Handler<AsyncResult<String>> callback);
+	<T> void insert(T entity, Handler<AsyncResult<String>> callback);
 
 	
 
@@ -19,23 +19,27 @@ public interface IMongoService {
 
 
 
-	<T> void findAll(String index, Class<T> clazz, Consumer<List<T>> callBack);
+	<T> void findAll(Class<T> clazz, Consumer<List<T>> callBack);
 
 
 
-	<T> void findAll(String index, Class<T> clazz, JsonObject query, Consumer<List<T>> callBack);
+	<T> void findAll(Class<T> clazz, JsonObject query, Consumer<List<T>> callBack);
 
 
 
-	<T> void findAll(String index, Class<T> clazz, JsonObject query, Sort sort, Consumer<List<T>> callBack);
+	<T> void findAll(Class<T> clazz, JsonObject query, Sort sort, Consumer<List<T>> callBack);
 
 
 
-	<T> void findOne(String index, Class<T> clazz, JsonObject request,Consumer<T> callback);
+	<T> void findOne(Class<T> clazz, JsonObject request,Consumer<T> callback);
 
 
 
 	void update(String index, JsonObject query, JsonObject update,Consumer<Boolean> callback);
+
+
+
+	<T> void update(T entity, Consumer<Boolean> callback);
 
 
 

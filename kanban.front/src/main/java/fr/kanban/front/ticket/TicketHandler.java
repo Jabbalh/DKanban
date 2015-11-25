@@ -1,7 +1,10 @@
 package fr.kanban.front.ticket;
 
+import java.util.function.Consumer;
+
 import fr.kanban.front.AbstractHandler;
 import fr.kanban.front.UiConstantes;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
@@ -13,6 +16,8 @@ public class TicketHandler extends AbstractHandler {
 	public TicketHandler() {
 		super();
 	}
+	
+	
 
 	public void apiTicketByUser(RoutingContext context) {
 		String l = context.request().getParam("login");			
@@ -24,7 +29,7 @@ public class TicketHandler extends AbstractHandler {
 	public void apiTicketUpdateZone(RoutingContext context){			
 		JsonObject data = context.getBodyAsJson();					
 		vertx.eventBus().send(EventBusNames.TICKET_UPDATE_STATE, Json.encodePrettily(data), r -> {				
-			context.response().end(Json.encodePrettily("UPDATE OK)"));			
+			context.response().end(r.result().body().toString());			
 		});				
 	}
 	
@@ -32,10 +37,11 @@ public class TicketHandler extends AbstractHandler {
 	public void apiTicketUpdateAll(RoutingContext context) {
 		JsonObject data = context.getBodyAsJson();
 		System.out.println("apiTicketUpdateAll");
+		Consumer<Message<Object>> callback = x -> context.response().end(Json.encodePrettily(x.body().toString())); 
 		if (data.getBoolean("insert")) {
-			vertx.eventBus().send(EventBusNames.TICKET_INSERT_ALL, data);
+			vertx.eventBus().send(EventBusNames.TICKET_INSERT_ALL, data, x -> callback.accept(x.result()));
 		} else {
-			vertx.eventBus().send(EventBusNames.TICKET_UPDATE_ALL, data);
+			vertx.eventBus().send(EventBusNames.TICKET_UPDATE_ALL, data, x -> callback.accept(x.result()));
 		}
 	}
 	
