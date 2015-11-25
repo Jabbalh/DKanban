@@ -45,7 +45,7 @@ angular.module("DKanbanApp")
 	    eb.registerHandler("update-card", function (err, msg) {	    	
 	    	var result = JSON.parse(msg.body);
 	    	
-	    	var parent = document.getElementById(result.user+'$'+result.state);
+	    	var parent = document.getElementById(result.user+'$'+result.zone);
 	    	var card = document.getElementById(result.ticketId);
 	    	
 	    	if (card.parentElement.id == parent.id){
@@ -83,15 +83,44 @@ angular.module("DKanbanApp")
 	   
 	 this.cardId = "b5b4e433-5dce-48e6-bc5e-2eb3dada829b";
 	 this.targetId = "user1$VFO";
-	  
+	 
+	 this.ticket = {};	 
+	 
+	 this.addTicket = function() {
+		 
+		 this.ticket.title = "Nouveau ticket";
+		 this.ticket.insert = true;
+		 this.ticket.zone = "Backlog";
+		 $http.get("/api/ticket/new/empty").success(function(data){
+			
+			 self.ticket.ticket = data;
+			 
+			 $('#modal1').openModal({
+			      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+			      opacity: .5, // Opacity of modal background
+			      in_duration: 300, // Transition in duration
+			      out_duration: 200, // Transition out duration
+			      //ready: function() { alert('Ready'); }, // Callback for Modal open
+			      complete: function() { self.ticket = {};	 } // Callback for Modal close
+			    }
+			  );
+			
+		 });
+	 }
+	 
+	 this.saveTicket = function(data) {
+		 $http.put("/api/ticket/update/all",data);
+	 }
+	 
+	 
 	this.test = function() {
 		
 		var cardData = {};
 		cardData.cardId = this.cardId;
-		cardData.state = this.targetId.split('$')[1];
+		cardData.zone = this.targetId.split('$')[1];
 		cardData.userLogin = this.targetId.split('$')[0];
 		
-		$http.put("/api/ticket/update",cardData).success(function(data){
+		$http.put("/api/ticket/update/zone",cardData).success(function(data){
 			console.log("result -> " +data);
 		});
 	}
@@ -102,10 +131,10 @@ angular.module("DKanbanApp")
 		
 		var cardData = {};
 		cardData.cardId = data.originId;
-		cardData.state = data.targetId.split('$')[1];
+		cardData.zone = data.targetId.split('$')[1];
 		cardData.userLogin = data.targetId.split('$')[0];
 		
-		$http.put("/api/ticket/update",cardData).success(function(data){
+		$http.put("/api/ticket/update/zone",cardData).success(function(data){
 			console.log("result -> " +data);
 		});
 		
@@ -131,14 +160,8 @@ angular.module("DKanbanApp")
 		});
 	});
 	
-	
-			
-		
-	
-	
-    
-    
-    
 
-  });
+
+}); // END KanbanController
+
 

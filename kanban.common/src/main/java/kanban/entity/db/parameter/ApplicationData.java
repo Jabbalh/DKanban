@@ -13,11 +13,11 @@ public class ApplicationData {
 	{ 
 		parameter.set_id(p.get_id());
 		parameter.setApplications(p.getApplications());
-		parameter.setStates(p.getStates());
+		parameter.setZones(p.getZones());
 		parameter.setInit(true);		
 	}
 	
-	public static void setStateTickets(List<State> states) {
-		get().setStates(states);
+	public static void setStateTickets(List<ZoneApp> states) {
+		get().setZones(states);
 	}
 }

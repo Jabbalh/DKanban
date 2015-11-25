@@ -44,7 +44,7 @@ public class VerticleKanbanService extends AbstractVerticle {
 	 */
 	private void handlerHeaderList(Message<String> m){
 		List<SimpleColumn> result = new ArrayList<>();
-		UiUtils.headersWithWidth().forEach(x ->	result.add(new SimpleColumn(x.getStateTicket().getName(),x.getWidth())));		
+		UiUtils.headersWithWidth().forEach(x ->	result.add(new SimpleColumn(x.getZoneTicket().getCodeZone(),x.getWidth())));		
 		m.reply(Json.encodePrettily(result));
 	}
 		
@@ -61,16 +61,22 @@ public class VerticleKanbanService extends AbstractVerticle {
 			zone.setFirst(new SimpleColumn(UUID.randomUUID().toString(), login, 1));
 			// Le 1ère colonne est la colonne User, pas de ticket sur celle-ci, donc on la skip (elle a jouté juste au dessus)
 			UiUtils.headersWithWidth().skip(1).forEach(h -> {		
-				String header = h.getStateTicket().getName();
+				String header = h.getZoneTicket().getCodeZone();
 				ComplexColumn<CardTicket> column = new ComplexColumn<>(UiUtils.otherZoneColumnId(login, header) ,h.getWidth());
 				// Filtre des tickets souhaité
-				Stream<Ticket> streamTicket = x.stream().filter(t -> t.getStateTicket().getName().equals(header));
+				Stream<Ticket> streamTicket = x.stream().filter(t -> t.getZoneTicket().getCodeZone().equals(header));
 				
-				streamTicket.forEach(t -> column.addCard(new CardTicket(
-															t.get_id(), 
-															t.getReference(), 
-															t.getApplication().getName(),
-															t.getSummary())));
+				streamTicket.forEach(t -> column.addCard(
+						new CardTicket(
+										t.get_id(), 
+										t.getReference(), 
+										t.getApplication().getName(),
+										t.getSummary(),
+										t.getDescription(),
+										t.getCaisse(),
+										t.getStateTicket().getName(),
+										t.getOwner().getLogin())
+						));
 				zone.addOther(column);
 			});
 			message.reply(Json.encodePrettily(zone));

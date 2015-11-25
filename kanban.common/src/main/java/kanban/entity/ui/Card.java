@@ -4,6 +4,10 @@ public class Card {
 	private String ref;
 	private String id;
 
+	public Card(){
+		
+	}
+	
 	public Card(String id,String ref) {
 		super();
 		this.ref = ref;

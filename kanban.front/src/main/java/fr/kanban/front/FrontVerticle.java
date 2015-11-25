@@ -1,5 +1,6 @@
 package fr.kanban.front;
 
+import fr.kanban.front.auth.AuthenticateHandler;
 import fr.kanban.front.kanban.KanbanHandler;
 import fr.kanban.front.socket.SockBusServer;
 import fr.kanban.front.ticket.TicketHandler;
@@ -9,6 +10,8 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import kanban.entity.db.User;
+import kanban.entity.session.SessionData;
 
 public class FrontVerticle extends AbstractVerticle {
 
@@ -23,6 +26,7 @@ public class FrontVerticle extends AbstractVerticle {
 		
 		Router router = Router.router(vertx);
 		
+		new AuthenticateHandler().initAuth(router, vertx);
 		
 		kanbanHandler = new KanbanHandler();
 		userHandler = new UserHandler();
@@ -45,6 +49,11 @@ public class FrontVerticle extends AbstractVerticle {
 		router.route().handler(BodyHandler.create());
 		router.route().handler(context -> {
 			context.response().headers().add(HttpHeaders.CONTENT_TYPE, "application/json");
+			if (UiConstantes.getSessionData(context.session()).getCurrentUser() == null) {
+				SessionData sessionData = UiConstantes.getSessionData(context.session());
+				sessionData.setCurrentUser(new User("user1", "user1", "User 1", "User 1"));
+				
+			}
 			context.next();
 		});
 		/**
@@ -59,7 +68,9 @@ public class FrontVerticle extends AbstractVerticle {
 		/**
 		 * Mise à jour 
 		 */		
-		router.put("/api/ticket/update").handler(ticketHandler::apiTicketUpdate);
+		router.put("/api/ticket/update/zone").handler(ticketHandler::apiTicketUpdateZone);
+		
+		router.put("/api/ticket/update/all").handler(ticketHandler::apiTicketUpdateAll);
 		
 		/**
 		 * On renvois la liste des tickets par login
@@ -70,6 +81,8 @@ public class FrontVerticle extends AbstractVerticle {
 		 * On renvois la liste des tickets
 		 */
 		router.get("/api/ticket/list").handler(ticketHandler::apiTicketList);
+		
+		router.get("/api/ticket/new/empty").handler(ticketHandler::apiNewEmpty);
 		
 		/**
 		 * ####### Routes relatives à la gestion des utilisateurs #######  

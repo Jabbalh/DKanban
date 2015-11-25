@@ -1,39 +1,76 @@
-<div >
+<div>
 	<!-- 
 	cardId : 	<input type="text" ng-model="ctrl.cardId" />
 	targetId : 	<input type="text" ng-model="ctrl.targetId" />
 	<button ng-click="ctrl.test()">TEST</button>
- -->	
-	<div class="row" >
+ -->
+	<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+		<a class="btn-floating btn-large red"> <i
+			class="large material-icons">present_to_all</i>
+		</a>
+		<ul>
+			<li><a class="btn-floating green" ng-click="ctrl.addTicket()"><i
+					class="material-icons">add</i></a></li>
+			<!-- <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
+      <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
+      <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li> -->
+		</ul>
+	</div>
+	<div class="row">
 		<div class="col s{{item.width}}" ng-repeat="item in ctrl.headers">
-			<h5>{{item.libelle}}</h5>
-		</div>		
+			<h6>{{item.libelle}}</h6>
+		</div>
 	</div>
 
 
-	<div class="row row-height blue darken-3 z-depth-2" ng-repeat="zone in ctrl.kanban.values | orderBy:'first.libelle'">
+	<div class="row row-height blue lighten-5 z-depth-1"
+		ng-repeat="zone in ctrl.kanban.values | orderBy:'first.libelle'">
 
-		<div class="col s{{zone.first.width}} col-height valign-wrapper" id="{{zone.first.id}}">
+		<div class="col s{{zone.first.width}} col-height valign-wrapper"
+			id="{{zone.first.id}}">
 			<h5 class="valign">{{zone.first.libelle}}</h5>
 		</div>
 
 		<div ng-repeat="other in zone.other" id="{{other.id}}"
-				class="col s{{other.width}} col-height"  droppable drop="handleDrop" 
-				 >
-				
-			<div 	ng-repeat="ticket in other.cards" 
-					class="card drag-auto-item hoverable"
-					 draggable 
-					id="{{ticket.id}}" >
+			class="col s{{other.width}} col-height" droppable drop="handleDrop">
+
+			<div ng-repeat="ticket in other.cards"
+				class="card drag-auto-item hoverable blue lighten-3" draggable
+				id="{{ticket.id}}">
 				<div class="card-content white-text">
-				
-				
-          <a class="btn-floating btn-large waves-effect waves-light red"><i class="small mdi-content-add"></i></a>
-     
-				
-				
-					<span class="blue-text text-darken-2">{{ticket.ref}}</span>	
-					<div class="divider"></div>				
+					<div>
+						<!-- 
+						<span class="right-align">
+          					<a class="right btn-floating btn-small green"><i class="tiny material-icons">toll</i></a>
+						</span>
+				 -->
+						<!--
+						<div class="fixed-action-btn horizontal" style="position: absolute; display: inline-block; right: 24px;">
+				            <a class="btn-floating btn-small red toolbar-button">
+				              <i class="tiny material-icons">mode_edit</i>
+				            </a>
+				            <ul>
+				              <li><a class="btn-floating red toolbar-button" style="transform: scaleY(0.4) scaleX(0.4) translateY(0px) translateX(40px); opacity: 0;"><i class="tiny material-icons">insert_chart</i></a></li>
+				              <li><a class="btn-floating yellow darken-1 toolbar-button" style="transform: scaleY(0.4) scaleX(0.4) translateY(0px) translateX(40px); opacity: 0;"><i class="tiny material-icons">format_quote</i></a></li>
+				              <li><a class="btn-floating green toolbar-button" style="transform: scaleY(0.4) scaleX(0.4) translateY(0px) translateX(40px); opacity: 0;"><i class="tiny material-icons">publish</i></a></li>
+				              <li><a class="btn-floating blue toolbar-button" style="transform: scaleY(0.4) scaleX(0.4) translateY(0px) translateX(40px); opacity: 0;"><i class="tiny material-icons">attach_file</i></a></li>
+				            </ul>
+				          </div>
+								-->
+						<div class="row small-margin">
+							<div class="col s5" style="border-right: 1px solid">
+								<span class="blue-text text-darken-2">{{ticket.ref}}</span>
+							</div>
+							<div class="col s3" style="border-right: 1px solid">
+								<span class="blue-text text-darken-2">{{ticket.caisse}}</span>
+							</div>
+							<div class="col s4">
+								<span class="blue-text text-darken-2">{{ticket.appli}}</span>
+							</div>
+						</div>
+
+					</div>
+					<div class="divider"></div>
 					<p class="black-text truncate">{{ticket.summary}}</p>
 				</div>
 			</div>
@@ -44,4 +81,71 @@
 
 
 
+</div>
+
+<!-- Modal Trigger
+  <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+ -->
+<!-- Modal Structure -->
+<div id="modal1" class="modal">
+	<div class="modal-content">
+		<h4>{{ctrl.ticket.title}}</h4>
+
+		<div class="row">
+			<form class="col s12">
+				<div class="row">
+					<div class="input-field col s4">
+						<input id="ref" type="text" class="validate" ng-model="ctrl.ticket.ticket.ref"> 
+						<label for="ref">Référence</label>
+					</div>
+					<div class="input-field col s4">
+						<input id="caisse" type="text" class="validate" ng-model="ctrl.ticket.ticket.caisse"> 
+						<label for="caisse">Caisse</label>
+					</div>
+					<div class="input-field col s4">
+						<input id="appli" type="text" class="validate" ng-model="ctrl.ticket.ticket.appli"> 
+						<label for="appli">Application</label>
+					</div>
+				</div>	
+				<div class="row">
+					<div class="input-field col s4">
+						<input id="proprietaire" type="text" class="validate" ng-model="ctrl.ticket.ticket.owner" > 
+						<label for="proprietaire" class="active">Propriétaire</label>
+					</div>
+					<div class="input-field col s4">
+						<input id="state" type="text" class="validate" ng-model="ctrl.ticket.ticket.state"> 
+						<label for="state">state</label>
+					</div>
+					<div class="input-field col s4">
+						 <!-- Dropdown Trigger -->
+						  <select 	ng-model="ctrl.ticket.zone"  style="visibility: visible; display: inline-block;"
+						  			ng-options="header.libelle for header in ctrl.headers"  						  			
+						  			></select> 
+						 <label for="zone" class="active">Zone</label>
+					  	
+					</div>	
+					
+									
+				</div>	
+				<div class="row">
+					<div class="input-field col s12">
+						<input id="summary" type="text" class="validate" ng-model="ctrl.ticket.ticket.summary"> 
+						<label for="summary">Résumé</label>
+					</div>									
+				</div>				
+				<div class="row">
+					<div class="input-field col s12">
+						<input id="description" type="text" class="validate" ng-model="ctrl.ticket.ticket.description"> 
+						<label for="description">Description</label>
+					</div>
+				</div>				
+			</form>
+		</div>
+
+
+	</div>
+	<div class="modal-footer">
+		<a class="modal-action modal-close waves-effect waves-ref btn-flat">cancel</a>
+		<a class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="ctrl.saveTicket(ctrl.ticket)">ok</a>
+	</div>
 </div>

@@ -15,6 +15,8 @@ public class EventBusNames {
 	
 	public final static String TICKET_LIST = "TICKET_LIST";
 	public final static String TICKET_UPDATE_STATE = "TICKET_UPDATE_STATE";
+	public final static String TICKET_UPDATE_ALL = "TICKET_UPDATE_ALL";
+	public final static String TICKET_INSERT_ALL = "TICKET_INSERT_ALL";
 	/**
 	 * BUS relatif aux utilisateurs
 	 */

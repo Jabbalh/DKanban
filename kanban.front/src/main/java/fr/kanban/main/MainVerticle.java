@@ -12,26 +12,26 @@ public class MainVerticle extends AbstractVerticle {
 	@Override
 	public void start() {
 
-		
-		VerticleUtils.DeployeVertical(vertx,ApplicationService.class, x -> {
-			if (x.succeeded()){
-				vertx.eventBus().send(ApplicationService.INIT_FIRST_APP, "do", r -> {
-					vertx.eventBus().send(ApplicationService.INIT_DATA_APP, "go");
-				});
-				deploy();
-			}
-		});	
-		
-	/*
-		VerticleUtils.DeployeVertical(vertx,ApplicationService.class, x -> {
-			if (x.succeeded()){
-				vertx.eventBus().send(ApplicationService.INIT_APPLICATION, "do", r -> {
-					//vertx.eventBus().send(ApplicationService.INIT_DATA_APP, "go");
-				});
-				deploy();
-			}
-		});	
-	*/
+		boolean reinit = false;
+		if (reinit){
+			VerticleUtils.DeployeVertical(vertx,ApplicationService.class, x -> {
+				if (x.succeeded()){
+					vertx.eventBus().send(ApplicationService.INIT_FIRST_APP, "do", r -> {
+						vertx.eventBus().send(ApplicationService.INIT_DATA_APP, "go");
+					});
+					deploy();
+				}
+			});	
+		} else {
+			VerticleUtils.DeployeVertical(vertx,ApplicationService.class, x -> {
+				if (x.succeeded()){
+					vertx.eventBus().send(ApplicationService.INIT_APPLICATION, "do", r -> {
+						//vertx.eventBus().send(ApplicationService.INIT_DATA_APP, "go");
+					});
+					deploy();
+				}
+			});	
+		}
 		
 	}
 	

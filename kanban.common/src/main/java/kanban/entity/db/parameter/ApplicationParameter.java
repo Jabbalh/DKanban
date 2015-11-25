@@ -6,17 +6,19 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import kanban.entity.db.Application;
+import kanban.entity.db.StateTicket;
 
 public class ApplicationParameter {
 	
 	private String _id;
 	
-	private List<State> states;
+	private List<ZoneApp> zones;
 	private List<Application> applications;
+	private List<StateTicket> statesTicket;
 	private boolean isInit = false;
 	
 	@JsonIgnore	
-	private LinkedHashMap<String, State> stateByKey;
+	private LinkedHashMap<String, ZoneApp> stateByKey;
 	
 	
 	public ApplicationParameter() {
@@ -36,11 +38,11 @@ public class ApplicationParameter {
 	public void setInit(boolean isInit) {
 		this.isInit = isInit;
 	}
-	public List<State> getStates() {
-		return states;
+	public List<ZoneApp> getZones() {
+		return zones;
 	}
-	public void setStates(List<State> states) {
-		this.states = states;
+	public void setZones(List<ZoneApp> zones) {
+		this.zones = zones;
 		this.initStateByKey();
 	}
 	public List<Application> getApplications() {
@@ -53,10 +55,18 @@ public class ApplicationParameter {
 	
 	private void initStateByKey(){
 		stateByKey = new LinkedHashMap<>();
-		states.forEach(x -> stateByKey.put(x.getStateTicket().getName(), x));		
+		zones.forEach(x -> stateByKey.put(x.getZoneTicket().getCodeZone(), x));		
 	}
 	
 	@JsonIgnore
-	public LinkedHashMap<String, State> getStateByKey() { return stateByKey; }
+	public LinkedHashMap<String, ZoneApp> getStateByKey() { return stateByKey; }
+
+	public List<StateTicket> getStatesTicket() {
+		return statesTicket;
+	}
+
+	public void setStatesTicket(List<StateTicket> statesTicket) {
+		this.statesTicket = statesTicket;
+	}
 	
 }

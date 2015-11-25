@@ -3,7 +3,7 @@ package kanban.service.utils;
 import java.util.stream.Stream;
 
 import kanban.entity.db.parameter.ApplicationData;
-import kanban.entity.db.parameter.State;
+import kanban.entity.db.parameter.ZoneApp;
 
 public class UiUtils {
 
@@ -21,14 +21,18 @@ public class UiUtils {
 	
 	public static Stream<String> headers(){
 		
-		Stream<String> result = ApplicationData.get().getStates().stream().sorted((x,y) -> x.getOrder().compareTo(y.getOrder())).map(x -> x.getStateTicket().getName());		
+		Stream<String> result = ApplicationData.get().getZones().stream().sorted((x,y) -> x.getOrder().compareTo(y.getOrder())).map(x -> x.getZoneTicket().getCodeZone());		
 		return result;
 	}
 	
-	public static Stream<State> headersWithWidth(){
+	public static Stream<ZoneApp> headersWithWidth(){
 		
-		Stream<State> result = ApplicationData.get().getStates().stream().sorted((x,y) -> x.getOrder().compareTo(y.getOrder()));		
+		Stream<ZoneApp> result = ApplicationData.get().getZones().stream().sorted((x,y) -> x.getOrder().compareTo(y.getOrder()));		
 		return result;
+	}
+	
+	public static ZoneApp getZoneApp(String key) {
+		return ApplicationData.get().getStateByKey().get(key);
 	}
 	
 }
