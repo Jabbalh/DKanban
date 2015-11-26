@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import kanban.bus.constants.EventBusNames;
 import kanban.entity.db.Ticket;
@@ -54,9 +55,13 @@ public class VerticleKanbanService extends AbstractVerticle {
 	 */
 	private void handleByUser(Message<String> message) {			
 		
-		mongoService.findAll(Ticket.class,new JsonObject().put("owner.login", message.body()) , x -> {			
+		JsonObject query = new JsonObject()
+				.put("$and", new JsonArray().add(new JsonObject().put("owner.login", message.body()))
+				.add(new JsonObject().put("archive", false)));
+		System.out.println("handleByUser -> " + query.encodePrettily());
+		mongoService.findAll(Ticket.class,query , x -> {			
 			String login = message.body();
-			Zone zone = new Zone();
+			Zone<CardTicket> zone = new Zone<CardTicket>();
 			zone.setFirst(new SimpleColumn(UUID.randomUUID().toString(), login, 1));
 			// Le 1ère colonne est la colonne User, pas de ticket sur celle-ci, donc on la skip (elle a jouté juste au dessus)
 			UiUtils.headersWithWidth().skip(1).forEach(h -> {		

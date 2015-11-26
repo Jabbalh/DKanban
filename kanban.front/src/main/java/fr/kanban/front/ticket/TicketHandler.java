@@ -57,5 +57,12 @@ public class TicketHandler extends AbstractHandler {
 				Json.encodePrettily(new CardTicket(UiConstantes.getSessionData(context.session()).getCurrentUser().getLogin()))
 				); 
 	}
+	
+	public void apiArchive(RoutingContext context) {
+		JsonObject data = context.getBodyAsJson();
+		vertx.eventBus().send(EventBusNames.TICKET_ARCHIVE, data,x -> {
+			context.response().end(x.result().body().toString());
+		});
+	}
 
 }

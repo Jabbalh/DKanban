@@ -96,7 +96,12 @@ public class FrontVerticle extends AbstractVerticle {
 		 */
 		router.get("/api/ticket/list").handler(ticketHandler::apiTicketList);
 		
+		/**
+		 * Création d'un ticket vide
+		 */
 		router.get("/api/ticket/new/empty").handler(ticketHandler::apiNewEmpty);
+		
+		router.put("/api/ticket/update/archive").handler(ticketHandler::apiArchive);
 		
 		/**
 		 * ####### Routes relatives à la gestion des utilisateurs #######  

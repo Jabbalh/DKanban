@@ -57,47 +57,34 @@
 }
 
 
-
-/*icket card-animate move ng-scope ng-animate ng-move ng-move-active*/
-
-.zone_with{     
-    
-  /*height:10vh;*/
+.zone_with{         
   background-color: blue;
-
   border: 1px solid yellow;
 
 }
 
-.ticket {
-     -moz-box-shadow: 0px 1px 3px 1px #656565;
-    -webkit-box-shadow: 0px 1px 3px 1px #656565;
-    -o-box-shadow: 0px 1px 3px 0px #656565;
-    box-shadow: 0px 1px 3px 0px #656565;
-    filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=180, Strength=3);
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 2px;
-     margin: 2px;
-     height: 25px;
-     background-color: Whitesmoke;
 
-}
-/*
 .col-height > div:Hover {
+	/*
     -moz-box-shadow: 0px 1px 3px 1x #fe0000;
     -webkit-box-shadow: 0px 1px 3px 1px #fe0000;
     -o-box-shadow: 0px 1px 3px 0px #fe0000;
     box-shadow: 0px 1px 3px 0px #fe0000;
     filter:progid:DXImageTransform.Microsoft.Shadow(color=#fe0000, Direction=180, Strength=3);
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 2px;
+   */
     cursor: move;
-}*/
+}
+
+.cursor-edit:Hover {
+	cursor: pointer!important;
+}
 
 .over {
 	border: dotted 1px Red !important;
+}
+
+.over .overdelete {
+	background-color: Red!important;
 }
 
 
@@ -111,6 +98,7 @@
   table-layout: fixed;
   height: 100%;
   width: 100%;
+  margin-bottom: 10px !important;
 }
 .col-height {
   display: table-cell;

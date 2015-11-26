@@ -28,12 +28,13 @@ app.directive('draggable', function() {
   }
 });
 
-app.directive('droppable', function() {
+app.directive('droppable',['$parse', function($parse) {
   return {
     scope: {
-      drop: '&' // parent
+    	drop: '&drop',
+    	dropdelete:'&dropdelete'  
     },
-    link: function(scope, element) {
+    link: function(scope, element, attrs) {
       // again we need the native object
       var el = element[0];
       
@@ -73,15 +74,21 @@ app.directive('droppable', function() {
           // Stops some browsers from redirecting.
           if (e.stopPropagation) e.stopPropagation();
           
+          //console.log("drop function -> " + f);
           this.classList.remove('over');
           var id = e.dataTransfer.getData('Text');
           var item = document.getElementById(id);
-          this.appendChild(item);
+          if (attrs.dropdelete) {
+        	  
+          } else {
+        	  this.appendChild(item);
+          }
+          
           var data = {};
           data.targetId = this.id;
           data.originId = id;
           // call the drop passed drop function
-          scope.$emit('handleDrop',data);
+          scope.$emit(attrs.drop,data);
           
           return false;
         },
@@ -89,4 +96,4 @@ app.directive('droppable', function() {
       );
     }
   }
-});
+}]);

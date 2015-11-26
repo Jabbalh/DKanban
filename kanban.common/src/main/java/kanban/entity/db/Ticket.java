@@ -14,11 +14,12 @@ public class Ticket {
 	private ZoneTicket zoneTicket;
 	private User owner;
 	private List<TicketHistory> ticketHistory;
+	private Boolean archive;
 	
 	
 	
 	public Ticket() {
-	
+		archive = false;
 	}
 	
 	public Ticket(String reference, String summary, String description, Application application, ZoneTicket zone,
@@ -102,6 +103,15 @@ public class Ticket {
 		if (ticketHistory == null){
 			this.ticketHistory = new ArrayList<TicketHistory>();
 		}
+		ticketHistory.add(history);
+	}
+
+	public Boolean getArchive() {
+		return archive;
+	}
+
+	public void setArchive(Boolean archive) {
+		this.archive = archive;
 	}
 	
 }

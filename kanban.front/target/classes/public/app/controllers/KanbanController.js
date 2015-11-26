@@ -42,6 +42,42 @@ angular.module("DKanbanApp")
 	this.headers = {};
     var eb = new EventBus("/eventbus");
     
+    
+    
+    /**
+     * Méthode de test
+     */
+    this.testCardId = "ARS03";
+    this.testTargetId = "user1$PROD";
+    
+    this.testUpdate = function() {
+    	
+    	var result = {
+    			user : self.testTargetId.split("$")[0],
+    			zone : self.testTargetId.split("$")[1],
+    			card : {id : self.testCardId}
+    	};
+    	
+    	//var data = self.extracAfterChange(result,false);
+    	
+    	kanbanUpdateService.updateTicketZone(result);
+    }
+    
+    this.testDelete = function() {
+    	/*
+    	  {
+      "ref" : "ARS03",
+      "id" : "ARS03",
+      "appli" : "DEI PRO",
+      "summary" : "Test ARS3",
+      "description" : "Desc ARS3",
+      "caisse" : "14445",
+      "state" : null,
+      "owner" : "user1"
+    }
+    	 */
+    }
+    
     /**
      * Initialisation des listes
      */
@@ -78,13 +114,24 @@ angular.module("DKanbanApp")
 	    	var parent = document.getElementById(result.user+'$'+result.zone);
 	    	var card = document.getElementById(result.ticketId);
 	    	
-	    	if (card.parentElement.id == parent.id){
+	    	if (card == null){
+	    		card = document.getElementById(result.card.id);
+	    	}	    		
+	    	
+	    	if (card != null && parent != null && card.parentElement.id == parent.id){
 	    		console.log("do nothing");
 	    	} else {	    		
-		    	self.moveAfterChange(result,extracAfterChange(result,true));		    	
-	    	}
-	    	console.log(card);	    	
-	    })
+		    	self.moveAfterChange(result,self.extracAfterChange(result,true));
+		    	$scope.$digest();
+	    	}	    	
+	    	
+	    });
+	    
+	    eb.registerHandler("insert-card", function(err, msg) {
+	    	var result = JSON.parse(msg.body);	    		    	
+    		self.moveAfterChange(result, result.card);
+    		$scope.$digest();
+	    });
 	  }
 	  
 	  /**
@@ -92,13 +139,17 @@ angular.module("DKanbanApp")
 	   */
 	  this.extracAfterChange = function(result,remove) {
 		  var objCard = null;
-		  var toFind = (result.user+"$"+result.state);
+		  var toFind = (result.user+"$"+result.zone);
 	    	self.kanban.values.forEach(function(value,key){	    		
 	    		value.other.forEach(function(oValue,oKey){	    				    				    			    			    			
 	    			oValue.cards.forEach(function(cValue,cKey){		    				
-	    				if (cValue.id == result.ticketId) {	
+	    				if (cValue.id == result.card.id) {	
 	    					objCard = oValue.cards[cKey];
-	    					if (remove) oValue.cards.splice(cKey,1);		    					
+	    					console.log("extracAfterChange -> Obj finded");
+	    					if (remove) {
+	    						oValue.cards.splice(cKey,1);
+	    						console.log("extracAfterChange -> Obj removed");
+	    					}
 	    				}
 	    			});	    			
 	    		});
@@ -111,11 +162,13 @@ angular.module("DKanbanApp")
 	   */
 	  this.moveAfterChange = function(result,obj) {
 		  var objCard = obj;
-		  var toFind = (result.user+"$"+result.state);
+		  var toFind = (result.user+"$"+result.zone);
 	    	self.kanban.values.forEach(function(value,key){	    		
 	    		value.other.forEach(function(oValue,oKey){	    				    			
-	    			if (oValue.id == toFind) {	    				
-	    				oValue.cards.push(objCard);
+	    			if (oValue.id == toFind) {	   
+	    				console.log("moveAfterChange -> Obj finded");
+	    				oValue.cards.push(objCard);	    				
+	    				console.log("moveAfterChange -> Obj added");
 	    			}	    			
 	    		});
 	    	});
@@ -144,19 +197,14 @@ angular.module("DKanbanApp")
 		 console.log(data);
 		 kanbanUpdateService.updateTicket(data).success(function(resultData){
 			 if (resultData == "OK"){	
-				 if (data.insert == true) {
+				/* if (data.insert != true) {					
 					 var result = {};
 					 result.user = data.ticket.owner;
-					 result.state = data.zone;
-					 self.moveAfterChange(result,data.ticket);
-				 } else {
-					 var result = {};
-					 result.user = data.ticket.owner;
-					 result.state = data.zone;
+					 result.zone = data.zone;
 					 result.ticketId = data.ticket.ref;
 					 var tmp = self.extracAfterChange(result, true);
 					 self.moveAfterChange(result,tmp);
-				 }
+				 }*/
 				 
 			 } else {
 				 alert("Zut !!!");
@@ -182,7 +230,7 @@ angular.module("DKanbanApp")
 	 */
 	this.openPopup = function() {
 		$('#modal1').openModal({
-		      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+		      dismissible: false, // Modal can be dismissed by clicking outside of the modal
 		      opacity: .5, // Opacity of modal background
 		      in_duration: 300, // Transition in duration
 		      out_duration: 200, // Transition out duration
@@ -196,16 +244,44 @@ angular.module("DKanbanApp")
 	 * Ecoute de l'evènemement après le déplacement via drag & drop
 	 */
 	$scope.$on('handleDrop',function(event,data){		
-		var cardData = {};
-		cardData.cardId = data.originId;
+		var cardData = 
+		{
+				card : {id : data.originId},
+				zone : data.targetId.split('$')[1],
+				user : data.targetId.split('$')[0]
+		};
+		/*cardData.ticketId = ;
 		cardData.zone = data.targetId.split('$')[1];
-		cardData.userLogin = data.targetId.split('$')[0];
+		cardData.userLogin = data.targetId.split('$')[0];*/
 		
 		kanbanUpdateService.updateTicketZone(cardData).success(function(data){
-			console.log("result -> " +data);
+			console.log("handleDrop -> updateTicketZone -> "  +data);
 		});
 		
 	});
+	
+	$scope.$on('handleDropDelete',function(event,data){
+		var cardData = 
+		{
+				card : {id : data.originId},
+				zone : data.targetId.split('$')[1],
+				user : data.targetId.split('$')[0]
+		};
+		/*
+		cardData.ticketId = data.originId;
+		cardData.zone = data.targetId.split('$')[1];
+		cardData.userLogin = data.targetId.split('$')[0];
+		*/
+		var card = self.extracAfterChange(cardData,false);
+		kanbanUpdateService.archiveTicket(card);		
+	});
+	
+	
+	this.changeTab = function(id) {
+		$(document).ready(function(){
+		    $('ul.tabs').tabs('select_tab', '#'+id);
+		  });
+	}
 	
 
 }); // END KanbanController

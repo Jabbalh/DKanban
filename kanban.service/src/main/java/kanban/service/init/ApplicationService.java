@@ -73,14 +73,14 @@ public class ApplicationService extends AbstractVerticle {
 				
 		
 		List<ZoneApp> states = new ArrayList<>();
-		states.add(new ZoneApp(new ZoneTicket("Utilisateur"),0,1));
-		states.add(new ZoneApp(new ZoneTicket("BackLog"),1,2));
-		states.add(new ZoneApp(new ZoneTicket("Analyse"),2,2));
-		states.add(new ZoneApp(new ZoneTicket("Dev"),3,2));
-		states.add(new ZoneApp(new ZoneTicket("VFO"),4,1));
-		states.add(new ZoneApp(new ZoneTicket("UTI"),5,1));
-		states.add(new ZoneApp(new ZoneTicket("QPA"),6,1));
-		states.add(new ZoneApp(new ZoneTicket("PROD"),7,2));
+		states.add(new ZoneApp(new ZoneTicket("Utilisateur"),0,5));
+		states.add(new ZoneApp(new ZoneTicket("BackLog"),1,12));
+		states.add(new ZoneApp(new ZoneTicket("Analyse"),2,12));
+		states.add(new ZoneApp(new ZoneTicket("Dev"),3,12));
+		states.add(new ZoneApp(new ZoneTicket("VFO"),4,12));
+		states.add(new ZoneApp(new ZoneTicket("UTI"),5,12));
+		states.add(new ZoneApp(new ZoneTicket("QPA"),6,12));
+		states.add(new ZoneApp(new ZoneTicket("PROD"),7,12));
 		ApplicationData.get().setZones(states);
 		
 		if (!ApplicationData.get().isInit()){

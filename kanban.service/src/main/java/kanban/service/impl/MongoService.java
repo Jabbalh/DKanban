@@ -39,8 +39,13 @@ public class MongoService implements IMongoService {
 	}
 	
 	@Override
-	public void update(String index, JsonObject query,JsonObject update, Consumer<Boolean> callback){		
+	public void update(String index, JsonObject query,JsonObject update, Consumer<Boolean> callback){	
+		System.out.println("MongoService.update.query -> " + query.encodePrettily());
+		System.out.println("MongoService.update.update -> " + update.encodePrettily());
 		mongoClient.update(index, query, update, x -> {
+			System.out.println("MongoService.update.succeeded -> " + x.succeeded());
+			System.out.println("MongoService.update.result -> " + x.result());
+			if (x.failed()) System.out.println("update " + index + " -> " + x.cause());
 			callback.accept(x.succeeded());
 		});
 	}
@@ -48,6 +53,10 @@ public class MongoService implements IMongoService {
 	@Override
 	public <T> void update(T entity, Consumer<Boolean> callback){		
 		mongoClient.save(DbUtils.index(entity.getClass()), new JsonObject(Json.encodePrettily(entity))  , x -> {
+			System.out.println("MongoService.update.succeeded -> " + x.succeeded());
+			System.out.println("MongoService.update.result -> " + x.result());
+			
+			if (x.failed()) System.out.println("update " + entity.getClass().getName() + " -> " + x.cause());
 			callback.accept(x.succeeded());
 		});
 	}
@@ -103,6 +112,7 @@ public class MongoService implements IMongoService {
 	public <T> void findAll(Class<T> clazz, JsonObject query,Sort sort, Consumer<List<T>> callBack) {
 		
 		FindOptions options = new FindOptions();
+		
 		Object sortJson = query.getValue("sort");
 		if (sortJson != null) {
 			if (sort == null) sort = Sort.ASC;

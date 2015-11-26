@@ -1,9 +1,19 @@
 <div>
-	<!-- 
-	cardId : 	<input type="text" ng-model="ctrl.cardId" />
-	targetId : 	<input type="text" ng-model="ctrl.targetId" />
-	<button ng-click="ctrl.test()">TEST</button>
- -->
+	<div class="row">
+	<div class="col s4">
+		cardId : 	<input type="text" ng-model="ctrl.testCardId" />
+	</div>
+	<div class="col s4">
+		targetId : 	<input type="text" ng-model="ctrl.testTargetId" />
+	</div>
+	<div class="col s4">
+		<a class="waves-effect waves-light btn" ng-click="ctrl.testUpdate()">Test Update</a>
+		<a class="waves-effect waves-light btn" ng-click="ctrl.testDelete()">Test delete</a>
+	</div>
+
+	</div>
+
+
 	<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
 		<a class="btn-floating btn-large red"> <i
 			class="large material-icons">present_to_all</i>
@@ -13,32 +23,31 @@
 					class="material-icons">add</i></a></li>		
 		</ul>
 	</div>
-	<div class="row">
-		<div class="col s{{item.width}}" ng-repeat="item in ctrl.headers">
-			<h6>{{item.libelle}}</h6>
+	<div class="row center" layout="row" >
+		<div  ng-repeat="item in ctrl.headers" flex>
+			<h6 class="valign">{{item.libelle}}</h6>
 		</div>
 	</div>
 
 
-	<div class="row row-height blue lighten-5 z-depth-1"
+	<div class="row-height blue lighten-5 z-depth-1" layout="row"
 		ng-repeat="zone in ctrl.kanban.values | orderBy:'first.libelle'">
 
-		<div class="col s{{zone.first.width}} col-height valign-wrapper"
-			id="{{zone.first.id}}">
+		<div class="col-height valign-wrapper overdelete" flex="none"
+			id="{{zone.first.id}}" droppable drop="handleDropDelete" dropdelete="true">
 			<h5 class="valign">{{zone.first.libelle}}</h5>
 		</div>
 
-		<div ng-repeat="other in zone.other" id="{{other.id}}"
-			class="col s{{other.width}} col-height" droppable drop="handleDrop">
+		<div ng-repeat="other in zone.other" id="{{other.id}}" flex="initial"
+			class="col-height" droppable drop="handleDrop" >
 
 			<div ng-repeat="ticket in other.cards"
-				class="card drag-auto-item hoverable blue lighten-3" draggable
+				class="card drag-auto-item hoverable blue lighten-3" draggable 
 				id="{{ticket.id}}">
 				<div class="card-content white-text">
-					<div>
-						
-						<div class="row small-margin">
-							<div class="col left" style="border-right: 1px solid">
+					<div>					
+						<div class="row small-margin">							
+							<div class="col left cursor-edit" style="border-right: 1px solid">
 								<span class="blue-text text-darken-2" ng-click="ctrl.updateTicket(ticket,other.id)">{{ticket.ref}}</span>
 							</div>
 							<div class="col" style="border-right: 1px solid">
@@ -70,6 +79,9 @@
 <div id="modal1" class="modal">
 	<div class="modal-content">
 		<h4>{{ctrl.ticket.title}}</h4>
+
+	
+
 
 		<div class="row">
 			<form class="col s12">

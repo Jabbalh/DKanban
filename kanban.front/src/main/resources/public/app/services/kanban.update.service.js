@@ -11,6 +11,10 @@ function KanbanUpdateService($http) {
     this.emptyTicket = function() {
     	return $http.get("/api/ticket/new/empty");
     }
+    
+    this.archiveTicket = function(data) {
+    	return $http.put("/api/ticket/update/archive",data);
+    }
 }
 
 angular.module("DKanbanApp").factory("kanbanUpdateService", function($http) {

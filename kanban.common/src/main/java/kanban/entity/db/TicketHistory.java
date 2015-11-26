@@ -1,6 +1,7 @@
 package kanban.entity.db;
 
 import java.util.Date;
+import java.util.function.Consumer;
 
 public class TicketHistory {
 	private String summary;
@@ -25,6 +26,12 @@ public class TicketHistory {
 		this.description = description;
 		this.date = date;
 	}
+	
+	public TicketHistory(Consumer<TicketHistory> init){
+		this();
+		init.accept(this);
+	}
+	
 	public String getSummary() {
 		return summary;
 	}
