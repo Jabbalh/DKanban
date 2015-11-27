@@ -56,6 +56,28 @@
   to { opacity:0; }
 }
 
+.ticket {
+     -moz-box-shadow: 0px 1px 3px 1px #656565;
+    -webkit-box-shadow: 0px 1px 3px 1px #656565;
+    -o-box-shadow: 0px 1px 3px 0px #656565;
+    box-shadow: 0px 1px 3px 0px #656565;
+    filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=180, Strength=3);
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 2px;
+     margin: 2px;     
+     background-color: White;
+	
+}
+
+.divider {
+  height: 1px;
+  overflow: hidden;
+  background-color: #e0e0e0; }
+
+.row-small-margin {
+	margin:5px !important;
+}
 
 .zone_with{         
   background-color: blue;
@@ -99,6 +121,7 @@
   height: 100%;
   width: 100%;
   margin-bottom: 10px !important;
+  background-color: #90caf9;
 }
 .col-height {
   display: table-cell;
@@ -107,6 +130,7 @@
  /* background-color: grey;
   vertical-align: top;*/
   border:1px solid;
+  padding: 0px!important;
 }
 
 .col-height-header {

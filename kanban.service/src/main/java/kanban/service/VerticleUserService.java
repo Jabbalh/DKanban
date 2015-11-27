@@ -32,8 +32,9 @@ public class VerticleUserService extends AbstractVerticle {
 	}
 	
 	private void userFindByLogin(Message<String> message){
-		mongoService.findOne(User.class, new JsonObject().put("login", message.body()), x -> {
-			
+		mongoService.findOne(User.class, new JsonObject().put("login", message.body()))
+		.when(x -> 
+		{		
 			message.reply(Json.encodePrettily(x));
 		});
 	}

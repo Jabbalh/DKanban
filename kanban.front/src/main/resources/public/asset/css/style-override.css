@@ -1,10 +1,23 @@
 .row > [class*="col-"] 		{ margin-bottom:0px !important; }
+
 .card .card-content 		{ padding: 5px !important; }
 .c-border 					{ border:1px solid;	width: 20px; }
 .small-margin 				{ margin-bottom: 5px; }
 .toolbar-button 			{ width: 20px !important; height: 20px !important; }
 .btn-floating.btn-small 	{ width: 20.5px; height: 20.5px; }
 .btn-floating.btn-small i 	{ line-height: 20.5px; }
+
+.panel-body-small {padding:1px !important;}
+
+.dialogdemoBasicUsage #popupContainer {
+  position: relative; }
+.dialogdemoBasicUsage .footer {
+  width: 100%;
+  text-align: center;
+  margin-left: 20px; }
+.dialogdemoBasicUsage .footer, .dialogdemoBasicUsage .footer > code {
+  font-size: 0.8em;
+  margin-top: 50px; }
 
 select {
   background-color: transparent;

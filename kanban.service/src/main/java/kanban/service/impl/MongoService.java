@@ -12,8 +12,10 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.MongoClient;
 import kanban.bus.constants.Sort;
+import kanban.entity.db.Ticket;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.DbUtils;
+import kanban.utils.callback.Then;
 
 public class MongoService implements IMongoService {
 
@@ -48,6 +50,7 @@ public class MongoService implements IMongoService {
 			if (x.failed()) System.out.println("update " + index + " -> " + x.cause());
 			callback.accept(x.succeeded());
 		});
+		
 	}
 	
 	@Override
@@ -77,15 +80,18 @@ public class MongoService implements IMongoService {
 	}
 	
 	@Override
-	public <T> void findOne(Class<T> clazz, JsonObject request,Consumer<T> callback) {
+	public <T> Then<T> findOne(Class<T> clazz, JsonObject request) {
+		Then<T> then = new Then<>();
 		mongoClient.findOne(DbUtils.index(clazz), request, null, x -> {
-			
+			T result = null;
 			if (x.succeeded()){
-				callback.accept(Json.decodeValue(x.result().encodePrettily(), clazz));
+				result = Json.decodeValue(x.result().encodePrettily(), clazz);
 			} else {
 				System.out.println("findOne ->" + DbUtils.index(clazz) + " on error -> " + x.cause());
 			}
+			then.apply(result);
 		});
+		return then;
 	}
 	
 	
@@ -138,6 +144,30 @@ public class MongoService implements IMongoService {
 				callBack.accept(new ArrayList<>());
 			}
 			
+		});
+	}
+	
+	@Override
+	public <T> Then<Integer> getNextSequence(Class<T> clazz){
+		Then<Integer> then = new Then<>();
+		mongoClient.update("counters", 
+				new JsonObject().put("_id", DbUtils.index(clazz)), 
+				new JsonObject().put("$inc", new JsonObject().put("seq", 1)), s -> {
+					if (s.succeeded()){						
+						mongoClient.findOne("counters", new JsonObject().put("_id", DbUtils.index(clazz)), null, i -> {
+							then.apply(i.result().getInteger("seq"));
+						});
+					}
+					
+				});
+		return then;
+	}
+	
+	@Override
+	public void reinitCounters() {
+		mongoClient.dropCollection("counters", x -> {
+			mongoClient.insert("counters", new JsonObject().put("_id", DbUtils.index(Ticket.class)).put("seq", 5), r -> {				
+			});
 		});
 	}
 	

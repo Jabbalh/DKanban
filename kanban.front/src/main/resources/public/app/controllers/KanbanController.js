@@ -27,7 +27,7 @@ angular.module("DKanbanApp")
 		  }
 		})
 
-	.controller("KanbanController", function ($scope,$http,$filter,$mdDialog,kanbanUpdateService,kanbanListService) {	
+	.controller("KanbanController", function ($scope,$http,$filter,kanbanUpdateService,kanbanListService) {	
 	
 	
     var self = this;
@@ -179,6 +179,7 @@ angular.module("DKanbanApp")
 	 /**
 	  * Ajout d'un nouveau ticket (ouverture de la popup)
 	  */
+	  /*
 	 this.addTicket = function() {
 		 
 		 this.ticket.title = "Nouveau ticket";
@@ -189,6 +190,7 @@ angular.module("DKanbanApp")
 			 self.openPopup();			
 		 });
 	 }
+	 */
 	 
 	 /**
 	  * Sauvegarde d'un ticket (modification ou insertion)
@@ -206,28 +208,38 @@ angular.module("DKanbanApp")
 	/**
 	 * Mise à jour d'un ticket (ouverture de la popup)
 	 */
-	this.updateTicket = function(ticket, id){		
-		this.ticket.title = "Ticket " + ticket.ref;
-		this.ticket.insert = false;		
-		this.ticket.zone = id.split('$')[1];
-		this.ticket.ticket = ticket;
-		 
-		this.openPopup();		 
+	this.updateTicket = function(ticket, id){				
+		var send = {
+				listes : self.listes,
+				ticket :  {
+						title : "Ticket " + ticket.ref,
+						insert : false,
+						zone : id.split('$')[1],
+						ticket : ticket
+				},
+				headers : self.headers					
+			};				
+		this.openPopup(send).then(function(answer) {
+	          console.log(JSON.stringify(answer));
+	          self.saveTicket(answer);
+		});
+	          	 
 	}
 	
 	/**
 	 * Ouverture de la popup
 	 */
-	this.openPopup = function() {
-		$('#modal1').openModal({
-		      dismissible: false, // Modal can be dismissed by clicking outside of the modal
-		      opacity: .5, // Opacity of modal background
-		      in_duration: 300, // Transition in duration
-		      out_duration: 200, // Transition out duration
-		      //ready: function() { alert('Ready'); }, // Callback for Modal open
-		      complete: function() { self.ticket = {};	 } // Callback for Modal close
-		    }
-		  );
+	this.openPopup = function(send) {
+		/*
+		return $mdDialog.show({
+		      controller: DialogController,
+		      templateUrl: '/app/views/kanbanPopup.html',
+		      locals: { item: send} ,		      
+		      parent: angular.element(document.body),
+		      targetEvent: null,
+		      clickOutsideToClose:true
+		    });
+		    */
 	}
 	
 	/**
@@ -257,7 +269,7 @@ angular.module("DKanbanApp")
 		kanbanUpdateService.archiveTicket(card);		
 	});
 	
-	$scope.showTabDialog = function(ev) {
+	$scope.showTabDialog = function() {
 		
 		kanbanUpdateService.emptyTicket().success(function(data){
 			var send = {
@@ -268,26 +280,17 @@ angular.module("DKanbanApp")
 							zone : "BackLog",
 							ticket : data
 					},
-					headers : self.headers
-					
+					headers : self.headers					
 				};
 			 		
-			$mdDialog.show({
-			      controller: DialogController,
-			      templateUrl: '/app/views/kanbanPopup.html',
-			      locals: { item: send} ,
-			      parent: angular.element(document.body),
-			      targetEvent: ev,
-			      clickOutsideToClose:true
-			    })
-			    .then(function(answer) {
-			          $scope.status = 'You said the information was "' + answer + '".';
-			        }, function() {
-			          $scope.status = 'You cancelled the dialog.';
-			        });		
+			self.openPopup(send).then(function(answer) {
+			          console.log(JSON.stringify(answer));
+			          self.saveTicket(answer);	
+			
 		 });
 		
-	 }
+	 });
+	}
 
 }); // END KanbanController
 

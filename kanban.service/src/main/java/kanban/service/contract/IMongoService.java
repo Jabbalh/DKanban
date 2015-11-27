@@ -1,13 +1,13 @@
 package kanban.service.contract;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
-
 import java.util.List;
 import java.util.function.Consumer;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
 import kanban.bus.constants.Sort;
+import kanban.utils.callback.Then;
 
 public interface IMongoService {
 
@@ -31,7 +31,7 @@ public interface IMongoService {
 
 
 
-	<T> void findOne(Class<T> clazz, JsonObject request,Consumer<T> callback);
+	<T> Then<T> findOne(Class<T> clazz, JsonObject request);
 
 
 
@@ -40,6 +40,14 @@ public interface IMongoService {
 
 
 	<T> void update(T entity, Consumer<Boolean> callback);
+
+
+
+	void reinitCounters();
+
+
+
+	<T> Then<Integer> getNextSequence(Class<T> clazz);
 
 
 

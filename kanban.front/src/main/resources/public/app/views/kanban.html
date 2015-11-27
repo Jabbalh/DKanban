@@ -1,68 +1,36 @@
-<div>
-	<div class="row">
-	<div class="col s4">
-		cardId : 	<input type="text" ng-model="ctrl.testCardId" />
-	</div>
-	<div class="col s4">
-		targetId : 	<input type="text" ng-model="ctrl.testTargetId" />
-	</div>
-	<div class="col s4">
-		<a class="waves-effect waves-light btn" ng-click="ctrl.testUpdate()">Test Update</a>
-		<a class="waves-effect waves-light btn" ng-click="ctrl.testDelete()">Test delete</a>
-	</div>
-
-	</div>
-
-
-	<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-		<a class="btn-floating btn-large red" ng-click="showTabDialog($event)"> <i
-			class="large material-icons">present_to_all</i>
-		</a>
-		<ul>
-			<li><a class="btn-floating green" ng-click="ctrl.addTicket()"><i
-					class="material-icons">add</i></a></li>		
-		</ul>
-	</div>
-	<div class="row center" layout="row" >
-		<div  ng-repeat="item in ctrl.headers" flex>
-			<h6 class="valign">{{item.libelle}}</h6>
+<div class="side-body">	
+	<div class="col-lg-12 row-height">
+		<div   ng-repeat="item in ctrl.headers" class="col-lg-{{item.width}} col-height-header" >
+			<h6>{{item.libelle}}</h6>
 		</div>
 	</div>
 
 
-	<div class="row-height blue lighten-5 z-depth-1" layout="row"
+	<div class="row-height col-lg-12"
 		ng-repeat="zone in ctrl.kanban.values | orderBy:'first.libelle'">
 
-		<div class="col-height valign-wrapper overdelete" flex="none"
+		<div class="col-lg-{{zone.first.width}} col-height overdelete" style="padding:0px!important;"
 			id="{{zone.first.id}}" droppable drop="handleDropDelete" dropdelete="true">
-			<h5 class="valign">{{zone.first.libelle}}</h5>
+			{{zone.first.libelle}}
 		</div>
 
-		<div ng-repeat="other in zone.other" id="{{other.id}}" flex="initial"
-			class="col-height" droppable drop="handleDrop" >
-
-			<div ng-repeat="ticket in other.cards"
-				class="card drag-auto-item hoverable blue lighten-3" draggable 
-				id="{{ticket.id}}">
-				<div class="card-content white-text">
-					<div>					
-						<div class="row small-margin">							
-							<div class="col left cursor-edit" style="border-right: 1px solid">
-								<span class="blue-text text-darken-2" ng-click="ctrl.updateTicket(ticket,other.id)">{{ticket.ref}}</span>
-							</div>
-							<div class="col" style="border-right: 1px solid">
-								<span class="blue-text text-darken-2">{{ticket.caisse}}</span>
-							</div>
-							<div class="col right">
-								<span class="blue-text text-darken-2">{{ticket.appli}}</span>
-							</div>
-						</div>
-
-					</div>
-					<div class="divider"></div>
-					<p class="black-text truncate">{{ticket.summary}}</p>
-				</div>
+		<div ng-repeat="other in zone.other" id="{{other.id}}" 
+			class="col-height col-lg-{{other.width}}" droppable drop="handleDrop" >
+				
+				
+				
+			<div class="panel panel-primary drag-auto-item ticket" ng-repeat="ticket in other.cards"
+					id="{{ticket.id}}" draggable>			  
+			  <div class="panel-body panel-body-small">
+			  	<div class="row">			  	
+				  	<div class="col-lg-5">{{ticket.ref}}</div>
+				  	<div class="col-lg-3">{{ticket.caisse}}</div>
+				  	<div class="col-lg-3">{{ticket.appli}}</div>
+			  	</div>
+			  	<div class="divider" />			    
+				<p class="">{{ticket.summary}}</p>			  
 			</div>
+			
 		</div>
 
 	</div>
@@ -75,7 +43,7 @@
 <!-- Modal Trigger
   <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
  -->
-<!-- Modal Structure -->
+<!-- Modal Structure
 <div id="modal1" class="modal">
 	<div class="modal-content">
 		<h4>{{ctrl.ticket.title}}</h4>
@@ -155,3 +123,4 @@
 		<a class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="ctrl.saveTicket(ctrl.ticket)">ok</a>
 	</div>
 </div>
+ -->

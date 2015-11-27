@@ -36,7 +36,7 @@ public class TicketHandler extends AbstractHandler {
 	
 	public void apiTicketUpdateAll(RoutingContext context) {
 		JsonObject data = context.getBodyAsJson();
-		System.out.println("apiTicketUpdateAll");
+		System.out.println("apiTicketUpdateAll -> " + data.encodePrettily());
 		Consumer<Message<Object>> callback = x -> context.response().end(Json.encodePrettily(x.body().toString())); 
 		if (data.getBoolean("insert")) {
 			vertx.eventBus().send(EventBusNames.TICKET_INSERT_ALL, data, x -> callback.accept(x.result()));

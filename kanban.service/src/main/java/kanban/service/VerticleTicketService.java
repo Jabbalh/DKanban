@@ -41,7 +41,10 @@ public class VerticleTicketService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.TICKET_ARCHIVE, 	(Message<JsonObject> m) -> archiveTicket(m));
 	}
 	
-	
+	/**
+	 * Archivage d'un ticket
+	 * @param message
+	 */
 	private void archiveTicket(Message<JsonObject> message){
 		CardTicket card = Json.decodeValue(message.body().encodePrettily(), CardTicket.class);
 		
@@ -65,8 +68,12 @@ public class VerticleTicketService extends AbstractVerticle {
 		JsonObject parameter = new JsonObject(message.body());		
 		String stateName= parameter.getString("zone");		
 		
-		mongoService.findOne(ZoneTicket.class, new JsonObject().put("codeZone", parameter.getString("zone")), zone -> {
-			mongoService.findOne(User.class, new JsonObject().put("login", parameter.getString("user")), user -> {
+		mongoService.findOne(ZoneTicket.class, new JsonObject().put("codeZone", parameter.getString("zone")))
+		.when(zone -> 
+		{
+			mongoService.findOne(User.class, new JsonObject().put("login", parameter.getString("user")))
+			.when(user -> 
+			{
 				mongoService.update(DbUtils.index(Ticket.class),
 						new JsonObject().put("_id", parameter.getJsonObject("card").getString("id")),  
 						new JsonObject().put("$set", new JsonObject()
@@ -86,12 +93,18 @@ public class VerticleTicketService extends AbstractVerticle {
 			});
 		});
 		
+		
+		
 	}
 	
+	/**
+	 * Sauvegarde d'un Ticket (Insertion ou mise à jour)
+	 * @param message
+	 * @param insert
+	 */
 	private void saveTicket(Message<JsonObject> message, final boolean insert) {		
 		JsonObject data = message.body();
-		JsonObject cardJson = data.getJsonObject("ticket");
-		cardJson.put("id", cardJson.getString("ref"));
+		JsonObject cardJson = data.getJsonObject("ticket");		
 		CardTicket card = Json.decodeValue(cardJson.encodePrettily(), CardTicket.class);
 		
 		String login = card.getOwner();
@@ -110,31 +123,64 @@ public class VerticleTicketService extends AbstractVerticle {
 											x.setSummary((insert)?"Insertion" : "Mise à jour");
 										}));
 			
-			if (insert){
-				mongoService.insert(ticket, x -> {
-					if (x.succeeded()) {		
-						System.out.println("insertTicket -> OK");
-						message.reply("OK");
-					} else {
-						System.out.println("insertTicket -> NOK");
-						message.reply("NOK");
-					}
-					
-				});
+			if (insert){				
+				this.insert(message, ticket, cardJson, login, data);								
 			} else {
-				mongoService.update(ticket, x -> {
-					message.reply((x) ? "OK" : "NOK");
-				});
+				this.update(message, ticket, cardJson, login, data);
 			}
-			JsonObject sendBus = new JsonObject();
-			//result.user+'$'+result.zone
-			//result.card
-			sendBus.put("card", cardJson)
-					.put("user", login)
-					.put("zone", data.getString("zone"));
-			vertx.eventBus().publish(((insert)?"insert-card":"update-card"), sendBus.encodePrettily());
+			
 			
 		});						
+	}
+	
+	/**
+	 * Insertion d'un ticket
+	 * @param message
+	 * @param ticket
+	 * @param cardJson
+	 * @param login
+	 * @param data
+	 */
+	private void insert(Message<JsonObject> message,Ticket ticket, JsonObject cardJson, String login,JsonObject data){
+		mongoService.getNextSequence(Ticket.class).when(id -> {
+			ticket.set_id(id.toString());
+			mongoService.insert(ticket, x -> {
+				if (x.succeeded()) {									
+					message.reply("OK");
+					JsonObject sendBus = new JsonObject();	
+					cardJson.put("id", id);
+					sendBus.put("card", cardJson).put("user", login).put("zone", data.getString("zone"));
+					vertx.eventBus().publish("insert-card", sendBus.encodePrettily());							
+				} else {
+					
+					message.reply("NOK");
+				}
+				
+			});
+		});
+	}
+	
+	/**
+	 * Mise à jour d'un ticket
+	 * @param message
+	 * @param ticket
+	 * @param cardJson
+	 * @param login
+	 * @param data
+	 */
+	private void update(Message<JsonObject> message,Ticket ticket, JsonObject cardJson,String login,JsonObject data) {
+		ticket.set_id(cardJson.getString("id").toString());
+		mongoService.update(ticket, x -> {
+			if (x){
+				message.reply("OK");
+				JsonObject sendBus = new JsonObject();							
+				sendBus.put("card", cardJson).put("user", login).put("zone", data.getString("zone"));
+				vertx.eventBus().publish("update-card", sendBus.encodePrettily());						
+				
+			} else {
+				message.reply("NOK");
+			}					
+		});
 	}
 	
 	
@@ -143,12 +189,10 @@ public class VerticleTicketService extends AbstractVerticle {
 	 * Bus renvoyant la liste des tickets par utilisateur
 	 * @param message
 	 */
+	@Deprecated
 	private void handleTicketByUser(Message<String> message) {
 		JsonObject request = new JsonObject("{'owner.login':'"+ message.body()+"','archive:false'");		
-		//request.put("owner.login", message.body());
-		//request.put("archive", false);
-		request.put("sort", "statesticket");
-		System.out.println("handleTicketByUser -> " + request.encodePrettily());
+		request.put("sort", "statesticket");		
 		mongoService.findAll(Ticket.class, request, x -> message.reply(Json.encodePrettily(x)));
 	}
 	

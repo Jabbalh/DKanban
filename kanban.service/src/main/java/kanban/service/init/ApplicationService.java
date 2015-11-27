@@ -73,14 +73,14 @@ public class ApplicationService extends AbstractVerticle {
 				
 		
 		List<ZoneApp> states = new ArrayList<>();
-		states.add(new ZoneApp(new ZoneTicket("Utilisateur"),0,5));
-		states.add(new ZoneApp(new ZoneTicket("BackLog"),1,12));
-		states.add(new ZoneApp(new ZoneTicket("Analyse"),2,12));
-		states.add(new ZoneApp(new ZoneTicket("Dev"),3,12));
-		states.add(new ZoneApp(new ZoneTicket("VFO"),4,12));
-		states.add(new ZoneApp(new ZoneTicket("UTI"),5,12));
-		states.add(new ZoneApp(new ZoneTicket("QPA"),6,12));
-		states.add(new ZoneApp(new ZoneTicket("PROD"),7,12));
+		states.add(new ZoneApp(new ZoneTicket("Utilisateur"),0,1));
+		states.add(new ZoneApp(new ZoneTicket("BackLog"),1,2));
+		states.add(new ZoneApp(new ZoneTicket("Analyse"),2,2));
+		states.add(new ZoneApp(new ZoneTicket("Dev"),3,2));
+		states.add(new ZoneApp(new ZoneTicket("VFO"),4,2));
+		states.add(new ZoneApp(new ZoneTicket("UTI"),5,1));
+		states.add(new ZoneApp(new ZoneTicket("QPA"),6,1));
+		states.add(new ZoneApp(new ZoneTicket("PROD"),7,1));
 		ApplicationData.get().setZones(states);
 		
 		if (!ApplicationData.get().isInit()){
@@ -106,6 +106,10 @@ public class ApplicationService extends AbstractVerticle {
 		deleteAndInit(mongoService,DbUtils.index(Application.class), applications, a -> "application " + a.getName());
 		deleteAndInit(mongoService,DbUtils.index(StateTicket.class), statesTicket, s -> "state "+s.getCodeZone());
 		
+		
+		mongoService.reinitCounters();
+		
+		
 		message.reply("OK");
 	}
 	
@@ -127,12 +131,12 @@ public class ApplicationService extends AbstractVerticle {
 		
 				
 		List<Ticket> tickets = new LinkedList<>();
-		tickets.add(new Ticket("ARS01", "Test ARS1", "Desc ARS1", applications.get(0), states.get(1),users.get(0),"14445"));
-		tickets.add(new Ticket("ARS02", "Test ARS2", "Desc ARS2", applications.get(0), states.get(1),users.get(0),"14445"));
-		tickets.add(new Ticket("ARS03", "Test ARS3", "Desc ARS3", applications.get(1), states.get(2),users.get(0),"14445"));
-		tickets.add(new Ticket("ARS04", "Test ARS4", "Desc ARS4", applications.get(2), states.get(1),users.get(1),"14445"));
-		tickets.add(new Ticket("ARS05", "Test ARS5", "Desc ARS5", applications.get(2), states.get(1),users.get(1),"14445"));
-		tickets.add(new Ticket("ARS06", "Test ARS6", "Desc ARS6", applications.get(3), states.get(3),users.get(1),"14445"));
+		tickets.add(new Ticket(0,"ARS01", "Test ARS1", "Desc ARS1", applications.get(0), states.get(1),users.get(0),"14445"));
+		tickets.add(new Ticket(1,"ARS02", "Test ARS2", "Desc ARS2", applications.get(0), states.get(1),users.get(0),"14445"));
+		tickets.add(new Ticket(2,"ARS03", "Test ARS3", "Desc ARS3", applications.get(1), states.get(2),users.get(0),"14445"));
+		tickets.add(new Ticket(3,"ARS04", "Test ARS4", "Desc ARS4", applications.get(2), states.get(1),users.get(1),"14445"));
+		tickets.add(new Ticket(4,"ARS05", "Test ARS5", "Desc ARS5", applications.get(2), states.get(1),users.get(1),"14445"));
+		tickets.add(new Ticket(5,"ARS06", "Test ARS6", "Desc ARS6", applications.get(3), states.get(3),users.get(1),"14445"));
 		
 		
 		

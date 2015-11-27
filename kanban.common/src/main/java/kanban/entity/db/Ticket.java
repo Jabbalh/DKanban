@@ -32,8 +32,22 @@ public class Ticket {
 		this.zoneTicket = zone;
 		this.owner = owner;
 		this.caisse = caisse;
-		this._id = reference;
+		//this._id = reference;
 	}
+	
+	public Ticket(Integer id,String reference, String summary, String description, Application application, ZoneTicket zone,
+			User owner, String caisse) {
+		this();
+		this.reference = reference;
+		this.summary = summary;
+		this.description = description;
+		this.application = application;
+		this.zoneTicket = zone;
+		this.owner = owner;
+		this.caisse = caisse;
+		this._id = id.toString();
+	}
+	
 	public String getReference() {
 		return reference;
 	}

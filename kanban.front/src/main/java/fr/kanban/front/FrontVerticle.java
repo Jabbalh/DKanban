@@ -8,6 +8,7 @@ import fr.kanban.front.ticket.TicketHandler;
 import fr.kanban.front.user.UserHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
@@ -136,8 +137,10 @@ public class FrontVerticle extends AbstractVerticle {
 		/**
 		 * Création de l'écoute sur le port du server web
 		 */
+		HttpServerOptions options = new HttpServerOptions();
+		//options.setSsl(true);		
 		
-		vertx.createHttpServer().requestHandler(router::accept).listen(8080);	
+		vertx.createHttpServer(options).requestHandler(router::accept).listen(8080);	
 		
 		/**
 		 * Initialisation du Socket pour l'écoute via WebSocket
