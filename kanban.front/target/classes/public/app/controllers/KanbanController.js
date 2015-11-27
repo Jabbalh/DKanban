@@ -12,7 +12,7 @@ angular.module("DKanbanApp")
 		    leave: function(element, done) {
 		      $(element).fadeOut(1000, function() {
 		        done();
-		      });
+		      });	
 		      done();
 		    },
 		    move: function(element, done) {
@@ -27,7 +27,7 @@ angular.module("DKanbanApp")
 		  }
 		})
 
-	.controller("KanbanController", function ($scope,$http,$filter,kanbanUpdateService,kanbanListService) {	
+	.controller("KanbanController", function ($scope,$http,$filter,$mdDialog,kanbanUpdateService,kanbanListService) {	
 	
 	
     var self = this;
@@ -196,17 +196,7 @@ angular.module("DKanbanApp")
 	 this.saveTicket = function(data) {
 		 console.log(data);
 		 kanbanUpdateService.updateTicket(data).success(function(resultData){
-			 if (resultData == "OK"){	
-				/* if (data.insert != true) {					
-					 var result = {};
-					 result.user = data.ticket.owner;
-					 result.zone = data.zone;
-					 result.ticketId = data.ticket.ref;
-					 var tmp = self.extracAfterChange(result, true);
-					 self.moveAfterChange(result,tmp);
-				 }*/
-				 
-			 } else {
+			 if (resultData != "OK"){								 
 				 alert("Zut !!!");
 			 }
 		 });
@@ -249,11 +239,7 @@ angular.module("DKanbanApp")
 				card : {id : data.originId},
 				zone : data.targetId.split('$')[1],
 				user : data.targetId.split('$')[0]
-		};
-		/*cardData.ticketId = ;
-		cardData.zone = data.targetId.split('$')[1];
-		cardData.userLogin = data.targetId.split('$')[0];*/
-		
+		};		
 		kanbanUpdateService.updateTicketZone(cardData).success(function(data){
 			console.log("handleDrop -> updateTicketZone -> "  +data);
 		});
@@ -266,24 +252,59 @@ angular.module("DKanbanApp")
 				card : {id : data.originId},
 				zone : data.targetId.split('$')[1],
 				user : data.targetId.split('$')[0]
-		};
-		/*
-		cardData.ticketId = data.originId;
-		cardData.zone = data.targetId.split('$')[1];
-		cardData.userLogin = data.targetId.split('$')[0];
-		*/
+		};		
 		var card = self.extracAfterChange(cardData,false);
 		kanbanUpdateService.archiveTicket(card);		
 	});
 	
-	
-	this.changeTab = function(id) {
-		$(document).ready(function(){
-		    $('ul.tabs').tabs('select_tab', '#'+id);
-		  });
-	}
-	
+	$scope.showTabDialog = function(ev) {
+		
+		kanbanUpdateService.emptyTicket().success(function(data){
+			var send = {
+					listes : self.listes,
+					ticket :  {
+							title : "Nouveau ticket",
+							insert : true,
+							zone : "BackLog",
+							ticket : data
+					},
+					headers : self.headers
+					
+				};
+			 		
+			$mdDialog.show({
+			      controller: DialogController,
+			      templateUrl: '/app/views/kanbanPopup.html',
+			      locals: { item: send} ,
+			      parent: angular.element(document.body),
+			      targetEvent: ev,
+			      clickOutsideToClose:true
+			    })
+			    .then(function(answer) {
+			          $scope.status = 'You said the information was "' + answer + '".';
+			        }, function() {
+			          $scope.status = 'You cancelled the dialog.';
+			        });		
+		 });
+		
+	 }
 
 }); // END KanbanController
 
+function DialogController($scope, $mdDialog,item) {
+	
+	$scope.listes = item.listes;
+	$scope.ticket = item.ticket;
+	$scope.headers = item.headers;
+	
+	  $scope.hide = function() {
+	    $mdDialog.hide();
+	  };
+	  $scope.cancel = function() {
+	    $mdDialog.cancel();
+	  };
+	  $scope.answer = function(answer) {
+	    $mdDialog.hide(answer);
+	  };
+	}
 

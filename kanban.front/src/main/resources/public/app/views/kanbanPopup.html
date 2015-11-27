@@ -1,0 +1,67 @@
+<md-dialog flex >
+   <h1 class="md-display-2">{{ticket.title}}</h1>
+    <md-dialog-content >
+      
+			<div layout="row">
+				<div class="input-field" flex="33">
+					<input id="ref" type="text" class="validate" ng-model="ticket.ticket.ref"> 
+					<label for="ref" class="active">Référence</label>
+				</div>
+				<div class="input-field"  flex="33">
+					<input id="caisse" type="text" class="validate" ng-model="ticket.ticket.caisse"> 
+					<label for="caisse" class="active">Caisse</label>
+				</div>
+				<div class="input-field"  flex="33">												
+					<select ng-model="ticket.ticket.appli"  
+							style="visibility: visible; display: inline-block;" >
+					  		<option 						  			
+					  			ng-repeat="item in listes.applications" 
+					  			id="{{item}}" 
+					  			value="{{item}}" >{{item}}</option>
+					  </select> 
+					
+					<label for="appli" class="active">Application</label>
+				</div>
+			</div>	
+			<div layout="row">
+				<div class="input-field"  flex="33">						
+					<select ng-model="ticket.ticket.owner"  
+					  		  style="visibility: visible; display: inline-block;">
+					  		<option 						  			
+					  			ng-repeat="item in listes.users" 
+					  			id="{{item.login}}" 
+					  			value="{{item.login}}" >{{item.login}}</option>
+					  </select>
+					<label for="proprietaire" class="active">Propriétaire</label>
+				</div>
+				<div class="input-field"  flex="33">
+					<input id="state" type="text" class="validate" ng-model="ticket.ticket.state"> 
+					<label for="state" class="active">state</label>
+				</div>
+				<div class="input-field" flex="33">						 
+					  <select ng-model="ticket.zone"  
+					  		  style="visibility: visible; display: inline-block;">
+					  		<option 						  			
+					  			ng-repeat="header in headers" 
+					  			id="{{header.libelle}}" 
+					  			value="{{header.libelle}}" >{{header.libelle}}</option>
+					  </select> 
+					 <label for="zone" class="active">Zone</label>					  	
+				</div>	
+							
+			</div>	
+			<div layout="row">
+				<div class="input-field"  flex="100">
+					<input id="summary" type="text" class="validate" ng-model="ticket.ticket.summary"> 
+					<label for="summary"  class="active">Résumé</label>
+				</div>									
+			</div>				
+			<div class="row">
+				<div class="input-field col"  flex="100">
+					<textarea id="description" class="materialize-textarea validate" ng-model="ticket.ticket.description" /> 
+					<label for="description"  class="active">Description</label>
+				</div>
+			</div>				
+			
+      <md-dialog-content >
+</md-dialog>
