@@ -1,4 +1,4 @@
-angular.module("DKanbanApp", ['ngRoute','ngDraggable','ngAnimate'])
+angular.module("DKanbanApp", ['ngRoute','ngDraggable','ngAnimate','ngAria','ngMaterial'])
     .config(function ($routeProvider) {
 
         $routeProvider

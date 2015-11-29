@@ -1,126 +1,42 @@
-<div class="side-body">	
-	<div class="col-lg-12 row-height">
-		<div   ng-repeat="item in ctrl.headers" class="col-lg-{{item.width}} col-height-header" >
-			<h6>{{item.libelle}}</h6>
+<div layout="row" layout-wrap class="grid-row-header">
+	<div   ng-repeat="item in ctrl.headers" class="mdl-cell--{{item.width}}-col " flex>
+			<center><h4>{{item.libelle}}</h4></center>
 		</div>
-	</div>
-
-
-	<div class="row-height col-lg-12"
-		ng-repeat="zone in ctrl.kanban.values | orderBy:'first.libelle'">
-
-		<div class="col-lg-{{zone.first.width}} col-height overdelete" style="padding:0px!important;"
-			id="{{zone.first.id}}" droppable drop="handleDropDelete" dropdelete="true">
-			{{zone.first.libelle}}
-		</div>
-
-		<div ng-repeat="other in zone.other" id="{{other.id}}" 
-			class="col-height col-lg-{{other.width}}" droppable drop="handleDrop" >
-				
-				
-				
-			<div class="panel panel-primary drag-auto-item ticket" ng-repeat="ticket in other.cards"
-					id="{{ticket.id}}" draggable>			  
-			  <div class="panel-body panel-body-small">
-			  	<div class="row">			  	
-				  	<div class="col-lg-5">{{ticket.ref}}</div>
-				  	<div class="col-lg-3">{{ticket.caisse}}</div>
-				  	<div class="col-lg-3">{{ticket.appli}}</div>
-			  	</div>
-			  	<div class="divider" />			    
-				<p class="">{{ticket.summary}}</p>			  
-			</div>
-			
-		</div>
-
-	</div>
-
-
-
-
 </div>
 
-<!-- Modal Trigger
-  <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
- -->
-<!-- Modal Structure
-<div id="modal1" class="modal">
-	<div class="modal-content">
-		<h4>{{ctrl.ticket.title}}</h4>
 
-	
+<div layout="row" class="grid-row z-depth-2" layout-wrap  ng-repeat="zone in ctrl.kanban.values | orderBy:'first.libelle'">
+		
+				
+	<div class="mdl-cell--{{zone.first.width}}-col overdelete" flex
+		id="{{zone.first.id}}" droppable drop="handleDropDelete" dropdelete="true">
+		<p>{{zone.first.libelle}}</p>
+	</div>
+		
+		
+	<div flex ng-repeat="other in zone.other" class="mdl-cell--{{other.width}}-col" id="{{other.id}}"  droppable drop="handleDrop">
 
 
-		<div class="row">
-			<form class="col s12">
-				<div class="row">
-					<div class="input-field col s4">
-						<input id="ref" type="text" class="validate" ng-model="ctrl.ticket.ticket.ref"> 
-						<label for="ref" class="active">Référence</label>
-					</div>
-					<div class="input-field col s4">
-						<input id="caisse" type="text" class="validate" ng-model="ctrl.ticket.ticket.caisse"> 
-						<label for="caisse" class="active">Caisse</label>
-					</div>
-					<div class="input-field col s4">												
-						<select ng-model="ctrl.ticket.ticket.appli"  
-								style="visibility: visible; display: inline-block;" >
-						  		<option 						  			
-						  			ng-repeat="item in ctrl.listes.applications" 
-						  			id="{{item}}" 
-						  			value="{{item}}" >{{item}}</option>
-						  </select> 
-						
-						<label for="appli" class="active">Application</label>
-					</div>
+					  
+		<div class="card-margin-border drag-auto-item"  id="{{ticket.id}}" draggable ng-repeat="ticket in other.cards">
+			<div class="mdl-grid">
+				<div class="mdl-cell--4-col">
+					<small>{{ticket.ref}}</small>
+				</div>
+				<div class="mdl-cell--4-col card-title-middle">
+					<small>{{ticket.caisse}}</small>
+				</div>
+				<div class="mdl-cell--4-col">
+					<small>{{ticket.appli}}</small>
 				</div>	
-				<div class="row">
-					<div class="input-field col s4">						
-						<select ng-model="ctrl.ticket.ticket.owner"  
-						  		  style="visibility: visible; display: inline-block;">
-						  		<option 						  			
-						  			ng-repeat="item in ctrl.listes.users" 
-						  			id="{{item.login}}" 
-						  			value="{{item.login}}" >{{item.login}}</option>
-						  </select>
-						<label for="proprietaire" class="active">Propriétaire</label>
-					</div>
-					<div class="input-field col s4">
-						<input id="state" type="text" class="validate" ng-model="ctrl.ticket.ticket.state"> 
-						<label for="state" class="active">state</label>
-					</div>
-					<div class="input-field col s4">						 
-						  <select ng-model="ctrl.ticket.zone"  
-						  		  style="visibility: visible; display: inline-block;">
-						  		<option 						  			
-						  			ng-repeat="header in ctrl.headers" 
-						  			id="{{header.libelle}}" 
-						  			value="{{header.libelle}}" >{{header.libelle}}</option>
-						  </select> 
-						 <label for="zone" class="active">Zone</label>					  	
-					</div>	
-								
+				<div class=" mdl-cell--12-col divider"></div>
+				<div class="mdl-cell--12-col">
+				<p>{{ticket.summary}}</p>
 				</div>	
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="summary" type="text" class="validate" ng-model="ctrl.ticket.ticket.summary"> 
-						<label for="summary"  class="active">Résumé</label>
-					</div>									
-				</div>				
-				<div class="row">
-					<div class="input-field col s12">
-						<textarea id="description" class="materialize-textarea validate" ng-model="ctrl.ticket.ticket.description" /> 
-						<label for="description"  class="active">Description</label>
-					</div>
-				</div>				
-			</form>
-		</div>
-
+			</div>										
+		</div>			  
 
 	</div>
-	<div class="modal-footer">
-		<a class="modal-action modal-close waves-effect waves-ref btn-flat">cancel</a>
-		<a class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="ctrl.saveTicket(ctrl.ticket)">ok</a>
-	</div>
-</div>
- -->
+</div>	
+
+
