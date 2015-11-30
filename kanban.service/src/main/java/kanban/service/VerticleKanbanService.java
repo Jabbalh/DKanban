@@ -12,6 +12,8 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import kanban.bus.constants.EventBusNames;
 import kanban.entity.db.Ticket;
 import kanban.entity.ui.CardTicket;
@@ -22,6 +24,8 @@ import kanban.service.contract.IMongoService;
 import kanban.service.utils.UiUtils;
 
 public class VerticleKanbanService extends AbstractVerticle {
+	
+	private static final Logger logger = LoggerFactory.getLogger(VerticleKanbanService.class);
 	
 	@Inject
 	private IMongoService mongoService;
@@ -58,7 +62,7 @@ public class VerticleKanbanService extends AbstractVerticle {
 		JsonObject query = new JsonObject()
 				.put("$and", new JsonArray().add(new JsonObject().put("owner.login", message.body()))
 				.add(new JsonObject().put("archive", false)));
-		System.out.println("handleByUser -> " + query.encodePrettily());
+		logger.debug("handleByUser -> " + query.encodePrettily());
 		mongoService.findAll(Ticket.class,query , x -> {			
 			String login = message.body();
 			Zone<CardTicket> zone = new Zone<CardTicket>();

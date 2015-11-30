@@ -4,15 +4,19 @@ import javax.inject.Singleton;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import kanban.service.contract.IMongoService;
 import kanban.service.impl.MongoService;
 
 public class BootstrapBinder extends AbstractBinder {
 
+	private static final Logger logger = LoggerFactory.getLogger(BootstrapBinder.class);
+	
     @Override
     protected void configure() {
     	
-    	System.out.println("configure binder");
+    	logger.debug("configure binder");
     	bind(MongoService.class).to(IMongoService.class).in(Singleton.class);
     	
     	

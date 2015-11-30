@@ -12,7 +12,10 @@ public class Then<T> {
 	}
 
 	public void apply(T value) {
-		this.consumer.accept(value);
+		if (this.consumer != null){
+			this.consumer.accept(value);
+		}
+		
 		
 	}
 }

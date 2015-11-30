@@ -11,7 +11,8 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.Json;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import kanban.entity.db.Application;
 import kanban.entity.db.StateTicket;
 import kanban.entity.db.Ticket;
@@ -25,6 +26,8 @@ import kanban.service.utils.DbUtils;
 
 public class ApplicationService extends AbstractVerticle {
 
+	private final static Logger logger = LoggerFactory.getLogger(ApplicationService.class);
+	
 	public static String INIT_FIRST_APP = "INIT_FIRST_APP";
 	public static String INIT_DATA_APP = "INIT_DATA_APP";
 	public static String INIT_APPLICATION = "INIT_APPLICATION";
@@ -39,7 +42,7 @@ public class ApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(INIT_DATA_APP, 	x -> this.initData(x));
 		vertx.eventBus().consumer(INIT_APPLICATION,	x -> this.initApplication(x));
 		
-		System.out.println("ApplicationService .. run ...");
+		logger.debug("ApplicationService .. run ...");
 		
 	}
 	
@@ -47,11 +50,9 @@ public class ApplicationService extends AbstractVerticle {
 	 * Initialisation de l'application
 	 */
 	private void initApplication(Message<Object> message) {
-		System.out.println("INIT_APPLICATION -> initApplication");
+		logger.debug("INIT_APPLICATION -> initApplication");
 		mongoService.findAll(ApplicationParameter.class, x -> {
-			/*for (ApplicationParameter item : x){
-				System.out.println(Json.encodePrettily(item));
-			}*/
+			
 			ApplicationData.set(x.get(0));	
 			message.reply("OK");
 		});
@@ -61,7 +62,7 @@ public class ApplicationService extends AbstractVerticle {
 	 * Initialisation des paramètres (mode dev ou first)
 	 */
 	private void initParameter(Message<Object> message){	
-		System.out.println("INIT_FIRST_APP -> initParameter");
+		logger.debug("INIT_FIRST_APP -> initParameter");
 		List<Application> applications = new ArrayList<>();
 		applications.add(new Application("DEI PART", "Banque à distance pour particulier"));
 		applications.add(new Application("DEI PRO", "Banque à distance pour professionel"));
@@ -87,11 +88,11 @@ public class ApplicationService extends AbstractVerticle {
 			mongoService.delete(DbUtils.index(ApplicationParameter.class), () -> {
 				mongoService.insert(ApplicationData.get(), x -> {				
 					if (x.succeeded()) {
-						System.out.println("Application initialized");
+						logger.debug("Application initialized");
 						ApplicationData.get().setInit(true);
 						message.reply("OK");
 					} else {
-						System.out.println("Application NOT initialized -> " + x.cause());
+						logger.error("Application NOT initialized -> " + x.cause());
 						message.reply("NOK");
 					}
 				});
@@ -118,7 +119,7 @@ public class ApplicationService extends AbstractVerticle {
 	 * Initialisation des données (mode Dev)
 	 */
 	private void initData(Message<Object> message) {
-		System.out.println("INIT_DATA_APP -> initData");
+		logger.debug("INIT_DATA_APP -> initData");
 		List<Application> applications = ApplicationData.get().getApplications();
 		List<ZoneTicket> states = new ArrayList<>();
 		
@@ -153,7 +154,7 @@ public class ApplicationService extends AbstractVerticle {
 	private <T> void deleteAndInit(IMongoService mongoService,String index, List<T> liste, Function<T, String> message) {
 		mongoService.delete(index, () -> {			
 			for (T u : liste) {
-				System.out.println("Before insert of " + message.apply(u));
+				logger.debug("Before insert of " + message.apply(u));
 				mongoService.insert(u, genericCallback(message.apply(u)));
 			}
 			
@@ -166,11 +167,11 @@ public class ApplicationService extends AbstractVerticle {
 	private Handler<AsyncResult<String>> genericCallback(String message) {
 		return x -> {
 			if (x.succeeded()) {
-				System.out.println("insertion SUCCEEDED for " +message );
+				logger.debug("insertion SUCCEEDED for " +message );
 			} else {
 				
-				System.out.println("insertion FAILED for " +message  );
-				System.out.println(x.cause());
+				logger.error("insertion FAILED for " +message  );
+				logger.error(x.cause());
 			}
 		};
 	}

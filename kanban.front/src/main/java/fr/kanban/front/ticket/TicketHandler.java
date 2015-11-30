@@ -7,12 +7,16 @@ import fr.kanban.front.UiConstantes;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import kanban.bus.constants.EventBusNames;
 import kanban.entity.ui.CardTicket;
 
 public class TicketHandler extends AbstractHandler {
 
+	private static final Logger logger = LoggerFactory.getLogger(TicketHandler.class);
+	
 	public TicketHandler() {
 		super();
 	}
@@ -36,7 +40,7 @@ public class TicketHandler extends AbstractHandler {
 	
 	public void apiTicketUpdateAll(RoutingContext context) {
 		JsonObject data = context.getBodyAsJson();
-		System.out.println("apiTicketUpdateAll -> " + data.encodePrettily());
+		logger.debug("apiTicketUpdateAll -> " + data.encodePrettily());
 		Consumer<Message<Object>> callback = x -> context.response().end(Json.encodePrettily(x.body().toString())); 
 		if (data.getBoolean("insert")) {
 			vertx.eventBus().send(EventBusNames.TICKET_INSERT_ALL, data, x -> callback.accept(x.result()));

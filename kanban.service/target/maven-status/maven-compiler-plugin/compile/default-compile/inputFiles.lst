@@ -1,0 +1,9 @@
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\impl\MongoService.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\utils\DbUtils.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\VerticleApplicationService.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\utils\UiUtils.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\init\ApplicationService.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\VerticleKanbanService.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\VerticleTicketService.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\VerticleUserService.java
+D:\Projets\Kanban\workspace\DKanban\kanban.service\src\main\java\kanban\service\contract\IMongoService.java

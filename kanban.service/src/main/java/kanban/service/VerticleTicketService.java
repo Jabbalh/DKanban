@@ -95,12 +95,7 @@ public class VerticleTicketService extends AbstractVerticle {
 								fullCard.setCard(CardTicket.fromTicket(ticket));
 								fullCard.setUser(parameter.getString("user"));
 								fullCard.setZone(stateName);
-								// On publi une réponse avec le ticket, l'utilisateur concerné et le nouvel état
-								/*JsonObject result = new JsonObject()
-										.put("card", new JsonObject(Json.encodePrettily(CardTicket.fromTicket(ticket))))
-										.put("user", parameter.getString("user"))
-										.put("zone", stateName);*/
-								//System.out.println("updateTicketState -> " + result.encodePrettily());
+								// On publi une réponse avec le ticket, l'utilisateur concerné et le nouvel état								
 								message.reply(Json.encodePrettily("OK"));
 								vertx.eventBus().publish("update-card", Json.encodePrettily(fullCard));								
 							});						

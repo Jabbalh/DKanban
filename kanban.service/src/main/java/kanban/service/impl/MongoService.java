@@ -10,6 +10,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.MongoClient;
 import kanban.bus.constants.Sort;
@@ -22,6 +24,7 @@ public class MongoService implements IMongoService {
 
 	private MongoClient mongoClient;
 	
+	private final static Logger logger = LoggerFactory.getLogger(MongoService.class);
 	
 	private Vertx vertx;
 	
@@ -32,7 +35,7 @@ public class MongoService implements IMongoService {
 	
 	private void initMongo(){		
 		if (mongoClient == null){
-			System.out.println("Initialisation du client mongo");
+			logger.debug("Initialisation du client mongo");
 			JsonObject mongoConf = new JsonObject();
 			mongoConf.put("host", "127.0.0.1");
 			mongoConf.put("port", 27017);
@@ -43,12 +46,12 @@ public class MongoService implements IMongoService {
 	
 	@Override
 	public void update(String index, JsonObject query,JsonObject update, Consumer<Boolean> callback){	
-		System.out.println("MongoService.update.query -> " + query.encodePrettily());
-		System.out.println("MongoService.update.update -> " + update.encodePrettily());
+		logger.debug("MongoService.update.query -> " + query.encodePrettily());
+		logger.debug("MongoService.update.update -> " + update.encodePrettily());
 		mongoClient.update(index, query, update, x -> {
-			System.out.println("MongoService.update.succeeded -> " + x.succeeded());
-			System.out.println("MongoService.update.result -> " + x.result());
-			if (x.failed()) System.out.println("update " + index + " -> " + x.cause());
+			logger.debug("MongoService.update.succeeded -> " + x.succeeded());
+			logger.debug("MongoService.update.result -> " + x.result());
+			if (x.failed()) logger.error("update " + index + " -> " + x.cause());
 			callback.accept(x.succeeded());
 		});
 		
@@ -58,10 +61,10 @@ public class MongoService implements IMongoService {
 	public <T> void update(T entity, Consumer<Boolean> callback){
 				
 		mongoClient.save(DbUtils.index(entity.getClass()), new JsonObject(Json.encodePrettily(entity))  , x -> {
-			System.out.println("MongoService.update.succeeded -> " + x.succeeded());
-			System.out.println("MongoService.update.result -> " + x.result());
+			logger.debug("MongoService.update.succeeded -> " + x.succeeded());
+			logger.debug("MongoService.update.result -> " + x.result());
 			
-			if (x.failed()) System.out.println("update " + entity.getClass().getName() + " -> " + x.cause());
+			if (x.failed()) logger.error("update " + entity.getClass().getName() + " -> " + x.cause());
 			callback.accept(x.succeeded());
 		});
 	}
@@ -70,12 +73,12 @@ public class MongoService implements IMongoService {
 	public void delete(String index, Runnable afterDelete) {
 		mongoClient.dropCollection(index, x -> {
 			if (x.succeeded()){
-				System.out.println("Deletion SUCCEEDED for " + index + " run after ... ");
+				logger.debug("Deletion SUCCEEDED for " + index + " run after ... ");
 				afterDelete.run();
 			}
 			else {
-				System.out.println("###############Deletion FAILED for " + index);
-				System.out.println(x.cause());
+				logger.error("###############Deletion FAILED for " + index);
+				logger.error(x.cause());
 			}
 			
 		});
@@ -89,7 +92,7 @@ public class MongoService implements IMongoService {
 			if (x.succeeded()){
 				result = Json.decodeValue(x.result().encodePrettily(), clazz);
 			} else {
-				System.out.println("findOne ->" + DbUtils.index(clazz) + " on error -> " + x.cause());
+				logger.error("findOne ->" + DbUtils.index(clazz) + " on error -> " + x.cause());
 			}
 			then.apply(result);
 		});
@@ -102,7 +105,7 @@ public class MongoService implements IMongoService {
 		
 		mongoClient.findOne(DbUtils.index(clazz), query, fields, x -> {
 			
-			System.out.println("findInternListFromObject -> " + x.result().encodePrettily());
+			logger.debug("findInternListFromObject -> " + x.result().encodePrettily());
 			
 			JsonArray array = x.result().getJsonArray("ticketHistory", new JsonArray());
 			
@@ -150,7 +153,7 @@ public class MongoService implements IMongoService {
 		Object sortJson = query.getValue("sort");
 		if (sortJson != null) {
 			if (sort == null) sort = Sort.ASC;
-			System.out.println("Sort -> " + sortJson + " -> " + sort.value());
+			logger.debug("Sort -> " + sortJson + " -> " + sort.value());
 			query.remove("sort");
 			JsonObject jsonSort = new JsonObject();
 			JsonObject s = new JsonObject();
@@ -168,7 +171,7 @@ public class MongoService implements IMongoService {
 				}
 				callBack.accept(liste);
 			} else {
-				System.out.println("ERROR : " + x.cause());
+				logger.error("ERROR : " + x.cause());
 				callBack.accept(new ArrayList<>());
 			}
 			

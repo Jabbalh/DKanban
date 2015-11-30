@@ -8,9 +8,12 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 public class VerticleUtils  {
-
+	private final static Logger logger = LoggerFactory.getLogger(VerticleUtils.class);
+	
 	public static void DeployeVertical(Vertx vertx, Class<?> clazz) {
 		DeploymentOptions option = new DeploymentOptions();
 		
@@ -21,10 +24,12 @@ public class VerticleUtils  {
 		option.setConfig(config);
 		option.setWorker(false);
 		vertx.deployVerticle(getDeployementName(clazz), option, x -> {
-			if (x.succeeded()) System.out.println(String.format("Verticle %s ... OK", clazz.getName()));
+			if (x.succeeded()){
+				logger.info(String.format("Verticle %s ... OK", clazz.getName()));				
+			}
 			else if (x.failed()){
-				System.out.println(String.format("Verticle %s ... Failed", clazz.getName()));
-				System.out.println(x.cause());
+				logger.error(String.format("Verticle %s ... Failed", clazz.getName()));
+				logger.error(x.cause());
 			}
 		});
 	}

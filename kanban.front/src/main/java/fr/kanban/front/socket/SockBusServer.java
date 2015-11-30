@@ -2,6 +2,8 @@ package fr.kanban.front.socket;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.sockjs.BridgeEventType;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
@@ -10,6 +12,8 @@ import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 
 public class SockBusServer {
 
+	private static final Logger logger = LoggerFactory.getLogger(SockBusServer.class);
+	
 	private Vertx vertx;
 	private Router router;
 	
@@ -33,7 +37,7 @@ public class SockBusServer {
 	      // It can also be used for fine grained access control.
 
 	      if (event.type() == BridgeEventType.SOCKET_CREATED) {
-	        System.out.println("A socket was created");
+	    	  logger.debug("A socket was created");
 	      }
 
 	      // This signals that it's ok to process the event
