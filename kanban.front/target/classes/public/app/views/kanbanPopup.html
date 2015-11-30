@@ -57,10 +57,9 @@
 			<md-content>
 				 <md-list>
 			      <md-subheader class="md-no-sticky">{{ticket.card.history.length}} entrée(s)</md-subheader>
-			      <md-list-item class="md-3-line" ng-repeat="item in ticket.card.history | orderBy:'date':true">			        
+			      <md-list-item class="md-2-line" ng-repeat="item in ticket.card.history | orderBy:'date':true">			        
 			        <div class="md-list-item-text" layout="column">
-			          <h3>{{ item.date }}</h3>
-			          <h4>{{ item.summary }}</h4>
+			          <h3>{{ item.date }} - {{ item.summary }}</h3>			          
 			          <p>{{ item.description }}</p>
 			        </div>
 			         <md-divider ></md-divider>

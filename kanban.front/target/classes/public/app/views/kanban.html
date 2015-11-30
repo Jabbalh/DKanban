@@ -1,6 +1,25 @@
+<!-- 
 <md-button class="md-fab fixed-action-btn" aria-label="Menu">
   <md-icon md-svg-src="/asset/svg/menu.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
 </md-button>
+-->
+ <md-fab-speed-dial ng-hide="demo.hidden" md-direction="up" md-open="false"
+                       class="md-scale fixed-action-btn" 
+                       >
+        <md-fab-trigger>
+          <md-button aria-label="menu" class="md-fab md-warn">
+            <md-icon md-svg-src="/asset/svg/menu.svg"></md-icon>
+          </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+          <md-button aria-label="Add" class="md-fab md-hue-8 md-mini">
+             <md-icon md-svg-src="/asset/svg/message.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
+          </md-button>
+          
+        </md-fab-actions>
+      </md-fab-speed-dial>
+
+
 <div layout="row" layout-wrap class="grid-row-header" >
 	<div   ng-repeat="item in ctrl.headers" class="mdl-cell--{{item.width}}-col ">
 			<center><h4>{{item.libelle}}</h4></center>

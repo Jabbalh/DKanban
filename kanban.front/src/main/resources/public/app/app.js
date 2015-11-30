@@ -2,7 +2,8 @@ angular.module("DKanbanApp", ['ngRoute','ngDraggable','ngAnimate','ngAria','ngMa
 	.config(function($mdThemingProvider) {
 		$mdThemingProvider.theme('default')
 	    .primaryPalette('indigo')
-	    .accentPalette('red');
+	    .accentPalette('green')
+	    .warnPalette('red');
 	})
     .config(function ($routeProvider) {
 
