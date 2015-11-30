@@ -13,8 +13,48 @@
 	
 </head>
 <body style="background-color: white" >
-
-	<ng-view />
+	<md-toolbar>
+      <div class="md-toolbar-tools" ng-controller="AppCtrl">      	
+      
+        <md-button class="md-icon-button" aria-label="Settings" ng-click="toggleRight()"
+            ng-hide="isOpenRight()"
+            class="md-primary">
+          <md-icon md-svg-icon="/asset/svg/menu.svg"></md-icon>
+        </md-button>
+      
+      
+      
+        <h2>
+          <span>D-Kanban</span>
+        </h2>
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Profil">
+          <md-icon md-svg-icon="/asset/svg/ic_person_24px.svg" ></md-icon>
+        </md-button>        
+      </div>
+    </md-toolbar>
+    
+    	<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="right">
+      <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools">D-Kanban::Menu</h1>
+      </md-toolbar>
+      <md-content layout-padding>
+        <form>
+          <md-input-container>
+            <label for="testInput">Test input</label>
+            <input type="text" id="testInput"
+                   ng-model="data" md-autofocus>
+          </md-input-container>
+        </form>
+        <md-button  class="md-primary">
+          Close Sidenav Right
+        </md-button>
+      </md-content>
+    </md-sidenav>
+    
+    	<ng-view />
+    
+	
 
 
 
