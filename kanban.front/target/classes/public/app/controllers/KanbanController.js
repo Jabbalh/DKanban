@@ -235,9 +235,9 @@ angular.module("DKanbanApp")
 	 */
 	this.openPopup = function(ev,send) {
 		var cloneTicket = null;
-		if (send.insert == false) {
-			cloneTicket = send.card.ticket;
-			send.card.ticket = ticketService.cloneTicket(send.card.ticket);
+		if (send.ticket.insert == false) {
+			cloneTicket = send.ticket.card;
+			send.ticket.card = ticketService.cloneTicket(send.ticket.card);
 		}		
 		$mdDialog.show({
 		      controller: DialogController,
@@ -249,8 +249,8 @@ angular.module("DKanbanApp")
 		           item: send
 		         },
 		    }).then(function(answer) {
-		    	if (send.insert == false) {
-					ticketService.restorTicket(cloneTicket,send.card.ticket);					
+		    	if (send.ticket.insert == false) {
+					ticketService.restorTicket(cloneTicket,send.ticket.card);					
 				}
 		    	console.log("save -> " + JSON.stringify(answer));
 		    	self.saveTicket(answer);

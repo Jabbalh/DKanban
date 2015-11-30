@@ -107,13 +107,14 @@ public class MongoService implements IMongoService {
 			JsonArray array = x.result().getJsonArray("ticketHistory", new JsonArray());
 			
 			List<R> result = new ArrayList<>();
-			for (Object o : array){
-				if (o instanceof JsonObject){
-					
-					result.add(Json.decodeValue(Json.encodePrettily(o), clazzR));
+			if (array != null && array.getList().size()>0) {
+				for (Object o : array){
+					if (o instanceof JsonObject){
+						
+						result.add(Json.decodeValue(Json.encodePrettily(o), clazzR));
+					}
 				}
 			}
-			
 			
 			then.apply(result);
 		});
