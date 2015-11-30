@@ -31,7 +31,7 @@ angular.module("DKanbanApp")
 	
 	
     var self = this;
-
+    var currentUser = 'user1';
     
 	/**
 	 * Objets internes
@@ -89,18 +89,8 @@ angular.module("DKanbanApp")
 	 */
     listService.headerList().success(function(headers){
 		self.headers = headers;
+		self.filtreOnAll();
 		
-		listService.userList().success(function(users) {
-			self.kanban.users = users;
-			self.listes.users = users;
-			users.forEach(function(uValue,uKey) {
-				listService.kanbanByUser(uValue.login).success(function(tickets){					
-					self.kanban.values.push(tickets);
-					
-				});
-			});
-			
-		});
 	});
     
     /**
@@ -174,14 +164,43 @@ angular.module("DKanbanApp")
 	    	return objCard;
 	  }
 	  
+	  this.filtreOnUs = function() {
+
+		  $http.get("/api/user/"+currentUser).success(function(result){
+			 var data = JSON.parse(result);
+			
+			 self.kanban.values = [];
+			 self.kanban.users = [];
+			 
+			 self.kanban.users.push(data);
+			 listService.kanbanByUser(data.login).success(function(tickets){					
+					self.kanban.values.push(tickets);
+					
+				});
+		  });		  		 
+	  }
+	  
+	  this.filtreOnAll = function() {
+		  self.kanban.values = [];
+		  self.kanban.users = [];
+		  listService.userList().success(function(users) {
+				self.kanban.users = users;
+				self.listes.users = users;
+				users.forEach(function(uValue,uKey) {
+					listService.kanbanByUser(uValue.login).success(function(tickets){					
+						self.kanban.values.push(tickets);
+						
+					});
+				});
+				
+			});
+	  }
 	  
 	 /**
 	  * Ajout d'un nouveau ticket (ouverture de la popup)
 	  */
 	  
-	 this.openNewTicket = function(ev) {
-		 
-		 
+	 this.openNewTicket = function(ev) {		 
 		 updateService.emptyTicket().success(function(data){			
 			 var send = {
 						listes : self.listes,

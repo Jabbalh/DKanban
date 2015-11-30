@@ -12,10 +12,15 @@
           </md-button>
         </md-fab-trigger>
         <md-fab-actions>
-          <md-button aria-label="Add" class="md-fab md-hue-8 md-mini">
-             <md-icon md-svg-src="/asset/svg/message.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
+          <md-button aria-label="Ajout ticket" class="md-fab md-hue-8 md-mini">
+             <md-icon md-svg-src="/asset/svg/add_cross.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
           </md-button>
-          
+          <md-button aria-label="Filtre sur moi" class="md-fab md-hue-8 md-mini">
+             <md-icon md-svg-src="/asset/svg/ic_person_24px.svg" ng-click="ctrl.filtreOnUs()"></md-icon>
+          </md-button>
+          <md-button aria-label="Tout le monde" class="md-fab md-hue-8 md-mini">
+             <md-icon md-svg-src="/asset/svg/ic_people_24px.svg" ng-click="ctrl.filtreOnAll()"></md-icon>
+          </md-button>
         </md-fab-actions>
       </md-fab-speed-dial>
 

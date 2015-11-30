@@ -113,6 +113,8 @@ public class FrontVerticle extends AbstractVerticle {
 		 */
 		router.get("/api/user/list").handler(userHandler::apiUserList);
 		
+		router.get("/api/user/:login").handler(userHandler::apiUserByLogin);
+		
 		/**
 		 * ####### Routes relatives à la gestion des applications #######  
 		 */
