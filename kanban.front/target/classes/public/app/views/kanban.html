@@ -1,5 +1,8 @@
-<div layout="row" layout-wrap class="grid-row-header">
-	<div   ng-repeat="item in ctrl.headers" class="mdl-cell--{{item.width}}-col " flex>
+<md-button class="md-fab fixed-action-btn" aria-label="Menu">
+  <md-icon md-svg-src="/asset/svg/menu.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
+</md-button>
+<div layout="row" layout-wrap class="grid-row-header" >
+	<div   ng-repeat="item in ctrl.headers" class="mdl-cell--{{item.width}}-col ">
 			<center><h4>{{item.libelle}}</h4></center>
 		</div>
 </div>
@@ -8,31 +11,38 @@
 <div layout="row" class="grid-row z-depth-2" layout-wrap  ng-repeat="zone in ctrl.kanban.values | orderBy:'first.libelle'">
 		
 				
-	<div class="mdl-cell--{{zone.first.width}}-col overdelete" flex
+	<div class="mdl-cell--{{zone.first.width}}-col overdelete"
 		id="{{zone.first.id}}" droppable drop="handleDropDelete" dropdelete="true">
 		<p>{{zone.first.libelle}}</p>
 	</div>
 		
 		
-	<div flex ng-repeat="other in zone.other" class="mdl-cell--{{other.width}}-col" id="{{other.id}}"  droppable drop="handleDrop">
+	<div ng-repeat="other in zone.other" class="mdl-cell--{{other.width}}-col" id="{{other.id}}"  droppable drop="handleDrop">
 
 
 					  
 		<div class="card-margin-border drag-auto-item"  id="{{ticket.id}}" draggable ng-repeat="ticket in other.cards">
-			<div class="mdl-grid">
-				<div class="mdl-cell--4-col">
-					<small>{{ticket.ref}}</small>
+			<div>
+			<div layout="row">
+				<div flex>
+					<span class="md-caption truncate cursor-edit" ng-click="ctrl.updateTicket($event,ticket,other.id)">{{ticket.ref}}
+						<md-tooltip md-direction="top">
+          					{{ticket.ref}}
+        				</md-tooltip>
+					</span>
 				</div>
-				<div class="mdl-cell--4-col card-title-middle">
-					<small>{{ticket.caisse}}</small>
+				<div class="card-title-middle" flex>
+					<span class="md-caption">{{ticket.caisse}}</span>
 				</div>
-				<div class="mdl-cell--4-col">
-					<small>{{ticket.appli}}</small>
-				</div>	
-				<div class=" mdl-cell--12-col divider"></div>
-				<div class="mdl-cell--12-col">
-				<p>{{ticket.summary}}</p>
-				</div>	
+				<div flex>
+					<span class="md-caption">{{ticket.appli}}</span>
+				</div>
+				</div>
+				<div class="divider"></div>
+				<div layout="row">
+					<span class="md-caption">{{ticket.summary}}</span>
+				</div>
+				
 			</div>										
 		</div>			  
 

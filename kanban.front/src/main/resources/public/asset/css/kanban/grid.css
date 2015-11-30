@@ -8,12 +8,12 @@
 /* materialize lite */
 
 .mdl-cell--1-col {
-	width: calc(3%);
+	width: calc(3%)!important;
 	margin: 0;
 }
 
 .mdl-cell--2-col {
-	width: calc(13.7%);
+	width: calc(13.7%)!important;
 	margin: 0;
 }
 
@@ -41,10 +41,10 @@
 }
 
 .grid-row-header {		
-	padding-top: 5px;
+	/*padding-top: 5px;
 	padding-bottom: 10px;
 	padding-left: 0px;
-	padding-right: 0px;	
+	padding-right: 0px;*/	
 }
 
 .grid-row-header > [class*="mdl-cell-"]  {
@@ -62,6 +62,7 @@
 	padding-bottom: 0px;
 	padding-left: 0px;
 	padding-right: 0px;
+	margin-bottom: 5px;
 }
 
 .card-title-middle {
@@ -75,9 +76,4 @@
 }
 
 
-.divider {
-  height: 1px;
-  overflow: hidden;
-  background-color: #e0e0e0; }
-  
-.
+

@@ -8,6 +8,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.MongoClient;
@@ -54,7 +55,8 @@ public class MongoService implements IMongoService {
 	}
 	
 	@Override
-	public <T> void update(T entity, Consumer<Boolean> callback){		
+	public <T> void update(T entity, Consumer<Boolean> callback){
+				
 		mongoClient.save(DbUtils.index(entity.getClass()), new JsonObject(Json.encodePrettily(entity))  , x -> {
 			System.out.println("MongoService.update.succeeded -> " + x.succeeded());
 			System.out.println("MongoService.update.result -> " + x.result());
@@ -91,6 +93,31 @@ public class MongoService implements IMongoService {
 			}
 			then.apply(result);
 		});
+		return then;
+	}
+	
+	@Override
+	public <T,R> Then<List<R>> findInternListFromObject(Class<T> clazz,Class<R> clazzR, JsonObject query, JsonObject fields) {
+		Then<List<R>> then = new Then<>();
+		
+		mongoClient.findOne(DbUtils.index(clazz), query, fields, x -> {
+			
+			System.out.println("findInternListFromObject -> " + x.result().encodePrettily());
+			
+			JsonArray array = x.result().getJsonArray("ticketHistory", new JsonArray());
+			
+			List<R> result = new ArrayList<>();
+			for (Object o : array){
+				if (o instanceof JsonObject){
+					
+					result.add(Json.decodeValue(Json.encodePrettily(o), clazzR));
+				}
+			}
+			
+			
+			then.apply(result);
+		});
+		
 		return then;
 	}
 	

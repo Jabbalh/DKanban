@@ -1,11 +1,18 @@
 function KanbanUpdateService($http) {
 
     this.updateTicketZone = function(data) {
-    	return $http.put("/api/ticket/update/zone",data);
+    	var result =  $http.post("/api/ticket/update/zone",data);
+    	
+    	result.success(function(data){
+    		console.log("updateTicketZone -> success -> " + result);
+    	});
+    	result.error(function(data){
+    		console.log("updateTicketZone -> error -> " + result);
+    	});
     }
     
     this.updateTicket = function(data){
-    	return $http.put("/api/ticket/update/all",data);
+    	return $http.post("/api/ticket/update/all",data);
     }
     
     this.emptyTicket = function() {
@@ -13,10 +20,10 @@ function KanbanUpdateService($http) {
     }
     
     this.archiveTicket = function(data) {
-    	return $http.put("/api/ticket/update/archive",data);
+    	return $http.post("/api/ticket/update/archive",data);
     }
 }
 
-angular.module("DKanbanApp").factory("kanbanUpdateService", function($http) {
+angular.module("DKanbanApp").factory("updateService", function($http) {
     return new KanbanUpdateService($http);
 });

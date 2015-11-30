@@ -1,74 +1,80 @@
-<md-dialog flex> 
-<form name="kanbanMainForm">
+<md-dialog flex="80"> 
 <md-toolbar>
 <div class="md-toolbar-tools">
 	<h2>{{ticket.title}}</h2>
 	<span flex></span>
 	<md-button class="md-icon-button" ng-click="cancel()"> <md-icon
-		md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+		md-svg-src="/asset/svg/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
 	</md-button>
 </div>
 </md-toolbar>
 <md-dialog-content layout-padding> 
  	
-				<md-tabs md-dynamic-height md-border-bottom>
-      <md-tab label="one">
-        <md-content class="md-padding">
-					<div layout layout-sm="column">
+	<md-tabs md-border-bottom md-dynamic-height md-stretch-tabs="always">
+      <md-tab label="Général" >
+        <md-content class="md-padding" layout-padding>
+					<div layout layout="column">
 						<md-input-container flex> 
 							<label>Référence</label>
-							<input ng-model="ticket.ticket.ref"> 
+							<input ng-model="ticket.card.ref"> 
 						</md-input-container>
 						<md-input-container flex> 
 							<label>Caisse</label> 
-							<input ng-model="ticket.ticket.caisse"> 
+							<input ng-model="ticket.card.caisse"> 
 						</md-input-container>
 						<md-input-container flex>
 							<label>Application</label>
-							<md-select ng-model="ticket.ticket.appli"> 
+							<md-select ng-model="ticket.card.appli"> 
 								<md-option ng-repeat="app in listes.applications" value="{{app}}">{{app}} </md-option> 
 							</md-select> 
 						</md-input-container>
 					</div>
 
-					<div layout layout-sm="column">
+					<div layout layout="column">
 						<md-input-container flex> <label>Propriétaire</label>
-						<md-select ng-model="ticket.ticket.owner"> <md-option
+						<md-select ng-model="ticket.card.owner"> <md-option
 							ng-repeat="item in listes.users" value="{{item.login}}">
 						{{item.login}} </md-option> </md-select> </md-input-container>
 						<md-input-container flex> <label>Etat</label> <input
-							ng-model="ticket.ticket.state"> </md-input-container>
+							ng-model="ticket.card.state"> </md-input-container>
 						<md-input-container flex> <label>Zonen</label> <md-select
 							ng-model="ticket.zone"> <md-option
 							ng-repeat="header in headers" value="{{header.libelle}}">
 						{{header.libelle}} </md-option> </md-select> </md-input-container>
 					</div>
-					<div layout layout-sm="row">
+					<div layout layout="row">
 						<md-input-container flex> <label>Résumé</label> <input
-							ng-model="ticket.ticket.summary"> </md-input-container>
+							ng-model="ticket.card.summary"> </md-input-container>
 					</div>
-					<div layout layout-sm="row">
+					<div layout layout="row">
 						<md-input-container flex> <label>Description</label>
-						<textarea ng-model="ticket.ticket.description" /> </md-input-container>
+						<textarea ng-model="ticket.card.description" /> </md-input-container>
 					</div>
-				
 		
-		
-          <md-dialog-actions layout="row"> 
-			<span flex></span>
-			<md-button ng-click="cancel()"> Annuler </md-button> 
-			<md-button ng-click="answer(ticket)" style="margin-right:20px;">Sauver</md-button> 
-		</md-dialog-actions>
 		</md-content>
 		</md-tab>
-		<md-tab label="Yoooooo">
+		<md-tab label="Historique">
 			<md-content>
-				Hello world
+				 <md-list>
+			      <md-subheader class="md-no-sticky">{{ticket.card.history.length}} entrée(s)</md-subheader>
+			      <md-list-item class="md-3-line" ng-repeat="item in ticket.card.history | orderBy:'date':true">			        
+			        <div class="md-list-item-text" layout="column">
+			          <h3>{{ item.date }}</h3>
+			          <h4>{{ item.summary }}</h4>
+			          <p>{{ item.description }}</p>
+			        </div>
+			         <md-divider ></md-divider>
+			      </md-list-item>
+			     </md-list>
 				
 			</md-content>
 		</md-tab>
 		</md-tabs>
 </md-dialog-content> 
-	
-<form>
+<div class="md-actions"> 
+	<span flex></span>
+	<md-button ng-click="cancel()"> Annuler </md-button> 
+	<md-button ng-click="answer(ticket)" style="margin-right:20px;">Sauver</md-button> 
+</div>
+
 </md-dialog>

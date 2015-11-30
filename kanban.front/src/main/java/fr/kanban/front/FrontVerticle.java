@@ -37,11 +37,11 @@ public class FrontVerticle extends AbstractVerticle {
 		 * Création des routes static pour les resources JS/CSS/etc
 		 */
 		router.route("/asset/*").handler(StaticHandler.create().setWebRoot("public/asset").setCachingEnabled(false));
-		
+		router.route("/app/*").handler(StaticHandler.create().setWebRoot("public/app").setCachingEnabled(false));
 		/**
 		 * Création des routes static pour les fichiers applicatif front (JS/HTML)
 		 */
-		router.route("/app/*").handler(StaticHandler.create().setWebRoot("public/app").setCachingEnabled(false));
+		//router.route("/app/*").handler(StaticHandler.create().setWebRoot("public/app").setCachingEnabled(false));
 		
 		/**
 		 * Ajout du type de renvois pour les responses
@@ -83,9 +83,9 @@ public class FrontVerticle extends AbstractVerticle {
 		/**
 		 * Mise à jour 
 		 */		
-		router.put("/api/ticket/update/zone").handler(ticketHandler::apiTicketUpdateZone);
+		router.post("/api/ticket/update/zone").handler(ticketHandler::apiTicketUpdateZone);
 		
-		router.put("/api/ticket/update/all").handler(ticketHandler::apiTicketUpdateAll);
+		router.post("/api/ticket/update/all").handler(ticketHandler::apiTicketUpdateAll);
 		
 		/**
 		 * On renvois la liste des tickets par login
@@ -102,7 +102,7 @@ public class FrontVerticle extends AbstractVerticle {
 		 */
 		router.get("/api/ticket/new/empty").handler(ticketHandler::apiNewEmpty);
 		
-		router.put("/api/ticket/update/archive").handler(ticketHandler::apiArchive);
+		router.post("/api/ticket/update/archive").handler(ticketHandler::apiArchive);
 		
 		/**
 		 * ####### Routes relatives à la gestion des utilisateurs #######  

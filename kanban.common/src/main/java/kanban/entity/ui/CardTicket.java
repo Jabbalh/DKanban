@@ -1,5 +1,10 @@
 package kanban.entity.ui;
 
+import java.util.List;
+import java.util.function.Consumer;
+
+import kanban.entity.db.Ticket;
+
 public class CardTicket extends Card {
 	
 	private String appli;
@@ -8,6 +13,7 @@ public class CardTicket extends Card {
 	private String caisse;
 	private String state;
 	private String owner;
+	private List<CardHistory> history;
 	
 	
 	public CardTicket() {
@@ -28,6 +34,10 @@ public class CardTicket extends Card {
 		this.caisse = caisse;
 		this.state = state;
 		this.owner = owner;
+	}
+	
+	public CardTicket(Consumer<CardTicket> f) {
+		f.accept(this);
 	}
 	
 	
@@ -79,6 +89,30 @@ public class CardTicket extends Card {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public List<CardHistory> getHistory() {
+		return history;
+	}
+
+	public void setHistory(List<CardHistory> history) {
+		this.history = history;
+	}
+	
+	public static CardTicket fromTicket(Ticket ticket) {
+		CardTicket result = new CardTicket();
+		
+		result.setId(ticket.get_id());
+		result.setAppli(ticket.getApplication().getName());
+		result.setCaisse(ticket.getCaisse());
+		result.setDescription(ticket.getDescription());
+		result.setHistory(CardHistory.fromTicketHistory(ticket.getTicketHistory()));
+		result.setOwner(ticket.getOwner().getLogin());
+		result.setRef(ticket.getReference());
+		result.setState(ticket.getStateTicket().getName());
+		result.setSummary(ticket.getSummary());
+		
+		return result;
 	}
 
 	

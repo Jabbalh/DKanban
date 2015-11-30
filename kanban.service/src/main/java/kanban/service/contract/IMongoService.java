@@ -50,6 +50,9 @@ public interface IMongoService {
 	<T> Then<Integer> getNextSequence(Class<T> clazz);
 
 
+	<T,R> Then<List<R>> findInternListFromObject(Class<T> clazz, Class<R> clazzR, JsonObject query, JsonObject fields);
+
+
 
 
 }

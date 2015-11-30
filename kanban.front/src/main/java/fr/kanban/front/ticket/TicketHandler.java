@@ -29,7 +29,7 @@ public class TicketHandler extends AbstractHandler {
 	public void apiTicketUpdateZone(RoutingContext context){			
 		JsonObject data = context.getBodyAsJson();					
 		vertx.eventBus().send(EventBusNames.TICKET_UPDATE_STATE, Json.encodePrettily(data), r -> {				
-			context.response().end(r.result().body().toString());			
+			context.response().end(Json.encodePrettily(r.result().body().toString()));			
 		});				
 	}
 	

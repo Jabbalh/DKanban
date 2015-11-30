@@ -70,17 +70,7 @@ public class VerticleKanbanService extends AbstractVerticle {
 				// Filtre des tickets souhaité
 				Stream<Ticket> streamTicket = x.stream().filter(t -> t.getZoneTicket().getCodeZone().equals(header));
 				
-				streamTicket.forEach(t -> column.addCard(
-						new CardTicket(
-										t.get_id(), 
-										t.getReference(), 
-										t.getApplication().getName(),
-										t.getSummary(),
-										t.getDescription(),
-										t.getCaisse(),
-										t.getStateTicket().getName(),
-										t.getOwner().getLogin())
-						));
+				streamTicket.forEach(t -> column.addCard(CardTicket.fromTicket(t)));						
 				zone.addOther(column);
 			});
 			message.reply(Json.encodePrettily(zone));

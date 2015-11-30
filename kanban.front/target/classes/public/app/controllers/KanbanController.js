@@ -27,7 +27,7 @@ angular.module("DKanbanApp")
 		  }
 		})
 
-	.controller("KanbanController", function ($scope,$http,$filter,kanbanUpdateService,kanbanListService) {	
+	.controller("KanbanController", function ($scope,$http,$filter,$mdDialog,updateService,listService,ticketService) {	
 	
 	
     var self = this;
@@ -58,9 +58,8 @@ angular.module("DKanbanApp")
     			card : {id : self.testCardId}
     	};
     	
-    	//var data = self.extracAfterChange(result,false);
     	
-    	kanbanUpdateService.updateTicketZone(result);
+    	updateService.updateTicketZone(result);
     }
     
     this.testDelete = function() {
@@ -81,21 +80,21 @@ angular.module("DKanbanApp")
     /**
      * Initialisation des listes
      */
-    kanbanListService.applicationList().success(function (data){
+    listService.applicationList().success(function (data){
     	self.listes.applications = data;
     });
     
     /**
 	 * Initialisation du kanban
 	 */
-	kanbanListService.headerList().success(function(headers){
+    listService.headerList().success(function(headers){
 		self.headers = headers;
 		
-		kanbanListService.userList().success(function(users) {
+		listService.userList().success(function(users) {
 			self.kanban.users = users;
 			self.listes.users = users;
 			users.forEach(function(uValue,uKey) {
-				kanbanListService.kanbanByUser(uValue.login).success(function(tickets){					
+				listService.kanbanByUser(uValue.login).success(function(tickets){					
 					self.kanban.values.push(tickets);
 					
 				});
@@ -179,25 +178,33 @@ angular.module("DKanbanApp")
 	 /**
 	  * Ajout d'un nouveau ticket (ouverture de la popup)
 	  */
-	  /*
-	 this.addTicket = function() {
+	  
+	 this.openNewTicket = function(ev) {
 		 
-		 this.ticket.title = "Nouveau ticket";
-		 this.ticket.insert = true;
-		 this.ticket.zone = "BackLog";
-		 kanbanUpdateService.emptyTicket().success(function(data){			
-			 self.ticket.ticket = data;			 
-			 self.openPopup();			
+		 
+		 updateService.emptyTicket().success(function(data){			
+			 var send = {
+						listes : self.listes,
+						ticket :  {
+								title : "Nouveau ticket",
+								insert : true,
+								zone : "BackLog",
+								card : data,
+								user : ""
+						},
+						headers : self.headers					
+					};			 
+			 self.openPopup(ev,send);			
 		 });
 	 }
-	 */
+	 
 	 
 	 /**
 	  * Sauvegarde d'un ticket (modification ou insertion)
 	  */
 	 this.saveTicket = function(data) {
 		 console.log(data);
-		 kanbanUpdateService.updateTicket(data).success(function(resultData){
+		 updateService.updateTicket(data).success(function(resultData){
 			 if (resultData != "OK"){								 
 				 alert("Zut !!!");
 			 }
@@ -208,53 +215,67 @@ angular.module("DKanbanApp")
 	/**
 	 * Mise à jour d'un ticket (ouverture de la popup)
 	 */
-	this.updateTicket = function(ticket, id){				
+	this.updateTicket = function($event,ticket, id){				
 		var send = {
 				listes : self.listes,
 				ticket :  {
 						title : "Ticket " + ticket.ref,
 						insert : false,
 						zone : id.split('$')[1],
-						ticket : ticket
+						card : ticket,
+						user : ticket.owner
 				},
 				headers : self.headers					
 			};				
-		this.openPopup(send).then(function(answer) {
-	          console.log(JSON.stringify(answer));
-	          self.saveTicket(answer);
-		});
-	          	 
+		this.openPopup(null,send)			          	 
 	}
 	
 	/**
 	 * Ouverture de la popup
 	 */
-	this.openPopup = function(send) {
-		/*
-		return $mdDialog.show({
+	this.openPopup = function(ev,send) {
+		var cloneTicket = null;
+		if (send.insert == false) {
+			cloneTicket = send.card.ticket;
+			send.card.ticket = ticketService.cloneTicket(send.card.ticket);
+		}		
+		$mdDialog.show({
 		      controller: DialogController,
 		      templateUrl: '/app/views/kanbanPopup.html',
-		      locals: { item: send} ,		      
 		      parent: angular.element(document.body),
-		      targetEvent: null,
-		      clickOutsideToClose:true
-		    });
-		    */
+		      targetEvent: ev,
+		      clickOutsideToClose:true,
+		      locals: {
+		           item: send
+		         },
+		    }).then(function(answer) {
+		    	if (send.insert == false) {
+					ticketService.restorTicket(cloneTicket,send.card.ticket);					
+				}
+		    	console.log("save -> " + JSON.stringify(answer));
+		    	self.saveTicket(answer);
+		     }, function() {
+		          
+		        });
 	}
 	
 	/**
 	 * Ecoute de l'evènemement après le déplacement via drag & drop
 	 */
-	$scope.$on('handleDrop',function(event,data){		
+	$scope.$on('handleDrop',function(event,data){	
+		
 		var cardData = 
 		{
-				card : {id : data.originId},
+				card : {					
+					id : data.originId
+					},
 				zone : data.targetId.split('$')[1],
 				user : data.targetId.split('$')[0]
-		};		
-		kanbanUpdateService.updateTicketZone(cardData).success(function(data){
-			console.log("handleDrop -> updateTicketZone -> "  +data);
-		});
+		};
+		
+		updateService.updateTicketZone(cardData);
+				
+		//$http.post("/api/ticket/update/zone",cardData);
 		
 	});
 	
@@ -266,31 +287,10 @@ angular.module("DKanbanApp")
 				user : data.targetId.split('$')[0]
 		};		
 		var card = self.extracAfterChange(cardData,false);
-		kanbanUpdateService.archiveTicket(card);		
+		updateService.archiveTicket(card);		
 	});
 	
-	$scope.showTabDialog = function() {
-		
-		kanbanUpdateService.emptyTicket().success(function(data){
-			var send = {
-					listes : self.listes,
-					ticket :  {
-							title : "Nouveau ticket",
-							insert : true,
-							zone : "BackLog",
-							ticket : data
-					},
-					headers : self.headers					
-				};
-			 		
-			self.openPopup(send).then(function(answer) {
-			          console.log(JSON.stringify(answer));
-			          self.saveTicket(answer);	
-			
-		 });
-		
-	 });
-	}
+	
 
 }); // END KanbanController
 
@@ -307,6 +307,7 @@ function DialogController($scope, $mdDialog,item) {
 	    $mdDialog.cancel();
 	  };
 	  $scope.answer = function(answer) {
+		answer.user = answer.card.owner;
 	    $mdDialog.hide(answer);
 	  };
 	}

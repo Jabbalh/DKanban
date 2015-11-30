@@ -49,9 +49,9 @@ public class ApplicationService extends AbstractVerticle {
 	private void initApplication(Message<Object> message) {
 		System.out.println("INIT_APPLICATION -> initApplication");
 		mongoService.findAll(ApplicationParameter.class, x -> {
-			for (ApplicationParameter item : x){
+			/*for (ApplicationParameter item : x){
 				System.out.println(Json.encodePrettily(item));
-			}
+			}*/
 			ApplicationData.set(x.get(0));	
 			message.reply("OK");
 		});

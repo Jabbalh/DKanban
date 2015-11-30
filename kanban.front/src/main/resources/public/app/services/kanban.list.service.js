@@ -17,6 +17,6 @@ function KanbanListService($http) {
     }
 }
 
-angular.module("DKanbanApp").factory("kanbanListService", function($http) {
+angular.module("DKanbanApp").factory("listService", function($http) {
     return new KanbanListService($http);
 });
