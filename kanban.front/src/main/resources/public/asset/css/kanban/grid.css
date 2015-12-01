@@ -1,15 +1,19 @@
 .ticket-IN_PROGRESS {
-	width: 10px;
-	height:10px;
-	border-radius:10;	
-	background-color: green;
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 5px auto;
+  background-color: Green;
+  border-radius: 50%;
 }
 
 .ticket-STAND_BY {
-	width: 10px;
-	height:10px;
-	border-radius:10;	
-	background-color: Red;
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 5px auto;
+  background-color: Red;
+  border-radius: 50%;
 }
 
 

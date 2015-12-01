@@ -58,8 +58,13 @@
 				</div>
 				<div class="divider"></div>
 				<div layout="row">
-					<span class="md-caption">{{ticket.summary}}</span>
-					<span class="ticket-{{ticket.state}}" layout-align="end"></span>
+					<div flex="90">
+						<span class="md-caption">{{ticket.summary}}</span>
+					</div>
+					<div flex="10" style="border-right:1px solid">
+						<span class="ticket-{{ticket.state}}" layout-align="end"></span>
+					</div>
+					
 				</div>
 				
 				

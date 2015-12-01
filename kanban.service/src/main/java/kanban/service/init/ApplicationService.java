@@ -129,23 +129,23 @@ public class ApplicationService extends AbstractVerticle {
 	private void initData(Message<Object> message) {
 		logger.debug("INIT_DATA_APP -> initData");
 		List<Application> applications = ApplicationData.get().getApplications();
-		List<ZoneTicket> states = new ArrayList<>();
+		List<ZoneTicket> zones = new ArrayList<>();
 		
-		ApplicationData.get().getZones().forEach(x -> states.add(x.getZoneTicket()));
+		ApplicationData.get().getZones().forEach(x -> zones.add(x.getZoneTicket()));
 				
 		List<User> users = new LinkedList<>();
 		users.add(new User("user1", "user1", "User 1", "User 1"));
 		users.add(new User("user2", "user2", "User 2", "User 2"));
 		
-		
+		List<StateTicket> states = ApplicationData.get().getStatesTicket();
 				
 		List<Ticket> tickets = new LinkedList<>();
-		tickets.add(new Ticket(0,"ARS01", "Test ARS1", "Desc ARS1", applications.get(0), states.get(1),users.get(0),"14445"));
-		tickets.add(new Ticket(1,"ARS02", "Test ARS2", "Desc ARS2", applications.get(0), states.get(1),users.get(0),"14445"));
-		tickets.add(new Ticket(2,"ARS03", "Test ARS3", "Desc ARS3", applications.get(1), states.get(2),users.get(0),"14445"));
-		tickets.add(new Ticket(3,"ARS04", "Test ARS4", "Desc ARS4", applications.get(2), states.get(1),users.get(1),"14445"));
-		tickets.add(new Ticket(4,"ARS05", "Test ARS5", "Desc ARS5", applications.get(2), states.get(1),users.get(1),"14445"));
-		tickets.add(new Ticket(5,"ARS06", "Test ARS6", "Desc ARS6", applications.get(3), states.get(3),users.get(1),"14445"));
+		tickets.add(new Ticket(0,"ARS01", "Test ARS1", "Desc ARS1", applications.get(0), zones.get(1),users.get(0),"14445", states.get(0)));
+		tickets.add(new Ticket(1,"ARS02", "Test ARS2", "Desc ARS2", applications.get(0), zones.get(1),users.get(0),"14445", states.get(0)));
+		tickets.add(new Ticket(2,"ARS03", "Test ARS3", "Desc ARS3", applications.get(1), zones.get(2),users.get(0),"14445", states.get(0)));
+		tickets.add(new Ticket(3,"ARS04", "Test ARS4", "Desc ARS4", applications.get(2), zones.get(1),users.get(1),"14445", states.get(0)));
+		tickets.add(new Ticket(4,"ARS05", "Test ARS5", "Desc ARS5", applications.get(2), zones.get(1),users.get(1),"14445", states.get(1)));
+		tickets.add(new Ticket(5,"ARS06", "Test ARS6", "Desc ARS6", applications.get(3), zones.get(3),users.get(1),"14445", states.get(1)));
 		
 		
 		

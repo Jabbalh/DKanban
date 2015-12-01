@@ -13,7 +13,7 @@ public class MainVerticle extends AbstractVerticle {
 	@Override
 	public void start() {
 
-		boolean reinit = false;
+		boolean reinit = true;
 		if (reinit){
 			VerticleUtils.DeployeVertical(vertx,ApplicationService.class, x -> {
 				if (x.succeeded()){

@@ -48,6 +48,22 @@ public class Ticket {
 		this._id = id.toString();
 	}
 	
+	
+	
+	public Ticket(Integer id,String reference, String summary, String description, Application application, ZoneTicket zone,
+			User owner, String caisse, StateTicket stateTicket) {
+		this();
+		this.reference = reference;
+		this.summary = summary;
+		this.description = description;
+		this.application = application;
+		this.zoneTicket = zone;
+		this.owner = owner;
+		this.caisse = caisse;
+		this._id = id.toString();
+		this.stateTicket = stateTicket;
+	}
+
 	public String getReference() {
 		return reference;
 	}
