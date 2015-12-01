@@ -36,10 +36,10 @@ public class MongoService implements IMongoService {
 	private void initMongo(){		
 		if (mongoClient == null){
 			logger.debug("Initialisation du client mongo");
-			JsonObject mongoConf = new JsonObject();
-			mongoConf.put("host", "127.0.0.1");
-			mongoConf.put("port", 27017);
-			mongoConf.put("db_name", "kanban");
+			JsonObject mongoConf = new JsonObject()
+				.put("host", "127.0.0.1")
+				.put("port", 27017)
+				.put("db_name", "kanban");				
 			mongoClient = MongoClient.createShared(vertx, mongoConf);
 		}
 	}

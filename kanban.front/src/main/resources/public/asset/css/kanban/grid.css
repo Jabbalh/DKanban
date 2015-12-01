@@ -1,3 +1,17 @@
+.ticket-IN_PROGRESS {
+	width: 10px;
+	height:10px;
+	border-radius:10;	
+	background-color: green;
+}
+
+.ticket-STAND_BY {
+	width: 10px;
+	height:10px;
+	border-radius:10;	
+	background-color: Red;
+}
+
 
 .grid-row > [class*="s"]  {
 	background-color: white;

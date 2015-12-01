@@ -35,9 +35,17 @@
 						<md-select ng-model="ticket.card.owner"> <md-option
 							ng-repeat="item in listes.users" value="{{item.login}}">
 						{{item.login}} </md-option> </md-select> </md-input-container>
-						<md-input-container flex> <label>Etat</label> <input
-							ng-model="ticket.card.state"> </md-input-container>
-						<md-input-container flex> <label>Zonen</label> <md-select
+						<md-input-container flex> 
+						<label>Etat</label> 						
+						<md-select
+							ng-model="ticket.card.state"> <md-option
+							ng-repeat="state in listes.states" value="{{state.code}}">
+						{{state.libelle}} </md-option> </md-select>
+							
+							
+							
+						<md-input-container flex> <label>Zone</label> 
+						<md-select
 							ng-model="ticket.zone"> <md-option
 							ng-repeat="header in headers" value="{{header.libelle}}">
 						{{header.libelle}} </md-option> </md-select> </md-input-container>

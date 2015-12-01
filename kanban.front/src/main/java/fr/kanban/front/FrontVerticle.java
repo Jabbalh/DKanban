@@ -119,6 +119,7 @@ public class FrontVerticle extends AbstractVerticle {
 		 * ####### Routes relatives à la gestion des applications #######  
 		 */
 		router.get("/api/application/list").handler(appHandler::apiApplicationList);
+		router.get("/api/state/list").handler(appHandler::apiStateList);
 		
 		/**
 		 * ####### Routes relatives à la gestion du kanban #######  

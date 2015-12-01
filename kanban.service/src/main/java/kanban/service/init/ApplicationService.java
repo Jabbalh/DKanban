@@ -73,16 +73,23 @@ public class ApplicationService extends AbstractVerticle {
 		ApplicationData.get().setApplications(applications);
 				
 		
-		List<ZoneApp> states = new ArrayList<>();
-		states.add(new ZoneApp(new ZoneTicket("U"),0,1));
-		states.add(new ZoneApp(new ZoneTicket("BackLog"),1,2));
-		states.add(new ZoneApp(new ZoneTicket("Analyse"),2,2));
-		states.add(new ZoneApp(new ZoneTicket("Dev"),3,2));
-		states.add(new ZoneApp(new ZoneTicket("VFO"),4,2));
-		states.add(new ZoneApp(new ZoneTicket("UTI"),5,2));
-		states.add(new ZoneApp(new ZoneTicket("QPA"),6,2));
-		states.add(new ZoneApp(new ZoneTicket("PROD"),7,2));
-		ApplicationData.get().setZones(states);
+		List<ZoneApp> zoneApps = new ArrayList<>();
+		zoneApps.add(new ZoneApp(new ZoneTicket("U"),0,1));
+		zoneApps.add(new ZoneApp(new ZoneTicket("BackLog"),1,2));
+		zoneApps.add(new ZoneApp(new ZoneTicket("Analyse"),2,2));
+		zoneApps.add(new ZoneApp(new ZoneTicket("Dev"),3,2));
+		zoneApps.add(new ZoneApp(new ZoneTicket("VFO"),4,2));
+		zoneApps.add(new ZoneApp(new ZoneTicket("UTI"),5,2));
+		zoneApps.add(new ZoneApp(new ZoneTicket("QPA"),6,2));
+		zoneApps.add(new ZoneApp(new ZoneTicket("PROD"),7,2));
+		ApplicationData.get().setZones(zoneApps);
+		
+		
+		List<StateTicket> statesTicket = new ArrayList<>();
+		statesTicket.add(new StateTicket("IN_PROGRESS", "En cours"));
+		statesTicket.add(new StateTicket("STAND_BY", "En attente"));
+		ApplicationData.get().setStatesTicket(statesTicket);
+		
 		
 		if (!ApplicationData.get().isInit()){
 			mongoService.delete(DbUtils.index(ApplicationParameter.class), () -> {
@@ -100,12 +107,13 @@ public class ApplicationService extends AbstractVerticle {
 		}
 		
 		
-		List<ZoneTicket> statesTicket = new ArrayList<>();
+		List<ZoneTicket> zoneTicket = new ArrayList<>();
 		
-		ApplicationData.get().getZones().forEach(x -> statesTicket.add(x.getZoneTicket()));
+		ApplicationData.get().getZones().forEach(x -> zoneTicket.add(x.getZoneTicket()));
 		
 		deleteAndInit(mongoService,DbUtils.index(Application.class), applications, a -> "application " + a.getName());
-		deleteAndInit(mongoService,DbUtils.index(StateTicket.class), statesTicket, s -> "state "+s.getCodeZone());
+		deleteAndInit(mongoService,DbUtils.index(ZoneTicket.class), zoneTicket, s -> "zone "+s.getCodeZone());
+		deleteAndInit(mongoService,DbUtils.index(StateTicket.class), statesTicket, s -> "state "+s.getCode());
 		
 		
 		mongoService.reinitCounters();

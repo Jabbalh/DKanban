@@ -15,6 +15,10 @@ function KanbanListService($http) {
     this.kanbanByUser = function(login) {
     	return $http.get("/api/kanban/by/user/"+login);
     }
+    
+    this.stateList = function() {
+    	return $http.get("/api/state/list");
+    }
 }
 
 angular.module("DKanbanApp").factory("listService", function($http) {

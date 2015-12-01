@@ -12,11 +12,11 @@ public class UiUtils {
 	}
 	
 	public static Integer getColumnWidth(String key) {
-		return ApplicationData.get().getStateByKey().get(key).getWidth();					
+		return ApplicationData.get().getZoneByKey().get(key).getWidth();					
 	}
 	
 	public static Integer getOrder(String key) {
-		return ApplicationData.get().getStateByKey().get(key).getOrder();
+		return ApplicationData.get().getZoneByKey().get(key).getOrder();
 	}
 	
 	public static Stream<String> headers(){
@@ -32,7 +32,7 @@ public class UiUtils {
 	}
 	
 	public static ZoneApp getZoneApp(String key) {
-		return ApplicationData.get().getStateByKey().get(key);
+		return ApplicationData.get().getZoneByKey().get(key);
 	}
 	
 }

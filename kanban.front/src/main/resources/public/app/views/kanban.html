@@ -1,28 +1,22 @@
-<!-- 
-<md-button class="md-fab fixed-action-btn" aria-label="Menu">
-  <md-icon md-svg-src="/asset/svg/menu.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
-</md-button>
--->
- <md-fab-speed-dial ng-hide="demo.hidden" md-direction="up" md-open="false"
-                       class="md-scale fixed-action-btn" 
-                       >
-        <md-fab-trigger>
-          <md-button aria-label="menu" class="md-fab md-warn">
-            <md-icon md-svg-src="/asset/svg/menu.svg"></md-icon>
-          </md-button>
-        </md-fab-trigger>
-        <md-fab-actions>
-          <md-button aria-label="Ajout ticket" class="md-fab md-hue-8 md-mini">
-             <md-icon md-svg-src="/asset/svg/add_cross.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
-          </md-button>
-          <md-button aria-label="Filtre sur moi" class="md-fab md-hue-8 md-mini">
-             <md-icon md-svg-src="/asset/svg/ic_person_24px.svg" ng-click="ctrl.filtreOnUs()"></md-icon>
-          </md-button>
-          <md-button aria-label="Tout le monde" class="md-fab md-hue-8 md-mini">
-             <md-icon md-svg-src="/asset/svg/ic_people_24px.svg" ng-click="ctrl.filtreOnAll()"></md-icon>
-          </md-button>
-        </md-fab-actions>
-      </md-fab-speed-dial>
+ <md-fab-speed-dial ng-hide="demo.hidden" md-direction="up" 
+                       class="md-scale fixed-action-btn" >
+  <md-fab-trigger>
+    <md-button aria-label="menu" class="md-fab md-warn">
+      <md-icon md-svg-src="/asset/svg/menu.svg"></md-icon>
+    </md-button>
+  </md-fab-trigger>
+  <md-fab-actions>
+    <md-button aria-label="Ajout ticket" class="md-fab md-hue-8 md-mini">
+       <md-icon md-svg-src="/asset/svg/add_cross.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
+    </md-button>
+    <md-button aria-label="Filtre sur moi" class="md-fab md-hue-8 md-mini">
+       <md-icon md-svg-src="/asset/svg/ic_person_24px.svg" ng-click="ctrl.filtreOnUs()"></md-icon>
+    </md-button>
+    <md-button aria-label="Tout le monde" class="md-fab md-hue-8 md-mini">
+       <md-icon md-svg-src="/asset/svg/ic_people_24px.svg" ng-click="ctrl.filtreOnAll()"></md-icon>
+    </md-button>
+  </md-fab-actions>
+</md-fab-speed-dial>
 
 
 <div layout="row" layout-wrap class="grid-row-header" >
@@ -65,7 +59,9 @@
 				<div class="divider"></div>
 				<div layout="row">
 					<span class="md-caption">{{ticket.summary}}</span>
+					<span class="ticket-{{ticket.state}}" layout-align="end"></span>
 				</div>
+				
 				
 			</div>										
 		</div>			  

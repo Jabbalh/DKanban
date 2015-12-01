@@ -18,7 +18,7 @@ public class ApplicationParameter {
 	private boolean isInit = false;
 	
 	@JsonIgnore	
-	private LinkedHashMap<String, ZoneApp> stateByKey;
+	private LinkedHashMap<String, ZoneApp> zoneByKey;
 	
 	
 	public ApplicationParameter() {
@@ -54,12 +54,12 @@ public class ApplicationParameter {
 	
 	
 	private void initStateByKey(){
-		stateByKey = new LinkedHashMap<>();
-		zones.forEach(x -> stateByKey.put(x.getZoneTicket().getCodeZone(), x));		
+		zoneByKey = new LinkedHashMap<>();
+		zones.forEach(x -> zoneByKey.put(x.getZoneTicket().getCodeZone(), x));		
 	}
 	
 	@JsonIgnore
-	public LinkedHashMap<String, ZoneApp> getStateByKey() { return stateByKey; }
+	public LinkedHashMap<String, ZoneApp> getZoneByKey() { return zoneByKey; }
 
 	public List<StateTicket> getStatesTicket() {
 		return statesTicket;

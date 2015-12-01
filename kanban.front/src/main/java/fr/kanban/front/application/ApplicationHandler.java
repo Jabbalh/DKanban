@@ -14,5 +14,12 @@ public class ApplicationHandler extends AbstractHandler {
 		vertx.eventBus().send(EventBusNames.APPLICATION_LIST, "ALL", x -> {
 			context.response().end(x.result().body().toString());
 		});
+				
+	}
+	
+	public void apiStateList(RoutingContext context){
+		vertx.eventBus().send(EventBusNames.STATE_LIST,"ALL", x -> {
+			context.response().end(x.result().body().toString());
+		});
 	}
 }

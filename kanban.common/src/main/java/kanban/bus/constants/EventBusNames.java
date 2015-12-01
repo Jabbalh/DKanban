@@ -28,5 +28,6 @@ public class EventBusNames {
 	 * BUS relatif aux applications
 	 */
 	public final static String APPLICATION_LIST = "APPLICATION_LIST";
+	public final static String STATE_LIST = "STATE_LIST";
 	
 }

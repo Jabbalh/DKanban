@@ -84,6 +84,10 @@ angular.module("DKanbanApp")
     	self.listes.applications = data;
     });
     
+    listService.stateList().success(function(data){
+    	self.listes.states = data;
+    });
+    
     /**
 	 * Initialisation du kanban
 	 */

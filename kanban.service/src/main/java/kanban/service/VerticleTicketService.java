@@ -1,6 +1,7 @@
 package kanban.service;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -9,6 +10,7 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import kanban.bus.constants.EventBusNames;
+import kanban.entity.db.StateTicket;
 import kanban.entity.db.Ticket;
 import kanban.entity.db.TicketHistory;
 import kanban.entity.db.User;
@@ -22,6 +24,9 @@ import kanban.service.utils.UiUtils;
 
 public class VerticleTicketService extends AbstractVerticle {
 
+	
+	//private static final Logger logger = LoggerFactory.getLogger(VerticleTicketService.class);
+	
 	@Inject
 	private IMongoService mongoService;
 	
@@ -118,14 +123,14 @@ public class VerticleTicketService extends AbstractVerticle {
 		JsonObject data = message.body();
 		FullCard fullCard = Json.decodeValue(data.encodePrettily(), FullCard.class);
 		
-		
-		String login = fullCard.getCard().getOwner();
-		vertx.eventBus().send(EventBusNames.USER_FIND_BY_LOGIN, login, user -> {
-			CardTicket card = fullCard.getCard();
+		vertx.eventBus().send(EventBusNames.USER_FIND_BY_LOGIN, fullCard.getCard().getOwner(), user -> {
+			CardTicket card = fullCard.getCard();			
 			Ticket ticket = new Ticket();						
 			ticket.setReference(card.getRef());
 			ticket.set_id(card.getId());
-			ticket.setApplication(ApplicationData.get().getApplications().stream().filter(x -> x.getName().equals(card.getAppli())).findFirst().get());
+			ticket.setApplication(ApplicationData.get().getApplications().stream().filter(x -> x.getName().equals(card.getAppli())).findFirst().orElse(null));
+			Optional<StateTicket> stateTicket = ApplicationData.get().getStatesTicket().stream().filter(x -> x.getCode().equals(card.getState())).findFirst();
+			ticket.setStateTicket(stateTicket.orElse(null));
 			ticket.setCaisse(card.getCaisse());
 			ticket.setDescription(card.getDescription());
 			ticket.setSummary(card.getSummary());

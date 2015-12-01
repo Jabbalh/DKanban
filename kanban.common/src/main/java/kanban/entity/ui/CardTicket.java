@@ -109,7 +109,7 @@ public class CardTicket extends Card {
 		result.setHistory(CardHistory.fromTicketHistory(ticket.getTicketHistory()));
 		result.setOwner(ticket.getOwner().getLogin());
 		result.setRef(ticket.getReference());
-		result.setState(ticket.getStateTicket().getName());
+		result.setState(ticket.getStateTicket().getCode());
 		result.setSummary(ticket.getSummary());
 		
 		return result;

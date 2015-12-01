@@ -1,69 +1,90 @@
-<!DOCTYPE html>
-<html lang="en" ng-app="DKanbanApp">
+<!doctype html>
+<html lang="fr" ng-app="DKanbanApp">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, maximum-scale=1.0" />
-<title>D-Kanban</title>
+	
 
-<!-- CSS  -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<!-- <link href="../asset/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />-->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.css">
-
-<!-- CSS App -->
- 
-<link rel="stylesheet" type="text/css" href="/asset/css/kanban.css">
-<link rel="stylesheet" type="text/css" href="/asset/css/style-override.css"
-<link rel="stylesheet" type="text/css" href="/asset/css/style.css">
-
-
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.4/angular-material.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/grid.css">
+	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/drag.css">
+	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/button.css">
+	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/style.css">
+	
+	
 </head>
-<body>	
-	<div class="navbar-fixed">		
-		<nav class="light-blue lighten-1" role="navigation">
-			<ul id="slide-out" class="side-nav">
-					<li><a href="#!">First Sidebar Link</a></li>
-					<li><a href="#!">Second Sidebar Link</a></li>
-				</ul>
-				<a href="#" data-activates="slide-out" class="button-collapse show-on-large">
-					<i class="medium mdi-navigation-menu"></i>
-				</a>
-				<div class="nav-wrapper container">				
-					<h5>Distributed Kanban</h5>
-				</div>
-		</nav>
-	</div>
+<body style="background-color: white" >
+	<md-toolbar>
+      <div class="md-toolbar-tools" ng-controller="AppCtrl as ctrl">      	
+      
+        <md-button class="md-icon-button" aria-label="Settings" ng-click="ctrl.toggleLeft()"           
+            class="md-primary">
+          <md-icon md-svg-icon="/asset/svg/menu.svg"></md-icon>
+        </md-button>      
+        <h2>
+          <span>D-Kanban</span>
+        </h2>
+        
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Profil">
+          <md-icon md-svg-icon="/asset/svg/ic_person_24px.svg" ></md-icon>
+        </md-button>        
+      </div>
+    </md-toolbar>
+    
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" >
+      <md-toolbar class="md-theme-light" layout="row">
+        <h1 class="md-toolbar-tools">D-Kanban::Menu</h1>
+      <!--   <md-button class="md-icon-button" ng-click="ctrl.closeMenu()" layout-align="end"> <md-icon
+			md-svg-src="/asset/svg/ic_close_24px.svg" aria-label="Close menu"></md-icon>
+		</md-button>
+		 -->
+      </md-toolbar>
+      <md-content layout-padding>
+        <form>
+          <md-input-container>
+            <label for="testInput">Test input</label>
+            <input type="text" id="testInput"
+                   ng-model="data" md-autofocus>
+          </md-input-container>
+        </form>
+        
+      </md-content>
+    </md-sidenav>
+    
+    <ng-view />
+    
+	
 
-	<div class="section">
-		<ng-view />
-	</div>
 
 
-	<!-- Javascript Libs -->
-	<script type="text/javascript" src="/asset/bower_components/jquery/dist/jquery.min.js"></script>
-	<!-- <script src="/asset/bower_components/materialize.js"></script>
-	 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>-->
 
-	 
-	<script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
-	<script type="text/javascript" src="../asset/bower_components/vertx-eventbus.js"></script>	
+
+</body>
+<!-- Javascript Libs -->
+    <script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>    
+    <script type="text/javascript" src="../asset/bower_components/vertx-eventbus.js"></script>    
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>	
+    
 	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular.js"></script>
-	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-aria.min.js"></script>
-	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-route.js"></script>
-	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-sanitize.js"></script>
+	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-route.js"></script>	
+	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-sanitize.js"></script>	
 	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-resource.js"></script>
 	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-animate.js"></script>
+	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-aria.js"></script>
 	<script type="text/javascript" src="../asset/bower_components/ngDraggable-master/ngDraggable.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.js"></script>
-
-	<!-- Javascript APP-->
-	<script type="text/javascript" src="app.js"></script>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.4/angular-material.min.js"></script>
+	
+	
+    <!-- Javascript -->
+    <script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="/app/controllers/KanbanController.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.list.service.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.update.service.js"></script>
-	<!-- <script type="text/javascript" src="../asset/bower_components/init.js"></script>-->
+	<script type="text/javascript" src="/app/services/kanban.ticket.service.js"></script>
+	
+	
+    <!-- Javascript -->
 
 </body>
 </html>
