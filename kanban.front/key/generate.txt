@@ -1,0 +1,11 @@
+"c:\Program Files\Java\jdk1.8.0_05\bin\keytool.exe" -genseckey -keystore keystore.jceks -storetype jceks -storepass secret -keyalg HMacSHA256 -keysize 2048 -alias HS256 -keypass secret
+/*
+"c:\Program Files\Java\jdk1.8.0_05\bin\keytool.exe" -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass password -validity 360
+
+
+"c:\Program Files\Java\jdk1.8.0_05\bin\keytool.exe" -genkey -keystore keystore.jceks -storetype jceks -storepass secret -keyalg HMacSHA256 -keysize 2048 -alias HS256 -keypass secret
+
+"c:\Program Files\Java\jdk1.8.0_05\bin\keytool.exe" -genkeypair -keystore keystore.jceks -storetype jceks -storepass secret -keyalg EC -keysize 256 -alias ES256 -keypass secret -sigalg SHA256withECDSA -dname "CN=,OU=,O=,L=,ST=,C=" -validity 360
+
+"c:\Program Files\Java\jdk1.8.0_05\bin\keytool.exe" -genseckey -keystore keystore.jck -storetype jceks -storepass password -keyalg AES -keysize 256 -alias HS256 -keypass password 
+*/
