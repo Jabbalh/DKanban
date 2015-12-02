@@ -1,5 +1,7 @@
 package fr.kanban.front;
 
+import javax.inject.Inject;
+
 import fr.kanban.front.application.ApplicationHandler;
 import fr.kanban.front.auth.AuthenticateHandler;
 import fr.kanban.front.kanban.KanbanHandler;
@@ -8,33 +10,28 @@ import fr.kanban.front.ticket.TicketHandler;
 import fr.kanban.front.user.UserHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.json.Json;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.jwt.JWTOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.JWTAuthHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-import kanban.entity.db.User;
-import kanban.entity.session.SessionData;
+import kanban.web.services.ISessionService;
 
 public class FrontVerticle extends AbstractVerticle {
 
 	
 	private SockBusServer sockBuServer;
-	
+	@Inject
+	private ISessionService sessionService;
 	
 	@Override	
 	public void start() {
 		
 		Router router = Router.router(vertx);
 		
-		AuthenticateHandler authHandler = new AuthenticateHandler().initAuth(router, vertx);
+		AuthenticateHandler authHandler = new AuthenticateHandler(sessionService).initAuth(router, vertx);
 		
 		KanbanHandler kanbanHandler = new KanbanHandler();
 		UserHandler userHandler = new UserHandler();
-		TicketHandler ticketHandler = new TicketHandler();
+		TicketHandler ticketHandler = new TicketHandler(sessionService);
 		ApplicationHandler appHandler = new ApplicationHandler();
 		
 		/**
@@ -50,10 +47,13 @@ public class FrontVerticle extends AbstractVerticle {
 		/**
 		 * Ajout du type de renvois pour les responses
 		 */
-		router.route().produces("application/json");
+		router.route("/api/*").produces("application/json");
+		router.route("/public/*").produces("application/json");
 		router.route().handler(BodyHandler.create());
 		router.route().handler(context -> {
 			context.response().headers().add(HttpHeaders.CONTENT_TYPE, "application/json");
+			context.response().headers().add("content-type", "text/html;charset=UTF-8");
+			
 			context.response()
 			// do not allow proxies to cache the data
 	          .putHeader("Cache-Control", "no-store, no-cache")
@@ -67,27 +67,17 @@ public class FrontVerticle extends AbstractVerticle {
 	          // enable XSS for IE
 	          .putHeader("X-XSS-Protection", "1; mode=block")
 	          // deny frames
-	          .putHeader("X-FRAME-OPTIONS", "DENY");
-			if (UiConstantes.getSessionData(context.session()).getCurrentUser() == null) {
-				SessionData sessionData = UiConstantes.getSessionData(context.session());
-				sessionData.setCurrentUser(new User("user1", "user1", "User 1", "User 1"));
-				//String token = authHandler.authProvider.generateToken(new JsonObject().put("sub", "paulo"), new JWTOptions());
-				//System.out.println("authToken -> " + token);
-			}
+	          .putHeader("X-FRAME-OPTIONS", "DENY");	
 			context.next();
 		});
 		
-		router.post("/public/login").handler(x -> {
-			JsonObject logForm = x.getBodyAsJson();
-			
-			String login = logForm.getString("l");
-			String password = logForm.getString("p");
-			System.out.println("l -> " + login + "/ p -> " + password);
-			String token = authHandler.authProvider.generateToken(new JsonObject().put("user", login), new JWTOptions());
-			x.response().end(Json.encodePrettily(token));
-		});
-		router.route("/api/*").handler(JWTAuthHandler.create(authHandler.authProvider));
-		router.route("/app/*").handler(JWTAuthHandler.create(authHandler.authProvider));
+		
+		/**
+		 * Gestion de l'authentification 
+		 */		
+		router.post("/public/login").handler(authHandler::loginHandler);
+		router.get("/public/is/auth").handler(authHandler::isAuth);
+		
 		/**
 		 * Ajout des routes qui consomment du JSON
 		 */
@@ -157,10 +147,10 @@ public class FrontVerticle extends AbstractVerticle {
 		/**
 		 * Création de l'écoute sur le port du server web
 		 */
-		HttpServerOptions options = new HttpServerOptions();
+		//HttpServerOptions options = new HttpServerOptions();
 		//options.setSsl(true);		
 		
-		vertx.createHttpServer(options).requestHandler(router::accept).listen(8080);	
+		vertx.createHttpServer().requestHandler(router::accept).listen(8080);	
 		
 		/**
 		 * Initialisation du Socket pour l'écoute via WebSocket

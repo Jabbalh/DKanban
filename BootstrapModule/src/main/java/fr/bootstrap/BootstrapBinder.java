@@ -8,6 +8,8 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import kanban.service.contract.IMongoService;
 import kanban.service.impl.MongoService;
+import kanban.web.services.ISessionService;
+import kanban.web.services.SessionService;
 
 public class BootstrapBinder extends AbstractBinder {
 
@@ -18,7 +20,7 @@ public class BootstrapBinder extends AbstractBinder {
     	
     	logger.debug("configure binder");
     	bind(MongoService.class).to(IMongoService.class).in(Singleton.class);
-    	
+    	bind(SessionService.class).to(ISessionService.class).in(Singleton.class);
     	
         // Configure bindings
         //bind(PropertiesConfigValueManager.class).to(ConfigValueManager.class).in(Singleton.class);

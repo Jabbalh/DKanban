@@ -3,7 +3,6 @@ package fr.kanban.front.ticket;
 import java.util.function.Consumer;
 
 import fr.kanban.front.AbstractHandler;
-import fr.kanban.front.UiConstantes;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
@@ -12,13 +11,18 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import kanban.bus.constants.EventBusNames;
 import kanban.entity.ui.CardTicket;
+import kanban.web.services.ISessionService;
 
 public class TicketHandler extends AbstractHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(TicketHandler.class);
 	
-	public TicketHandler() {
+	
+	private ISessionService sessionService;
+	
+	public TicketHandler(ISessionService sessionService) {
 		super();
+		this.sessionService = sessionService;		
 	}
 	
 	
@@ -58,7 +62,7 @@ public class TicketHandler extends AbstractHandler {
 	
 	public void apiNewEmpty(RoutingContext context) {
 		context.response().end(
-				Json.encodePrettily(new CardTicket(UiConstantes.getSessionData(context.session()).getCurrentUser().getLogin()))
+				Json.encodePrettily(new CardTicket(sessionService.getCurrentUser(context.session()).getLogin()))
 				); 
 	}
 	

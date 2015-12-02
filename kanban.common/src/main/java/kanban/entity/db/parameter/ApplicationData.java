@@ -14,6 +14,7 @@ public class ApplicationData {
 		parameter.set_id(p.get_id());
 		parameter.setApplications(p.getApplications());
 		parameter.setZones(p.getZones());
+		parameter.setStatesTicket(p.getStatesTicket());
 		parameter.setInit(true);		
 	}
 	

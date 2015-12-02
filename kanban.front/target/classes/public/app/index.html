@@ -1,27 +1,26 @@
 <!doctype html>
 <html lang="fr" ng-app="DKanbanApp">
 <head >
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	
-
-	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.4/angular-material.min.css">
-	
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.4/angular-material.min.css">	
 	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/grid.css">
 	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/drag.css">
 	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/button.css">
 	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/style.css">
-	
+	<link rel="stylesheet" type="text/css" href="../asset/css/kanban/loginform.css">
 	
 </head>
 <body style="background-color: white" >
 	<md-toolbar>
-      <div class="md-toolbar-tools" ng-controller="AppCtrl as ctrl">      	
-      
-        <md-button class="md-icon-button" aria-label="Settings" ng-click="ctrl.toggleLeft()"           
+      <div class="md-toolbar-tools" ng-controller="AppCtrl as ctrl">
+        <md-button class="md-icon-button" aria-label="Settings" ng-click="ctrl.toggleLeft()"  ng-disabled="!ctrl.isAuth"          
             class="md-primary">
           <md-icon md-svg-icon="/asset/svg/menu.svg"></md-icon>
         </md-button>      
         <h2>
-          <span>D-Kanban</span>
+          <span>D-Kanban {CDC}</span>
         </h2>
         
         <span flex></span>
@@ -31,7 +30,7 @@
       </div>
     </md-toolbar>
     
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" >
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" id="leftNav">
       <md-toolbar class="md-theme-light" layout="row">
         <h1 class="md-toolbar-tools">D-Kanban::Menu</h1>
       <!--   <md-button class="md-icon-button" ng-click="ctrl.closeMenu()" layout-align="end"> <md-icon
@@ -41,17 +40,32 @@
       </md-toolbar>
       <md-content layout-padding>
         <form>
-          <md-input-container>
-            <label for="testInput">Test input</label>
-            <input type="text" id="testInput"
-                   ng-model="data" md-autofocus>
-          </md-input-container>
-        </form>
+	          <md-input-container>
+		          <div layout layout="column" layout-align="start center">
+		          	<md-button class="md-icon-button" aria-label="Kanban" href="/app/index.html#kanban">
+		          		<md-icon md-svg-icon="/asset/svg/ic_people_24px.svg" ></md-icon>          		
+		        	</md-button>
+		          	<span class="md-body-2">Kanban</span>
+		          </div>
+		            <div layout layout="column" layout-align="start center">
+		           		<md-button class="md-icon-button" aria-label="Vue synthétique">
+		          			<md-icon md-svg-icon="/asset/svg/presentation.svg" ></md-icon>          		
+		        		</md-button>
+		        		<span class="md-body-2">Synthèse</span>	
+		       		</div>
+		    	<div layout layout="column" layout-align="start center">
+		        	<md-button class="md-icon-button" aria-label="Paramètres">
+		          		<md-icon md-svg-icon="/asset/svg/Settings.svg" ></md-icon>
+		        	</md-button>
+		        	<span class="md-body-2">Paramètres</span>
+		       	</div>
+			</md-input-container>
+		</form>
         
       </md-content>
     </md-sidenav>
     
-    <ng-view />
+    <ui-view />
     
 	
 
@@ -66,7 +80,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>	
     
 	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular.js"></script>
-	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-route.js"></script>	
+	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-ui-router.min.js"></script>	
 	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-sanitize.js"></script>	
 	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-resource.js"></script>
 	<script type="text/javascript" src="../asset/bower_components/angular-1.4.7/angular-animate.js"></script>

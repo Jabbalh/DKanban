@@ -1,11 +1,19 @@
-<div layout layout="row">
-	<md-input-container flex> 
-		<label>Login</label>
-		<input ng-model="ctrl.login"> 
-	</md-input-container>
-	<md-input-container flex> 
-		<label>Password</label> 
-		<input ng-model="ctrl.password"> 
-	</md-input-container>
-	<md-button md-no-ink class="md-primary" ng-click="ctrl.loginAction();">login</md-button>
+<div class="containerForm">
+	<section class="contentForm">
+		<form action="">
+			<h1>D-Kanban</h1>
+			<div>
+				<input type="text" placeholder="Username" required id="username" ng-model="ctrl.login" />
+			</div>
+			<div>
+				<input type="password" placeholder="Password" required id="password" ng-model="ctrl.password"/>
+			</div>
+			<div>
+				 <md-button md-no-ink class="md-primary" ng-click="ctrl.loginAction();">Se connecter</md-button>
+				<a href="#">Lost your password?</a>
+				<a href="#">Register</a>
+			</div>
+		</form><!-- form -->
+		
+	</section><!-- content -->
 </div>	
