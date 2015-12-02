@@ -88,9 +88,9 @@
 	top: 0;
 	z-index: -2;
 }
-.contentForm form { margin: 0 20px; position: relative }
-.contentForm form input[type="text"],
-.contentForm form input[type="password"] {
+.contentForm .form { margin: 0 20px; position: relative }
+.contentForm .form input[type="text"],
+.contentForm .form input[type="password"] {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	-ms-border-radius: 3px;
@@ -114,8 +114,8 @@
 	padding: 15px 10px 15px 40px;
 	width: 80%;
 }
-.contentForm form input[type="text"]:focus,
-.contentForm form input[type="password"]:focus {
+.contentForm .form input[type="text"]:focus,
+.contentForm .form input[type="password"]:focus {
 	-webkit-box-shadow: 0 0 2px #ed1c24 inset;
 	-moz-box-shadow: 0 0 2px #ed1c24 inset;
 	-ms-box-shadow: 0 0 2px #ed1c24 inset;
@@ -127,7 +127,7 @@
 }
 #username { background-position: 10px 10px !important }
 #password { background-position: 10px -53px !important }
-.contentForm form input[type="submit"] {
+.contentForm .form input[type="submit"] {
 	background: rgb(254,231,154);
 	background: -moz-linear-gradient(top,  rgba(254,231,154,1) 0%, rgba(254,193,81,1) 100%);
 	background: -webkit-linear-gradient(top,  rgba(254,231,154,1) 0%,rgba(254,193,81,1) 100%);
@@ -156,7 +156,7 @@
 	text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 	width: 120px;
 }
-.contentForm form input[type="submit"]:hover {
+.contentForm .form input[type="submit"]:hover {
 	background: rgb(254,193,81);
 	background: -moz-linear-gradient(top,  rgba(254,193,81,1) 0%, rgba(254,231,154,1) 100%);
 	background: -webkit-linear-gradient(top,  rgba(254,193,81,1) 0%,rgba(254,231,154,1) 100%);
@@ -165,7 +165,7 @@
 	background: linear-gradient(top,  rgba(254,193,81,1) 0%,rgba(254,231,154,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fec151', endColorstr='#fee79a',GradientType=0 );
 }
-.contentForm form div a {
+.contentForm .form div a {
 	color: #004a80;
     float: right;
     font-size: 12px;

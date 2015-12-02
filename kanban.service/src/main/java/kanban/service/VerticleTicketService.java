@@ -54,7 +54,7 @@ public class VerticleTicketService extends AbstractVerticle {
 	private void archiveTicket(Message<JsonObject> message){
 		CardTicket card = Json.decodeValue(message.body().encodePrettily(), CardTicket.class);
 		
-		mongoService.update(DbUtils.index(Ticket.class), new JsonObject().put("_id", card.getRef()), 
+		mongoService.update(DbUtils.index(Ticket.class), new JsonObject().put("_id", card.getId()), 
 				new JsonObject().put("$set", new JsonObject().put("archive", true)), x -> {
 					JsonObject result = new JsonObject()
 							.put("card", message.body())

@@ -90,7 +90,9 @@ public class MongoService implements IMongoService {
 		mongoClient.findOne(DbUtils.index(clazz), request, null, x -> {
 			T result = null;
 			if (x.succeeded()){
-				result = Json.decodeValue(x.result().encodePrettily(), clazz);
+				if (x.result() != null){
+					result = Json.decodeValue(x.result().encodePrettily(), clazz);
+				}				
 			} else {
 				logger.error("findOne ->" + DbUtils.index(clazz) + " on error -> " + x.cause());
 			}

@@ -122,6 +122,8 @@ public class FrontVerticle extends AbstractVerticle {
 		
 		router.get("/api/user/:login").handler(userHandler::apiUserByLogin);
 		
+		router.post("/public/user/authenticate").handler(x -> authHandler.userAuthenticate(vertx,x));
+		
 		/**
 		 * ####### Routes relatives à la gestion des applications #######  
 		 */
@@ -150,7 +152,7 @@ public class FrontVerticle extends AbstractVerticle {
 		//HttpServerOptions options = new HttpServerOptions();
 		//options.setSsl(true);		
 		
-		vertx.createHttpServer().requestHandler(router::accept).listen(8080);	
+		vertx.createHttpServer().requestHandler(router::accept).listen(8080, x-> System.out.println("Liste en 8080 -> " + x.succeeded()));	
 		
 		/**
 		 * Initialisation du Socket pour l'écoute via WebSocket

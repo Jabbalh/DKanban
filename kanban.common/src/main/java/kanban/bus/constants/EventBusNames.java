@@ -23,6 +23,7 @@ public class EventBusNames {
 	 */
 	public final static String USER_LIST = "USER_LIST";
 	public final static String USER_FIND_BY_LOGIN = "USER_FIND_BY_LOGIN";
+	public final static String USER_AUTHENTICATE = "USER_AUTHENTICATE";
 	
 	/**
 	 * BUS relatif aux applications

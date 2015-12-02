@@ -21,6 +21,7 @@ import kanban.entity.db.ZoneTicket;
 import kanban.entity.db.parameter.ApplicationData;
 import kanban.entity.db.parameter.ApplicationParameter;
 import kanban.entity.db.parameter.ZoneApp;
+import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.DbUtils;
 
@@ -34,6 +35,9 @@ public class ApplicationService extends AbstractVerticle {
 	
 	@Inject
 	private IMongoService mongoService;
+	
+	@Inject
+	private ICryptoService cryptoService;
 	
 	@Override
 	public void start() {
@@ -55,6 +59,14 @@ public class ApplicationService extends AbstractVerticle {
 			
 			ApplicationData.set(x.get(0));	
 			message.reply("OK");
+			
+			mongoService.findAll(User.class, users -> {
+				for (User u : users) {
+					u.setPassword(cryptoService.genHash256(u.getLogin()));
+					mongoService.update(u, b -> System.out.println("User " + u.getLogin() + " update " + b));					
+				}
+			});
+			
 		});
 	}
 	

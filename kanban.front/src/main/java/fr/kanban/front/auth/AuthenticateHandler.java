@@ -12,6 +12,7 @@ import io.vertx.ext.web.handler.JWTAuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.ext.web.sstore.SessionStore;
+import kanban.bus.constants.EventBusNames;
 import kanban.entity.db.User;
 import kanban.entity.session.SessionData;
 import kanban.web.services.ISessionService;
@@ -82,7 +83,31 @@ public class AuthenticateHandler {
 				new JsonObject().put("user",new JsonObject(Json.encodePrettily(data.getCurrentUser()))), new JWTOptions()));
 		sessionService.toSession(context.session(), data);
 										
-		context.response().end(Json.encodePrettily(data.getToken()));
+		context.response().end(data.getToken());
+	}
+	
+	/**
+	 * Test de l'authentification
+	 * @param context
+	 */
+	public void userAuthenticate(Vertx vertx,RoutingContext context){
+		JsonObject user = context.getBodyAsJson();
+		vertx.eventBus().send(EventBusNames.USER_AUTHENTICATE, user, x -> {
+			Boolean b = Boolean.parseBoolean(x.result().body().toString());
+			if (b){
+				String login = user.getString("login");
+				SessionData data = new SessionData();
+				data.setCurrentUser(new User(login, "NA", login, login));
+				data.setToken(authProvider.generateToken(
+						new JsonObject().put("user",new JsonObject(Json.encodePrettily(data.getCurrentUser()))), new JWTOptions()));
+				sessionService.toSession(context.session(), data);											
+				context.response().end(Json.encodePrettily(data.getToken()));
+			} else {
+				
+				context.response().end(Json.encodePrettily("KO"));
+			}
+			
+		});
 	}
 	
 	/**

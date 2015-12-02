@@ -1,6 +1,6 @@
 <div class="containerForm">
 	<section class="contentForm">
-		<form action="">
+	<div class="form">		
 			<h1>D-Kanban</h1>
 			<div>
 				<input type="text" placeholder="Username" required id="username" ng-model="ctrl.login" />
@@ -9,11 +9,12 @@
 				<input type="password" placeholder="Password" required id="password" ng-model="ctrl.password"/>
 			</div>
 			<div>
-				 <md-button md-no-ink class="md-primary" ng-click="ctrl.loginAction();">Se connecter</md-button>
-				<a href="#">Lost your password?</a>
-				<a href="#">Register</a>
+				 <md-button md-no-ink class="md-primary" ng-click="ctrl.loginAction();">Se connecter</md-button>				
 			</div>
-		</form><!-- form -->
+			<div style="color:Red" ng-hide="{{ctrl.auth_ko}}">
+           		{{ctrl.message}}
+          	</div>
+		</div>
 		
 	</section><!-- content -->
 </div>	
