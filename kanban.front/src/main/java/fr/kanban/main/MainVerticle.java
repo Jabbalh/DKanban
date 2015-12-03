@@ -1,5 +1,7 @@
 package fr.kanban.main;
 
+import java.util.Properties;
+
 import fr.kanban.front.FrontVerticle;
 import io.vertx.core.AbstractVerticle;
 import kanban.service.VerticleApplicationService;
@@ -13,6 +15,9 @@ public class MainVerticle extends AbstractVerticle {
 	@Override
 	public void start() {
 
+		Properties properties = System.getProperties();
+		properties.setProperty("vertx.disableFileCaching", "false");
+		
 		boolean reinit = false;
 		if (reinit){
 			VerticleUtils.DeployeVertical(vertx,ApplicationService.class, x -> {

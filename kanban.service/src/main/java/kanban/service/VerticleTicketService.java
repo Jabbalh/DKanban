@@ -21,6 +21,7 @@ import kanban.entity.ui.FullCard;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.DbUtils;
 import kanban.service.utils.UiUtils;
+import kanban.utils.callback.Then;
 
 public class VerticleTicketService extends AbstractVerticle {
 
@@ -65,6 +66,10 @@ public class VerticleTicketService extends AbstractVerticle {
 				});
 	}
 	
+	private <T> void replyKo(Message<String> message, T value){
+		message.reply(Json.encodePrettily("KO"));
+	}
+	
 	/**
 	 * Mise à jour de l'état du ticket
 	 * @param message
@@ -75,7 +80,10 @@ public class VerticleTicketService extends AbstractVerticle {
 		String stateName= parameter.getString("zone");		
 		
 		
+		
 		mongoService.findOne(Ticket.class, new JsonObject().put("_id", parameter.getJsonObject("card").getString("id")))
+		.Rule(Then::NotNull)
+		.Otherwise(x -> replyKo(message, x))
 		.when(ticket -> {
 			
 			ticket.addHistory(new TicketHistory(t -> {
@@ -88,9 +96,13 @@ public class VerticleTicketService extends AbstractVerticle {
 			}));
 			
 			mongoService.findOne(ZoneTicket.class, new JsonObject().put("codeZone", parameter.getString("zone")))
+			.Rule(Then::NotNull)
+			.Otherwise(x -> replyKo(message, x))
 			.when(zone -> 
 			{
 				mongoService.findOne(User.class, new JsonObject().put("login", parameter.getString("user")))
+				.Rule(Then::NotNull)
+				.Otherwise(x -> replyKo(message, x))
 				.when(user -> 
 				{
 					ticket.setOwner(user);
@@ -109,9 +121,7 @@ public class VerticleTicketService extends AbstractVerticle {
 			
 			
 		});
-		
-		
-							
+				
 	}
 	
 	/**
