@@ -24,15 +24,17 @@
         </h2>
         
         <span flex></span>
-        <md-button class="md-icon-button" aria-label="Profil">
+        <md-menu md-position-mode="target-right target">
+        <md-button class="md-icon-button" aria-label="Profil" ng-click="$mdOpenMenu($event)">
           <md-icon md-svg-icon="/asset/svg/ic_person_24px.svg" ></md-icon>
-        </md-button>   
-      <!--   <md-menu-item>
-          <md-button ng-click="ctrl.signOutl($event)">
+        </md-button>  
+        <md-menu-content> 
+         <md-menu-item>
+          <md-button ng-click="ctrl.signOut($event)">
             <md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>
-            Redial
+            Deconnexion
           </md-button>
-        </md-menu-item>    -->   
+        </md-menu-item>       
       </md-menu-content>     
       </div>
     </md-toolbar>

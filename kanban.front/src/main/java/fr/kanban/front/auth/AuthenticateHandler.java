@@ -49,16 +49,14 @@ public class AuthenticateHandler {
 	
 	private void internalInit(Router router, Vertx vertx){			
 		router.route("/api/*").handler(context -> {
-			Boolean ok = (sessionService.isAuthenticate(context.session(), context.request()));
+			Boolean ok = (sessionService.isAuthenticate(context.session(), context.request()));			
 				if (ok) 	context.next();
 				else 		context.fail(401);						
 		});
 		
 		router.route("/api/*").failureHandler(failureRoutingContext ->{
 			  int statusCode = failureRoutingContext.statusCode();		
-			  if (statusCode <=0) {
-				  System.out.println("failureRoutingContext code < 0 -> " + statusCode);
-				  
+			  if (statusCode <=0) {				  
 				  statusCode = 404;
 			  }
 			  failureRoutingContext.response().setStatusCode(statusCode).end(Json.encodePrettily("Not Authorized"));
@@ -108,6 +106,11 @@ public class AuthenticateHandler {
 			}
 			
 		});
+	}
+	
+	public void signOut(RoutingContext context){
+		sessionService.signOut(context.session(), context.request());	
+		context.response().end();
 	}
 	
 	/**

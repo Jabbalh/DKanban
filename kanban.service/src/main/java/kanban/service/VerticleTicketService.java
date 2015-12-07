@@ -66,7 +66,7 @@ public class VerticleTicketService extends AbstractVerticle {
 				});
 	}
 	
-	private <T> void replyKo(Message<String> message, T value){
+	private void replyKo(Message<String> message){
 		message.reply(Json.encodePrettily("KO"));
 	}
 	
@@ -79,11 +79,9 @@ public class VerticleTicketService extends AbstractVerticle {
 		JsonObject parameter = new JsonObject(message.body());		
 		String stateName= parameter.getString("zone");		
 		
-		
-		
 		mongoService.findOne(Ticket.class, new JsonObject().put("_id", parameter.getJsonObject("card").getString("id")))
 		.Rule(Then::NotNull)
-		.Otherwise(x -> replyKo(message, x))
+		.Otherwise(x -> replyKo(message))
 		.when(ticket -> {
 			
 			ticket.addHistory(new TicketHistory(t -> {
@@ -97,12 +95,12 @@ public class VerticleTicketService extends AbstractVerticle {
 			
 			mongoService.findOne(ZoneTicket.class, new JsonObject().put("codeZone", parameter.getString("zone")))
 			.Rule(Then::NotNull)
-			.Otherwise(x -> replyKo(message, x))
+			.Otherwise(x -> replyKo(message))
 			.when(zone -> 
 			{
 				mongoService.findOne(User.class, new JsonObject().put("login", parameter.getString("user")))
 				.Rule(Then::NotNull)
-				.Otherwise(x -> replyKo(message, x))
+				.Otherwise(x -> replyKo(message))
 				.when(user -> 
 				{
 					ticket.setOwner(user);
@@ -112,7 +110,7 @@ public class VerticleTicketService extends AbstractVerticle {
 								fullCard.setCard(CardTicket.fromTicket(ticket));
 								fullCard.setUser(parameter.getString("user"));
 								fullCard.setZone(stateName);
-								// On publi une réponse avec le ticket, l'utilisateur concerné et le nouvel état								
+								// On publie une réponse avec le ticket, l'utilisateur concerné et le nouvel état								
 								message.reply(Json.encodePrettily("OK"));
 								vertx.eventBus().publish("update-card", Json.encodePrettily(fullCard));								
 							});						

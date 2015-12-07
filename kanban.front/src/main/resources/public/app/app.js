@@ -48,7 +48,7 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
 		  });   	    
     })
     
-    .controller('AppCtrl', function ($scope, $http,$timeout, $mdSidenav, $log) {		    
+    .controller('AppCtrl', function ($scope, $http,$timeout, $mdSidenav, $log,$state) {		    
 		    
     	var self = this;    		
     	this.toggleLeft = function() { $mdSidenav('left').toggle(); }
@@ -56,5 +56,14 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
 								
 	    $http.get("/public/is/auth").success(	function(data){ self.isAuth = data.auth;  	});		    
 	    $scope.$on("authenticate", 				function(data){	self.isAuth = data;			});
+	    
+	    this.signOut = function($event) {
+	    	$http.get("/api/signout").success(function(data){
+	    		localStorage.removeItem("id_token");
+		    	self.isAuth = false;	    	
+		    	$state.go('login');
+	    	});
+	    	
+	    }
 		    	    
   });

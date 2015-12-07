@@ -13,4 +13,6 @@ public interface ISessionService {
 
 	User getCurrentUser(Session session);
 
+	void signOut(Session session, HttpServerRequest request);
+
 }

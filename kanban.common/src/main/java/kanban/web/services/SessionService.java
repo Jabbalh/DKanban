@@ -19,12 +19,21 @@ public class SessionService implements ISessionService {
 		if (getSessionData(session).getCurrentUser() != null){				
 			SessionData sessionData = getSessionData(session);				
 			MultiMap mapHeader = request.headers();
-			String token = mapHeader.get("Authorization");
-			
+			String token = mapHeader.get("Authorization");			
 			return token.equals(fullToken(sessionData.getToken()));
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Déconnexion
+	 * @param session
+	 * @param request
+	 */
+	@Override
+	public void signOut(Session session,HttpServerRequest request){				
+		session.remove(SESSION_DATA);		
 	}
 	
 	@Override
