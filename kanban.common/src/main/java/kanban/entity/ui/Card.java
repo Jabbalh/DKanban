@@ -1,5 +1,7 @@
 package kanban.entity.ui;
 
+import java.util.Date;
+
 public class Card {
 	private String ref;
 	private String id;
@@ -23,6 +25,9 @@ public class Card {
 	}
 
 	public String getId() {
+		if (id == null){
+			id = String.valueOf(new Date().getTime());
+		}
 		return id;
 	}
 

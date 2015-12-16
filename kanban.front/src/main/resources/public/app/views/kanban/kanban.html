@@ -6,23 +6,23 @@
     </md-button>
   </md-fab-trigger>
   <md-fab-actions>
-    <md-button aria-label="Ajout ticket" class="md-fab md-hue-8 md-mini">
-       <md-icon md-svg-src="/asset/svg/add_cross.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
+    <md-button aria-label="Ajout ticket" class="md-fab md-hue-8 md-mini" ng-click="ctrl.openNewTicket($event)">
+       <md-icon md-svg-src="/asset/svg/add_cross.svg" ></md-icon>
     </md-button>
-    <md-button aria-label="Chercher un ticket" class="md-fab md-hue-8 md-mini">
-       <md-icon md-svg-src="/asset/svg/eye_preview.svg" ng-click="ctrl.openNewTicket($event)"></md-icon>
+    <md-button aria-label="Chercher un ticket" class="md-fab md-hue-8 md-mini" ng-click="ctrl.searchTicket($event)">
+       <md-icon md-svg-src="/asset/svg/eye_preview.svg" ></md-icon>
     </md-button>
-    <md-button aria-label="Filtre sur moi" class="md-fab md-hue-8 md-mini">
-       <md-icon md-svg-src="/asset/svg/ic_person_24px.svg" ng-click="ctrl.filtreOnUs()"></md-icon>
+    <md-button aria-label="Filtre sur moi" class="md-fab md-hue-8 md-mini" ng-click="ctrl.filtreOnUs()">
+       <md-icon md-svg-src="/asset/svg/ic_person_24px.svg" ></md-icon>
     </md-button>
-    <md-button aria-label="Tout le monde" class="md-fab md-hue-8 md-mini">
-       <md-icon md-svg-src="/asset/svg/ic_people_24px.svg" ng-click="ctrl.filtreOnAll()"></md-icon>
+    <md-button aria-label="Tout le monde" class="md-fab md-hue-8 md-mini" ng-click="ctrl.filtreOnAll()">
+       <md-icon md-svg-src="/asset/svg/ic_people_24px.svg" ></md-icon>
     </md-button>
   </md-fab-actions>
 </md-fab-speed-dial>
 
 
-<div layout="row" layout-wrap class="grid-row-header" >
+<div layout="row" layout-wrap class="grid-row-header" ng-init="ctrl.init()">
 	<div   ng-repeat="item in ctrl.headers" class="mdl-cell--{{item.width}}-col ">
 			<center><h4>{{item.libelle}}</h4></center>
 		</div>
@@ -33,16 +33,20 @@
 		
 				
 	<div class="mdl-cell--{{zone.first.width}}-col overdelete"
-		id="{{zone.first.id}}" droppable drop="handleDropDelete" dropdelete="true">
+		id="{{zone.first.id}}" ng-drop="true" ng-drop-success="crtl.handleDropDelete($data,$event,other.id)" dropdelete="true">
 		<p>{{zone.first.libelle}}</p>
 	</div>
 		
 		
-	<div ng-repeat="other in zone.other" class="mdl-cell--{{other.width}}-col" id="{{other.id}}"  droppable drop="handleDrop">
+	<div ng-repeat="other in zone.other" class="mdl-cell--{{other.width}}-col" id="{{other.id}}"  
+	ng-drop="true" ng-drop-success="ctrl.handleDrop($data,$event,other.id)"
+	>
 
 
 					  
-		<div class="card-margin-border drag-auto-item"  id="{{ticket.id}}" draggable ng-repeat="ticket in other.cards">
+		<div class="card-margin-border drag-auto-item"  id="{{ticket.id}}" 
+		ng-drag="true" ng-drag-data="{data:{card:ticket, zone:other.id}}" data-allow-transform="true" 
+		ng-repeat="ticket in other.cards">
 			<div>
 			<div layout="row">
 				<div flex>

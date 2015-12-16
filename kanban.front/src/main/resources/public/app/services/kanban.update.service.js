@@ -1,14 +1,7 @@
 function KanbanUpdateService($http) {
 
     this.updateTicketZone = function(data) {
-    	var result =  $http.post("/api/ticket/update/zone",data);
-    	
-    	result.success(function(data){
-    		console.log("updateTicketZone -> success -> " + result);
-    	});
-    	result.error(function(data){
-    		console.log("updateTicketZone -> error -> " + result);
-    	});
+    	return $http.post("/api/ticket/update/zone",data);    	
     }
     
     this.updateTicket = function(data){
@@ -21,6 +14,10 @@ function KanbanUpdateService($http) {
     
     this.archiveTicket = function(data) {
     	return $http.post("/api/ticket/update/archive",data);
+    }
+    
+    this.deleteTicket = function(data) {
+    	return $http.post("/api/ticket/delete", data);
     }
 }
 

@@ -6,8 +6,6 @@ import fr.kanban.front.AbstractHandler;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import kanban.bus.constants.EventBusNames;
 import kanban.entity.ui.CardTicket;
@@ -15,7 +13,7 @@ import kanban.web.services.ISessionService;
 
 public class TicketHandler extends AbstractHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(TicketHandler.class);
+	//private static final Logger logger = LoggerFactory.getLogger(TicketHandler.class);
 	
 	
 	private ISessionService sessionService;
@@ -34,8 +32,9 @@ public class TicketHandler extends AbstractHandler {
 		});
 	}
 	
-	public void apiTicketUpdateZone(RoutingContext context){			
-		JsonObject data = context.getBodyAsJson();					
+	public void apiTicketUpdateZone(RoutingContext context){
+		System.out.println("apiTicketUpdateZone");
+		JsonObject data = context.getBodyAsJson().getJsonObject("data");					
 		vertx.eventBus().send(EventBusNames.TICKET_UPDATE_STATE, Json.encodePrettily(data), r -> {				
 			context.response().end(Json.encodePrettily("OK"));			
 		});				
@@ -43,8 +42,8 @@ public class TicketHandler extends AbstractHandler {
 	
 	
 	public void apiTicketUpdateAll(RoutingContext context) {
-		JsonObject data = context.getBodyAsJson();
-		logger.debug("apiTicketUpdateAll -> " + data.encodePrettily());
+		System.out.println("apiTicketUpdateAll");
+		JsonObject data = context.getBodyAsJson();		
 		Consumer<Message<Object>> callback = x -> context.response().end(Json.encodePrettily(x.body().toString())); 
 		if (data.getBoolean("insert")) {
 			vertx.eventBus().send(EventBusNames.TICKET_INSERT_ALL, data, x -> callback.accept(x.result()));
@@ -58,6 +57,16 @@ public class TicketHandler extends AbstractHandler {
 		vertx.eventBus().send(EventBusNames.TICKET_LIST, "LISTE", r -> {
 			context.response().end(r.result().body().toString());
 		});
+	}
+	
+	public void apiTicketSearch(RoutingContext context) {
+		vertx.eventBus().send(EventBusNames.TICKET_SEARCH, context.getBodyAsJson(), r -> {
+			context.response().end(r.result().body().toString());
+		});
+	}
+	
+	public void apiTicketDelete(RoutingContext context){
+		vertx.eventBus().send(EventBusNames.TICKET_DELETE, context.getBodyAsJson(), r -> context.response().end(r.result().body().toString()));
 	}
 	
 	public void apiNewEmpty(RoutingContext context) {

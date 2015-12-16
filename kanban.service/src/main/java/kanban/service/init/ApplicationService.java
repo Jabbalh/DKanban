@@ -24,6 +24,7 @@ import kanban.entity.db.parameter.ZoneApp;
 import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.DbUtils;
+import kanban.utils.callback.Async;
 
 public class ApplicationService extends AbstractVerticle {
 
@@ -55,15 +56,17 @@ public class ApplicationService extends AbstractVerticle {
 	 */
 	private void initApplication(Message<Object> message) {
 		logger.debug("INIT_APPLICATION -> initApplication");
-		mongoService.findAll(ApplicationParameter.class, x -> {
+		Async.When(() -> mongoService.findAll(ApplicationParameter.class))
+		.doThat( x -> {
 			
 			ApplicationData.set(x.get(0));	
 			message.reply("OK");
 			
-			mongoService.findAll(User.class, users -> {
+			Async.When(() -> mongoService.findAll(User.class))
+			.doThat(users -> {
 				for (User u : users) {
 					u.setPassword(cryptoService.genHash256(u.getLogin()));
-					mongoService.update(u, b -> System.out.println("User " + u.getLogin() + " update " + b));					
+					Async.When(() -> mongoService.update(u)).doThat(b -> System.out.println("User " + u.getLogin() + " update " + b));					
 				}
 			});
 			
@@ -105,15 +108,13 @@ public class ApplicationService extends AbstractVerticle {
 		
 		if (!ApplicationData.get().isInit()){
 			mongoService.delete(DbUtils.index(ApplicationParameter.class), () -> {
-				mongoService.insert(ApplicationData.get(), x -> {				
-					if (x.succeeded()) {
-						logger.debug("Application initialized");
-						ApplicationData.get().setInit(true);
-						message.reply("OK");
-					} else {
-						logger.error("Application NOT initialized -> " + x.cause());
-						message.reply("NOK");
-					}
+				Async.When(() -> mongoService.insert(ApplicationData.get()))
+						.Rule(rule -> rule)
+						.Otherwise(other -> { logger.error("Application NOT initialized -> " + other); message.reply("NOK"); })
+						.doThat(x -> {									
+							logger.debug("Application initialized");
+							ApplicationData.get().setInit(true);
+							message.reply("OK");					
 				});
 			});
 		}
@@ -146,8 +147,8 @@ public class ApplicationService extends AbstractVerticle {
 		ApplicationData.get().getZones().forEach(x -> zones.add(x.getZoneTicket()));
 				
 		List<User> users = new LinkedList<>();
-		users.add(new User("user1", "user1", "User 1", "User 1"));
-		users.add(new User("user2", "user2", "User 2", "User 2"));
+		users.add(new User("user1", cryptoService.genHash256("user1"), "User 1", "User 1"));
+		users.add(new User("user2", cryptoService.genHash256("user2"), "User 2", "User 2"));
 		
 		List<StateTicket> states = ApplicationData.get().getStatesTicket();
 				
@@ -163,8 +164,24 @@ public class ApplicationService extends AbstractVerticle {
 		
 		deleteAndInit(mongoService,DbUtils.index(User.class), users, x -> "user " + x.getLogin());
 		
-							
-		deleteAndInit(mongoService, DbUtils.index(Ticket.class), tickets, t -> "ticket " + t.getReference());
+		
+		mongoService.delete(DbUtils.index(Ticket.class), () -> {
+			
+			
+			mongoService.createIndex(indexCreated -> {
+				if (indexCreated) {
+					for (Ticket u : tickets) {				
+						Async.When(() -> mongoService.insert(u)).doThat(x ->  genericCallback("Ticket" + u.getReference()));
+					}
+				}
+			});	
+			
+			
+		});
+		
+		
+						
+		
 		
 		message.reply("OK");
 	}
@@ -175,7 +192,7 @@ public class ApplicationService extends AbstractVerticle {
 		mongoService.delete(index, () -> {			
 			for (T u : liste) {
 				logger.debug("Before insert of " + message.apply(u));
-				mongoService.insert(u, genericCallback(message.apply(u)));
+				Async.When(() -> mongoService.insert(u)).doThat(x ->  genericCallback(message.apply(u)));
 			}
 			
 		});

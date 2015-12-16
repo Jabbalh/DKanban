@@ -1,0 +1,25 @@
+<md-bottom-sheet class="md-grid" layout="column" ng-cloak>
+  <div layout="row" layout-align="center center">
+    <h4>Nouvel historique</h4>
+  </div>
+ <div layout layout="row"> 			  				
+			<md-input-container flex="20" class="md-block" >				
+				<label>Date</label> 
+				 <input type="date" ng-model="history.date" ng-model-options="{timezone:'+0100'}">  
+				<!-- <md-datepicker ng-model="history.date" md-placeholder="saisir date"></md-datepicker>-->
+			</md-input-container>	
+			<md-input-container flex class="md-block" >				
+				<label>Résumé</label> 
+				<input ng-model="history.summary"> 
+			</md-input-container>						
+		</div>
+		<div layout layout="row">
+			<md-input-container flex> 
+				<label>Description</label>
+				<textarea ng-model="history.description" /> 
+			</md-input-container>
+		</div>	
+		<div layout layout="row">
+			<md-button ng-click="addHistory()" style="margin-right:20px;">Sauver</md-button> 
+		</div>
+</md-bottom-sheet>

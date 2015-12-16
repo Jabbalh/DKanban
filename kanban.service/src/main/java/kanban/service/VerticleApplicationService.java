@@ -12,6 +12,7 @@ import kanban.bus.constants.EventBusNames;
 import kanban.entity.db.Application;
 import kanban.entity.db.StateTicket;
 import kanban.service.contract.IMongoService;
+import kanban.utils.callback.Async;
 
 public class VerticleApplicationService extends AbstractVerticle {
 
@@ -26,14 +27,16 @@ public class VerticleApplicationService extends AbstractVerticle {
 	}
 	
 	private void appList(Message<String> message){
-		mongoService.findAll(Application.class, x -> {
+		Async.When(() -> mongoService.findAll(Application.class))
+		.doThat(x -> {
 			List<String> result = x.stream().map(a -> a.getName()).sorted().collect(Collectors.toList());
 			message.reply(Json.encode(result));
 		});
 	}
 	
 	private void stateList(Message<String> message){
-		mongoService.findAll(StateTicket.class, x -> {
+		Async.When(() -> mongoService.findAll(StateTicket.class))
+		.doThat(x -> {
 			List<StateTicket> result = x.stream()
 						.sorted((c1,c2) -> c1.getLibelle().compareToIgnoreCase(c2.getLibelle()))
 						.collect(Collectors.toList());

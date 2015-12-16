@@ -1,4 +1,4 @@
-<md-dialog flex="80"> 
+<md-dialog flex="80" id="ticketDialog"> 
 <md-toolbar>
 <div class="md-toolbar-tools">
 	<h2>{{ticket.title}}</h2>
@@ -67,8 +67,12 @@
 	<md-tab label="Historique">
 		<md-content>
 			 <md-list>
-		      <md-subheader class="md-no-sticky">{{ticket.card.history.length}} entrée(s)</md-subheader>
-		      <md-list-item class="md-2-line" ng-repeat="item in ticket.card.history | orderBy:'date':true">			        
+		      <md-subheader class="md-no-sticky">
+		      	<md-button ng-click="addNew($event)" style="margin-right:20px;">Add</md-button> 
+		      	{{ticket.card.history.length}} entrée(s)
+		      </md-subheader>
+		      <md-list-item class="md-2-line" ng-repeat="item in ticket.card.history | orderBy:'date':true">	
+		      <img ng-src="/asset/svg/trash.svg" class="md-avatar" ng-click="deleteHistory(item)"  />   		        
 		        <div class="md-list-item-text" layout="column">
 		          <h3>{{ item.date }} - {{ item.summary }}</h3>			          
 		          <p>{{ item.description }}</p>
@@ -82,6 +86,7 @@
 </md-dialog-content> 
 <div class="md-actions"> 
 	<span flex></span>
+	<md-button ng-click="delete(ticket)" style="margin-right:20px;">Supprimer</md-button> 
 	<md-button ng-click="cancel()"> Annuler </md-button> 
 	<md-button ng-click="answer(ticket)" style="margin-right:20px;">Sauver</md-button> 
 </div>

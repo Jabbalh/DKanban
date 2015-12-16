@@ -11,8 +11,14 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
         //
         // Now set up the states
         $stateProvider
-        	.state('kanban', 	{ url: "/kanban", 	templateUrl: "/app/views/kanban.html", 	controller: 'KanbanController as ctrl' 	})
-          	.state('login', 	{ url: "/login", 	templateUrl: "/app/views/login.html", 	controller: 'LoginController as ctrl' 	});
+        	.state('kanban', 	{ url: "/kanban", 	templateUrl: "/app/views/kanban/kanban.html", 	controller: 'KanbanController as ctrl' 	})
+          	.state('login', 	{ url: "/login", 	templateUrl: "/app/views/login/login.html", 	controller: 'LoginController as ctrl' 	})
+          	.state('admin', 	{ url: "/admin", 	templateUrl: "/app/views/admin/admin.html", 	controller: 'AdminController as ctrl' 	})
+          	.state('admin.application', 	{ url: "/application", 	templateUrl: "/app/views/admin/application.html", 	controller: 'AdminAppController as ctrl' 	})
+          	.state('admin.statut', 			{ url: "/statut", 		templateUrl: "/app/views/admin/statut.html", 		controller: 'AdminStatutController as ctrl' 	})
+          	.state('admin.zones', 			{ url: "/zones", 		templateUrl: "/app/views/admin/zones.html", 		controller: 'AdminZoneController as ctrl' 	})
+          	.state('admin.utilisateur', 	{ url: "/utilisateur", 	templateUrl: "/app/views/admin/utilisateur.html", 	controller: 'AdminUtilisateurController as ctrl' 	});
+          	
         $urlRouterProvider.otherwise("/login");
         
         jwtInterceptorProvider.tokenGetter = function() { return localStorage.getItem('id_token'); }
@@ -32,6 +38,7 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
         
         $httpProvider.interceptors.push(interceptor);
     })
+   
     
     .run(function($rootScope,jwtHelper,$state) {
     	 $rootScope.$on('$stateChangeStart', function(e, to) {    		 

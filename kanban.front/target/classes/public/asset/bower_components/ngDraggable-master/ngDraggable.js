@@ -28,11 +28,11 @@ app.directive('draggable', function() {
   }
 });
 
-app.directive('droppable',['$parse', function($parse) {
+app.directive('droppable',['$parse', function($parse,$animate) {
   return {
     scope: {
     	drop: '&drop',
-    	dropdelete:'&dropdelete'  
+    	dropdelete:'&dropdelete'
     },
     link: function(scope, element, attrs) {
       // again we need the native object
@@ -72,8 +72,8 @@ app.directive('droppable',['$parse', function($parse) {
         'drop',
         function(e) {
           // Stops some browsers from redirecting.
-          if (e.stopPropagation) e.stopPropagation();
-          
+          //if (e.stopPropagation) e.stopPropagation();
+          e.stopPropagation();
           //console.log("drop function -> " + f);
           this.classList.remove('over');
           var id = e.dataTransfer.getData('Text');
@@ -81,16 +81,17 @@ app.directive('droppable',['$parse', function($parse) {
           if (attrs.dropdelete) {
         	  
           } else {
-        	  this.appendChild(item);
+        	  //this.appendChild(item);
           }
           
-          var data = {};
-          data.targetId = this.id;
-          data.originId = id;
+          var dataResult = {};
+          dataResult.targetId = this.id;
+          dataResult.originId = id;
           // call the drop passed drop function
-          scope.$emit(attrs.drop,data);
-          
-          return false;
+          //scope.$emit(attrs.drop,data);
+          scope.drop({data : dataResult});
+          id ="app/index.html#/kanban";
+          return true;
         },
         false
       );

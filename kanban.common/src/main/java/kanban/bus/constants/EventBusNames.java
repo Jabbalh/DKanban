@@ -3,6 +3,13 @@ package kanban.bus.constants;
 public class EventBusNames {
 
 	/**
+	 * BUS relatif aux sockets js
+	 */
+	public static final String UPDATE_CARD = "update-card";
+	public static final String INSERT_CARD = "insert-card";
+	public static final String DELETE_CARD = "delete-card";
+	
+	/**
 	 * BUS relatif à la construction du Kanban
 	 */
 	public final static String KANBAN_TICKET_BY_USER = "KANBAN_TICKET_BY_USER";
@@ -18,6 +25,9 @@ public class EventBusNames {
 	public final static String TICKET_UPDATE_ALL = "TICKET_UPDATE_ALL";
 	public final static String TICKET_INSERT_ALL = "TICKET_INSERT_ALL";
 	public final static String TICKET_ARCHIVE = "TICKET_ARCHIVE";
+	public final static String TICKET_SEARCH = "TICKET_SEARCH";
+	public final static String TICKET_DELETE = "TICKET_DELETE";
+	
 	/**
 	 * BUS relatif aux utilisateurs
 	 */

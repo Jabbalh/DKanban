@@ -6,6 +6,9 @@ import kanban.entity.db.parameter.ApplicationData;
 import kanban.entity.db.parameter.ZoneApp;
 
 public class UiUtils {
+	
+	
+	
 
 	public static String otherZoneColumnId(String login,String state) {
 		return String.format("%s$%s", login,state);
@@ -34,5 +37,7 @@ public class UiUtils {
 	public static ZoneApp getZoneApp(String key) {
 		return ApplicationData.get().getZoneByKey().get(key);
 	}
+	
+	
 	
 }

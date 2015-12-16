@@ -12,6 +12,7 @@ import kanban.entity.db.User;
 import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.BusUtils;
+import kanban.utils.callback.Async;
 
 public class VerticleUserService extends AbstractVerticle {
 
@@ -34,7 +35,7 @@ public class VerticleUserService extends AbstractVerticle {
 	 */
 	private void userList(Message<String> message) {
 		JsonObject sort = new JsonObject().put("sort", "firstName");
-		mongoService.findAll( User.class, sort,Sort.ASC ,x -> message.reply(Json.encodePrettily(x)));
+		Async.When(() -> mongoService.findAll( User.class, sort,Sort.ASC)).doThat(x -> message.reply(Json.encodePrettily(x)));
 	}
 	
 	/**
@@ -42,8 +43,8 @@ public class VerticleUserService extends AbstractVerticle {
 	 * @param message
 	 */
 	private void userFindByLogin(Message<String> message){
-		mongoService.findOne(User.class, new JsonObject().put("login", message.body()))
-		.when(x -> 
+		Async.When(()-> mongoService.findOne(User.class, new JsonObject().put("login", message.body())))
+		.doThat(x -> 
 		{		
 			message.reply(Json.encodePrettily(x));
 		});

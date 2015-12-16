@@ -37,7 +37,7 @@ public class AuthenticateHandler {
 		
 		
 		JsonObject config = new JsonObject().put("keyStore", new JsonObject()
-			    .put("path", "../key/keystore.jceks")
+			    .put("path", "key/keystore.jceks")
 			    .put("type", "jceks")
 			    .put("password", "secret"));		
 		authProvider = JWTAuth.create(vertx, config);

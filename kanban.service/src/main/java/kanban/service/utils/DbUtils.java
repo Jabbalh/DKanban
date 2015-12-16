@@ -6,4 +6,5 @@ public class DbUtils {
 		return clazz.getSimpleName();
 	}
 	
+	
 }

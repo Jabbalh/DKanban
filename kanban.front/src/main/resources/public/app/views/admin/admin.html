@@ -1,0 +1,36 @@
+<div layout="row" layout-wrap>
+
+	<md-list ng-cloak flex="20">
+		 <md-subheader class="md-no-sticky">Utilisateurs</md-subheader>
+  			<md-list-item ng-click="ctrl.goTo('admin.utilisateur')">
+    			<img ng-src="/asset/svg/ic_person_24px.svg" class="md-avatar" />
+    			<p>Liste des utilisateurs du kanban</p>    			
+  			</md-list-item>
+	  	<md-divider></md-divider>
+	
+		<md-subheader class="md-no-sticky">Applications</md-subheader>
+  			<md-list-item ng-click="ctrl.goTo('admin.application')">
+    			<img ng-src="/asset/svg/ic_translate_48px.svg" class="md-avatar" />
+    			<p>Liste des applications</p>    			
+  			</md-list-item>
+	  	<md-divider></md-divider>
+	  	
+	  	<md-subheader class="md-no-sticky">Statuts</md-subheader>
+  			<md-list-item ng-click="ctrl.goTo('admin.statut')">
+    			<img ng-src="/asset/svg/ic_feedback_48px.svg" class="md-avatar" />
+    			<p>Liste des statuts</p>    			
+  			</md-list-item>
+	  	<md-divider></md-divider>
+	  	
+	  	<md-subheader class="md-no-sticky">Zones</md-subheader>
+  			<md-list-item ng-click="ctrl.goTo('admin.zones')">
+    			<img ng-src="/asset/svg/ic_view_carousel_48px.svg" class="md-avatar" />
+    			<p>Liste des zones du kanban</p>    			
+  			</md-list-item>
+	  		
+	</md-list>
+	<div flex >
+		<div ui-view></div>
+	</div>
+	
+</div>

@@ -3,15 +3,13 @@ package kanban.service.contract;
 import java.util.List;
 import java.util.function.Consumer;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import kanban.bus.constants.Sort;
-import kanban.utils.callback.Then;
+import kanban.utils.callback.MongoCallBack;
 
 public interface IMongoService {
 
-	<T> void insert(T entity, Handler<AsyncResult<String>> callback);
+	<T> MongoCallBack<Boolean> insert(T entity);
 
 	
 
@@ -19,27 +17,27 @@ public interface IMongoService {
 
 
 
-	<T> void findAll(Class<T> clazz, Consumer<List<T>> callBack);
+	<T> MongoCallBack<List<T>> findAll(Class<T> clazz);
 
 
 
-	<T> void findAll(Class<T> clazz, JsonObject query, Consumer<List<T>> callBack);
+	<T> MongoCallBack<List<T>> findAll(Class<T> clazz, JsonObject query);
 
 
 
-	<T> void findAll(Class<T> clazz, JsonObject query, Sort sort, Consumer<List<T>> callBack);
+	<T> MongoCallBack<List<T>> findAll(Class<T> clazz, JsonObject query, Sort sort);
 
 
 
-	<T> Then<T> findOne(Class<T> clazz, JsonObject request);
+	<T> MongoCallBack<T> findOne(Class<T> clazz, JsonObject request);
 
 
 
-	void update(String index, JsonObject query, JsonObject update,Consumer<Boolean> callback);
+	<T> MongoCallBack<Boolean> update(String index, JsonObject query, JsonObject update);
 
 
 
-	<T> void update(T entity, Consumer<Boolean> callback);
+	<T> MongoCallBack<Boolean> update(T entity);
 
 
 
@@ -47,10 +45,22 @@ public interface IMongoService {
 
 
 
-	<T> Then<Integer> getNextSequence(Class<T> clazz);
+	<T> MongoCallBack<Integer> getNextSequence(Class<T> clazz);
 
 
-	<T,R> Then<List<R>> findInternListFromObject(Class<T> clazz, Class<R> clazzR, JsonObject query, JsonObject fields);
+	<T,R> MongoCallBack<List<R>> findInternListFromObject(Class<T> clazz, Class<R> clazzR, JsonObject query, JsonObject fields);
+
+
+
+	void createIndex(Consumer<Boolean> callback);
+
+
+
+	<T> MongoCallBack<List<T>> fullSearchCommand(Class<T> index, JsonObject command);
+
+
+
+	<T> MongoCallBack<Boolean> deleteEntity(Class<T> clazz, String id);
 
 
 

@@ -13,10 +13,12 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import kanban.utils.log.Logger;
 import kanban.web.services.ISessionService;
 
 public class FrontVerticle extends AbstractVerticle {
 
+	private static final Logger logger = Logger.Get(FrontVerticle.class);
 	
 	private SockBusServer sockBuServer;
 	@Inject
@@ -68,6 +70,9 @@ public class FrontVerticle extends AbstractVerticle {
 	          .putHeader("X-XSS-Protection", "1; mode=block")
 	          // deny frames
 	          .putHeader("X-FRAME-OPTIONS", "DENY");	
+			
+			logger.debug(() -> "handle -> " + context.request().path());
+			
 			context.next();
 		});
 		
@@ -103,6 +108,10 @@ public class FrontVerticle extends AbstractVerticle {
 		 * On renvois la liste des tickets
 		 */
 		router.get("/api/ticket/list").handler(ticketHandler::apiTicketList);
+		
+		router.post("/api/ticket/search").handler(ticketHandler::apiTicketSearch);
+		
+		router.post("/api/ticket/delete").handler(ticketHandler::apiTicketDelete);
 		
 		/**
 		 * Création d'un ticket vide

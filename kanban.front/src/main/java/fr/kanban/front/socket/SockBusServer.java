@@ -27,8 +27,9 @@ public class SockBusServer {
 		
 	    BridgeOptions options = new BridgeOptions()
 	    		.addOutboundPermitted(new PermittedOptions().setAddress("update-card"))
-	    		.addOutboundPermitted(new PermittedOptions().setAddress("insert-card"));
-	    
+	    		.addOutboundPermitted(new PermittedOptions().setAddress("insert-card"))
+	    		.addOutboundPermitted(new PermittedOptions().setAddress("delete-card"));
+	    		
 
 	    router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options, event -> {
 

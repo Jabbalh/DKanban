@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kanban.entity.db.TicketHistory;
+import kanban.utils.tools.Tools;
 
 public class CardHistory {
 	private String summary;
 	private String description;
 	private String date;
-	
+	private String id;
 	
 	
 	public String getSummary() {
@@ -38,13 +39,20 @@ public class CardHistory {
 		this.date = date;
 	}
 	
-	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 	public static CardHistory fromTicketHistory(TicketHistory ticketHistory){
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
 		CardHistory result = new CardHistory();
+		result.id = ticketHistory.get_id();
 		result.summary = ticketHistory.getSummary();
 		result.description = ticketHistory.getDescription();
 		result.date = sdf.format(ticketHistory.getDate());
@@ -57,6 +65,18 @@ public class CardHistory {
 					? ticketHistory.stream().map(x -> fromTicketHistory(x)).collect(Collectors.toList())
 					: new ArrayList<>();
 		}
+
+	public TicketHistory toTicketHistory(){
+		TicketHistory result = new TicketHistory();
+		result.set_id(this.getId());
+		result.setSummary(this.getSummary());
+		result.setDescription(this.getDescription());
+		System.out.println("toTicketHistory -> " + this.getDate());
+		result.setDate(Tools.parseDate(this.getDate()));
+		return result;
+	}
+	
+	
 
 
 }

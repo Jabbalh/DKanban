@@ -60,7 +60,7 @@
 		        		<span class="md-body-2">Synthèse</span>	
 		       		</div>
 		    	<div layout layout="column" layout-align="start center">
-		        	<md-button class="md-icon-button" aria-label="Paramètres">
+		        	<md-button class="md-icon-button" aria-label="Paramètres" href="/app/index.html#admin">
 		          		<md-icon md-svg-icon="/asset/svg/Settings.svg" ></md-icon>
 		        	</md-button>
 		        	<span class="md-body-2">Paramètres</span>
@@ -77,10 +77,12 @@
 </body>
 <!-- Javascript Libs -->
     <script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>    
-    <script type="text/javascript" src="../asset/bower_components/vertx-eventbus.js"></script>    
+    <script type="text/javascript" src="../asset/bower_components/vertxbus-3.1.0.js"></script>  
+    <script type="text/javascript" src="../asset/bower_components/moment-with-locales.js"></script> 
+    
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>	
     
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
     <script type="text/javascript" src="../asset/bower_components/angular-ui-router.min.js"></script>	
     
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-sanitize.min.js"></script>	
@@ -90,19 +92,26 @@
     <script type="text/javascript" src="https://cdn.rawgit.com/auth0/angular-jwt/master/dist/angular-jwt.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.4/angular-material.min.js"></script>
 	
-	<script type="text/javascript" src="../asset/bower_components/ngDraggable-master/ngDraggable.js"></script>
+	<script type="text/javascript" src="../asset/bower_components/ngDraggable-master/ngDragAndDrop.js"></script>
     
 	
     <!-- Javascript -->
     <script type="text/javascript" src="app.js"></script>
-	<script type="text/javascript" src="/app/controllers/KanbanController.js"></script>
-	<script type="text/javascript" src="/app/controllers/LoginController.js"></script>
+    
+    <script type="text/javascript" src="/app/controllers/kanban/helpers/KanbanHelper.js"></script>
+    
+	<script type="text/javascript" src="/app/controllers/kanban/KanbanController.js"></script>
+	<script type="text/javascript" src="/app/controllers/login/LoginController.js"></script>
+	<script type="text/javascript" src="/app/controllers/admin/AdminController.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.list.service.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.update.service.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.ticket.service.js"></script>
+	<script type="text/javascript" src="/app/services/kanban.socket.service.js"></script>
+	
 	
 	
     <!-- Javascript -->
 
 </body>
 </html>
+

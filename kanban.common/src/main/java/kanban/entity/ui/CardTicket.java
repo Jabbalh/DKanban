@@ -2,8 +2,10 @@ package kanban.entity.ui;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import kanban.entity.db.Ticket;
+import kanban.entity.db.TicketHistory;
 
 public class CardTicket extends Card {
 	
@@ -114,6 +116,22 @@ public class CardTicket extends Card {
 		
 		return result;
 	}
+	
+	public List<TicketHistory> toTicketHistory(){
+		return this.history.stream().map(x -> x.toTicketHistory()).collect(Collectors.toList());
+	}
+	
+	/*
+	public void mergeTicketHistory(List<TicketHistory> ticketHistory){
+		
+		java.util.function.BiPredicate<TicketHistory, CardHistory> predicate = (t,c) -> !t.get_id().equals(c.getId());
+		
+		
+		
+		Stream<Object> extract =  this.getHistory().stream().map(x -> ticketHistory.stream().filter(y -> x.getId() != y.get_id()));
+	}*/
+	
+	
 
 	
 }
