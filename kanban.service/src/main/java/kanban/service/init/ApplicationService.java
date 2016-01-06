@@ -13,14 +13,16 @@ import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import kanban.entity.db.Application;
-import kanban.entity.db.StateTicket;
-import kanban.entity.db.Ticket;
-import kanban.entity.db.User;
-import kanban.entity.db.ZoneTicket;
-import kanban.entity.db.parameter.ApplicationData;
-import kanban.entity.db.parameter.ApplicationParameter;
-import kanban.entity.db.parameter.ZoneApp;
+import kanban.db.entity.ApplicationParameter;
+import kanban.db.entity.KanbanParameter;
+import kanban.db.entity.ParamColorTuple;
+import kanban.db.entity.ParamTuple;
+import kanban.db.entity.PriorityParameter;
+import kanban.db.entity.StatutParameter;
+import kanban.db.entity.Ticket;
+import kanban.db.entity.User;
+import kanban.db.entity.ZoneParameter;
+import kanban.entity.session.ApplicationData;
 import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.DbUtils;
@@ -56,7 +58,22 @@ public class ApplicationService extends AbstractVerticle {
 	 */
 	private void initApplication(Message<Object> message) {
 		logger.debug("INIT_APPLICATION -> initApplication");
-		Async.When(() -> mongoService.findAll(ApplicationParameter.class))
+		 ApplicationData.set(new KanbanParameter());
+		Async.When(()-> mongoService.findAll(ApplicationParameter.class)).doThat(application -> ApplicationData.get().setApplications(application));
+		Async.When(()-> mongoService.findAll(StatutParameter.class)).doThat(status -> ApplicationData.get().setStatut(status));
+		Async.When(()-> mongoService.findAll(ZoneParameter.class)).doThat(zones -> ApplicationData.get().setZones(zones));
+		Async.When(()-> mongoService.findAll(PriorityParameter.class)).doThat(priority -> ApplicationData.get().setPriority(priority));
+			/*
+		Async.When(() -> mongoService.findAll(User.class))
+		.doThat(users -> {
+			for (User u : users) {
+				u.setPassword(cryptoService.genHash256(u.getLogin()));
+				Async.When(() -> mongoService.update(u)).doThat(b -> logger.info("User " + u.getLogin() + " update " + b));					
+			}
+		});		
+		*/
+		/*
+		Async.When(() -> mongoService.findAll(KanbanParameter.class))
 		.doThat( x -> {
 			
 			ApplicationData.set(x.get(0));	
@@ -71,6 +88,7 @@ public class ApplicationService extends AbstractVerticle {
 			});
 			
 		});
+		*/
 	}
 	
 	/**
@@ -78,48 +96,78 @@ public class ApplicationService extends AbstractVerticle {
 	 */
 	private void initParameter(Message<Object> message){	
 		logger.debug("INIT_FIRST_APP -> initParameter");
-		List<Application> applications = new ArrayList<>();
-		applications.add(new Application("DEI PART", "Banque à distance pour particulier"));
-		applications.add(new Application("DEI PRO", "Banque à distance pour professionel"));
-		applications.add(new Application("DEA", "Site d'assurance viture/habitation"));
-		applications.add(new Application("NOSA WEB", "Site d'assurance vie"));
-		applications.add(new Application("SVI", "Serveur vocal"));
-				
+		List<ApplicationParameter> applications = new ArrayList<>();
+		applications.add(new ApplicationParameter("DEI PART", "DEI PART"));
+		applications.add(new ApplicationParameter("DEI PRO", "DEI PRO"));
+		applications.add(new ApplicationParameter("DEA", "DEA"));
+		applications.add(new ApplicationParameter("NOSA WEB", "NOSA WEB"));
+		applications.add(new ApplicationParameter("SVI", "SVI"));
+		
+		ApplicationData.set(new KanbanParameter());
 		ApplicationData.get().setApplications(applications);
 				
 		
-		List<ZoneApp> zoneApps = new ArrayList<>();
-		zoneApps.add(new ZoneApp(new ZoneTicket("U"),0,1));
-		zoneApps.add(new ZoneApp(new ZoneTicket("BackLog"),1,2));
-		zoneApps.add(new ZoneApp(new ZoneTicket("Analyse"),2,2));
-		zoneApps.add(new ZoneApp(new ZoneTicket("Dev"),3,2));
-		zoneApps.add(new ZoneApp(new ZoneTicket("VFO"),4,2));
-		zoneApps.add(new ZoneApp(new ZoneTicket("UTI"),5,2));
-		zoneApps.add(new ZoneApp(new ZoneTicket("QPA"),6,2));
-		zoneApps.add(new ZoneApp(new ZoneTicket("PROD"),7,2));
+		List<ZoneParameter> zoneApps = new ArrayList<>();
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("U");x.setOrder(0);x.setWidth(1);x.setLibelle("U");x.setDroppableArchive(true);x.setDroppableTicket(false);
+		}));
+		
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("BackLog");x.setOrder(1);x.setWidth(2);x.setLibelle("BackLog");x.setDroppableArchive(false);x.setDroppableTicket(true);
+		}));
+		
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("Analyse");x.setOrder(2);x.setWidth(2);x.setLibelle("Analyse");x.setDroppableArchive(false);x.setDroppableTicket(true);
+		}));
+		
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("Dev");x.setOrder(3);x.setWidth(2);x.setLibelle("Dev");x.setDroppableArchive(false);x.setDroppableTicket(true);
+		}));
+				
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("VFO");x.setOrder(4);x.setWidth(2);x.setLibelle("VFO");x.setDroppableArchive(false);x.setDroppableTicket(true);
+		}));
+		
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("UTI");x.setOrder(5);x.setWidth(2);x.setLibelle("UTI");x.setDroppableArchive(false);x.setDroppableTicket(true);
+		}));
+		
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("QPA");x.setOrder(6);x.setWidth(2);x.setLibelle("QPA");x.setDroppableArchive(false);x.setDroppableTicket(true);
+		}));
+		
+		zoneApps.add(new ZoneParameter(x -> {
+			x.setCode("PROD");x.setOrder(7);x.setWidth(2);x.setLibelle("PROD");x.setDroppableArchive(false);x.setDroppableTicket(true);
+		}));
+				
 		ApplicationData.get().setZones(zoneApps);
 		
 		
-		List<StateTicket> statesTicket = new ArrayList<>();
-		statesTicket.add(new StateTicket("IN_PROGRESS", "En cours"));
-		statesTicket.add(new StateTicket("STAND_BY", "En attente"));
-		ApplicationData.get().setStatesTicket(statesTicket);
+		List<StatutParameter> statesTicket = new ArrayList<>();
+		statesTicket.add(new StatutParameter("IN_PROGRESS", "En cours"));
+		statesTicket.add(new StatutParameter("STAND_BY", "En attente"));
+		ApplicationData.get().setStatut(statesTicket);
 		
 		
-		if (!ApplicationData.get().isInit()){
-			mongoService.delete(DbUtils.index(ApplicationParameter.class), () -> {
-				Async.When(() -> mongoService.insert(ApplicationData.get()))
+		if (!ApplicationData.isInit){
+			mongoService.delete(DbUtils.index(KanbanParameter.class), () -> {
+				
+				/*Async.When(() -> mongoService.insert(ApplicationData.get()))
 						.Rule(rule -> rule)
 						.Otherwise(other -> { logger.error("Application NOT initialized -> " + other); message.reply("NOK"); })
 						.doThat(x -> {									
 							logger.debug("Application initialized");
-							ApplicationData.get().setInit(true);
+							ApplicationData.isInit = true;
 							message.reply("OK");					
-				});
+				});*/
+				
+				deleteAndInit(mongoService, ApplicationParameter.class, applications, a -> "ApplicationParameter " + a.getCode()); 
+				deleteAndInit(mongoService, StatutParameter.class, statesTicket, a -> "StatutParameter " + a.getCode());
+				deleteAndInit(mongoService, ZoneParameter.class, zoneApps, a -> "ZoneParameter " + a.getCode());
 			});
 		}
 		
-		
+		/*
 		List<ZoneTicket> zoneTicket = new ArrayList<>();
 		
 		ApplicationData.get().getZones().forEach(x -> zoneTicket.add(x.getZoneTicket()));
@@ -127,7 +175,7 @@ public class ApplicationService extends AbstractVerticle {
 		deleteAndInit(mongoService,DbUtils.index(Application.class), applications, a -> "application " + a.getName());
 		deleteAndInit(mongoService,DbUtils.index(ZoneTicket.class), zoneTicket, s -> "zone "+s.getCodeZone());
 		deleteAndInit(mongoService,DbUtils.index(StateTicket.class), statesTicket, s -> "state "+s.getCode());
-		
+		*/
 		
 		mongoService.reinitCounters();
 		
@@ -141,28 +189,65 @@ public class ApplicationService extends AbstractVerticle {
 	 */
 	private void initData(Message<Object> message) {
 		logger.debug("INIT_DATA_APP -> initData");
-		List<Application> applications = ApplicationData.get().getApplications();
-		List<ZoneTicket> zones = new ArrayList<>();
+		//List<Application> applications = ApplicationData.get().getApplications();
+		//List<ZoneTicket> zones = new ArrayList<>();
 		
-		ApplicationData.get().getZones().forEach(x -> zones.add(x.getZoneTicket()));
+		//ApplicationData.get().getZones().forEach(x -> zones.add(x.getZoneTicket()));
 				
 		List<User> users = new LinkedList<>();
 		users.add(new User("user1", cryptoService.genHash256("user1"), "User 1", "User 1"));
 		users.add(new User("user2", cryptoService.genHash256("user2"), "User 2", "User 2"));
 		
-		List<StateTicket> states = ApplicationData.get().getStatesTicket();
+		//List<StateTicket> states = ApplicationData.get().getStatesTicket();
 				
-		List<Ticket> tickets = new LinkedList<>();
-		tickets.add(new Ticket(0,"ARS01", "Test ARS1", "Desc ARS1", applications.get(0), zones.get(1),users.get(0),"14445", states.get(0)));
-		tickets.add(new Ticket(1,"ARS02", "Test ARS2", "Desc ARS2", applications.get(0), zones.get(1),users.get(0),"14445", states.get(0)));
-		tickets.add(new Ticket(2,"ARS03", "Test ARS3", "Desc ARS3", applications.get(1), zones.get(2),users.get(0),"14445", states.get(0)));
-		tickets.add(new Ticket(3,"ARS04", "Test ARS4", "Desc ARS4", applications.get(2), zones.get(1),users.get(1),"14445", states.get(0)));
-		tickets.add(new Ticket(4,"ARS05", "Test ARS5", "Desc ARS5", applications.get(2), zones.get(1),users.get(1),"14445", states.get(1)));
-		tickets.add(new Ticket(5,"ARS06", "Test ARS6", "Desc ARS6", applications.get(3), zones.get(3),users.get(1),"14445", states.get(1)));
+		List<Ticket> tickets = new LinkedList<>();				
+		tickets.add(
+				new Ticket(
+						x -> {
+							x.set_id("0");
+							x.setReference("ARS01");
+							x.setSummary("Test ARS1");
+							x.setDescription("Desc ARS1");
+							x.setApplication(new ParamTuple("DEI PART", "DEI PART"));
+							x.setZone(new ParamTuple("BackLog", "BackLog"));
+							x.setOwner(new ParamTuple("user1", "user1 user1"));
+							x.setCaisse("14445");
+							x.setStatut(new ParamColorTuple("IN_PROGRESS","En cours"));
+						}						
+				));
+		tickets.add(
+				new Ticket(
+						x -> {
+							x.set_id("1");
+							x.setReference("ARS02");
+							x.setSummary("Test ARS2");
+							x.setDescription("Desc ARS2");
+							x.setApplication(new ParamTuple("DEI PART", "DEI PART"));
+							x.setZone(new ParamTuple("BackLog", "BackLog"));
+							x.setOwner(new ParamTuple("user1", "user1 user1"));
+							x.setCaisse("14445");
+							x.setStatut(new ParamColorTuple("IN_PROGRESS","En cours"));
+						}						
+				));
+		tickets.add(
+				new Ticket(
+						x -> {
+							x.set_id("2");
+							x.setReference("ARS03");
+							x.setSummary("Test ARS3");
+							x.setDescription("Desc ARS3");
+							x.setApplication(new ParamTuple("DEI PRO", "DEI PRO"));
+							x.setZone(new ParamTuple("VFO", "VFO"));
+							x.setOwner(new ParamTuple("user2", "user2 user2"));
+							x.setCaisse("14445");
+							x.setStatut(new ParamColorTuple("STAND_BY","En attente"));
+						}						
+				));
 		
 		
 		
-		deleteAndInit(mongoService,DbUtils.index(User.class), users, x -> "user " + x.getLogin());
+		
+		deleteAndInit(mongoService,User.class, users, x -> "user " + x.getLogin());
 		
 		
 		mongoService.delete(DbUtils.index(Ticket.class), () -> {
@@ -188,8 +273,8 @@ public class ApplicationService extends AbstractVerticle {
 	
 	
 
-	private <T> void deleteAndInit(IMongoService mongoService,String index, List<T> liste, Function<T, String> message) {
-		mongoService.delete(index, () -> {			
+	private <T> void deleteAndInit(IMongoService mongoService,Class<T> clazz, List<T> liste, Function<T, String> message) {
+		mongoService.delete(DbUtils.index(clazz), () -> {			
 			for (T u : liste) {
 				logger.debug("Before insert of " + message.apply(u));
 				Async.When(() -> mongoService.insert(u)).doThat(x ->  genericCallback(message.apply(u)));

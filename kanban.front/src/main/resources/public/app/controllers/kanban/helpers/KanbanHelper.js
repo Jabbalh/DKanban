@@ -7,14 +7,14 @@ function KanbanHelper(kanban)
 	   */
 	  this.extracAfterChange = function(result,remove) {
 		  var objCard = null;
-		  var toFind = (result.user+"$"+result.zone);
+		  
 	    	kanban.values.forEach(function(value,key){	    		
-	    		value.other.forEach(function(oValue,oKey){	    				    				    			    			    			
-	    			oValue.cards.forEach(function(cValue,cKey){		    				
-	    				if (cValue.id == result.card.id) {	
-	    					objCard = oValue.cards[cKey];	    					
+	    		value.columns.forEach(function(oValue,oKey){	    				    				    			    			    			
+	    			oValue.tickets.forEach(function(cValue,cKey){		    				
+	    				if (cValue._id == result._id) {	
+	    					objCard = oValue.tickets[cKey];	    					
 	    					if (remove) {
-	    						oValue.cards.splice(cKey,1);	    						
+	    						oValue.tickets.splice(cKey,1);	    						
 	    					}
 	    				}
 	    			});
@@ -31,9 +31,9 @@ function KanbanHelper(kanban)
 	  this.searchZone = function(ticketId) {
 		  var result = null;
 	    	kanban.values.forEach(function(value,key){	    		
-	    		value.other.forEach(function(oValue,oKey){	    				    				    			    			    			
-	    			oValue.cards.forEach(function(cValue,cKey){		    				
-	    				if (cValue.id == ticketId) {	
+	    		value.columns.forEach(function(oValue,oKey){	    				    				    			    			    			
+	    			oValue.tickets.forEach(function(cValue,cKey){		    				
+	    				if (cValue._id == ticketId) {	
 	    					result =  oValue.id;
 	    					return result;
 	    				}
@@ -51,11 +51,11 @@ function KanbanHelper(kanban)
 	  this.moveAfterChange = function(result,obj) {
 		  var objCard = obj;
 		  var done = false;
-		  var toFind = (result.user+"$"+result.zone);
+		  var toFind = (result.owner.code+"$"+result.zone.code);
 	    	kanban.values.forEach(function(value,key){	    		
-	    		value.other.forEach(function(oValue,oKey){	    				    			
+	    		value.columns.forEach(function(oValue,oKey){	    				    			
 	    			if (oValue.id == toFind) {	   	    				
-	    				oValue.cards.push(objCard);	    					    				
+	    				oValue.tickets.push(objCard);	    					    				
 	    				done = true;
 	    			}	    			
 	    		});
@@ -68,16 +68,16 @@ function KanbanHelper(kanban)
 	   * Renvois la zone du parent d'un ticket
 	   */
 	  this.getCardZoneFromDoc = function(result) {
-		  return document.getElementById(result.user+'$'+result.zone);
+		  return document.getElementById(result.owner.code +'$'+result.zone.code);
 	  }
 	  
 	  /**
 	   * Renvois la ticket provenant du document HTML
 	   */
 	  this.getCardFromDocument = function(result) {
-		  var card = document.getElementById(result.ticketId);
+		  var card = document.getElementById(result._id);
       	
-      	if (card == null){ card = document.getElementById(result.card.id); }
+      	//if (card == null){ card = document.getElementById(result.card.id); }
       	
       	return card;
 	  }

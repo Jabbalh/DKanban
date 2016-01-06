@@ -2,7 +2,7 @@ package kanban.web.services;
 
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.Session;
-import kanban.entity.db.User;
+import kanban.db.entity.User;
 import kanban.entity.session.SessionData;
 
 public interface ISessionService {

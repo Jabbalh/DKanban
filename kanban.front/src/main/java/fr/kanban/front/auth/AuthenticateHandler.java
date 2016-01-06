@@ -13,7 +13,7 @@ import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.ext.web.sstore.SessionStore;
 import kanban.bus.constants.EventBusNames;
-import kanban.entity.db.User;
+import kanban.db.entity.User;
 import kanban.entity.session.SessionData;
 import kanban.web.services.ISessionService;
 

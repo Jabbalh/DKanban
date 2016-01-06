@@ -1,1 +1,24 @@
-utilisateur
+
+<md-content flex layout-padding >	 
+	<h2 class="md-title">
+		 Utilisateurs {Liste}
+		<md-button class="md-icon-button" aria-label="Ajouter" ng-click="ctrl.add($event)">
+        	<md-icon md-svg-icon="/asset/svg/add_cross.svg"></md-icon>
+      </md-button></h2>
+	<div layout layout="column">
+		<md-list ng-cloak  flex="40">		
+  			<md-list-item ng-repeat="item in ctrl.users" class="md-2-line" ng-click="ctrl.go(item)" >
+    			<img ng-src="/asset/svg/ic_person_24px.svg" class="md-avatar" />
+    			<div class="md-list-item-text" layout="column">
+    				<h3>{{item.firstName}} {{item.lastName}}</h3>
+    				<p>{{item.login}}</p>
+    			</div>
+    			<md-divider></md-divider>
+  			</md-list-item>
+	  	</md-list>
+	  	
+	  	<div ui-view flex ></div>
+  	</div>
+	
+	  	
+</md-content>

@@ -1,6 +1,6 @@
 angular.module("DKanbanApp")
 
-.controller("LoginController", function ($rootScope,$http,$location) {	
+.controller("LoginController", function ($rootScope,$http,$location,userService) {	
 	this.login = "";
 	this.password = "";
 	
@@ -14,7 +14,8 @@ angular.module("DKanbanApp")
 			
 			if (data != "KO"){
 				localStorage.setItem("id_token",data);
-				$rootScope.$broadcast("authenticate",true);			
+				$rootScope.$broadcast("authenticate",true);	
+				userService.setCurrentUser(self.login);
 				$location.path("/kanban");
 			} else {
 				self.message = "Nom d'utilisateur ou mot de passe incorrect";

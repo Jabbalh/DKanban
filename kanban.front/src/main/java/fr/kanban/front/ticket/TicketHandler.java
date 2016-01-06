@@ -8,7 +8,7 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import kanban.bus.constants.EventBusNames;
-import kanban.entity.ui.CardTicket;
+import kanban.db.entity.Ticket;
 import kanban.web.services.ISessionService;
 
 public class TicketHandler extends AbstractHandler {
@@ -32,23 +32,21 @@ public class TicketHandler extends AbstractHandler {
 		});
 	}
 	
-	public void apiTicketUpdateZone(RoutingContext context){
-		System.out.println("apiTicketUpdateZone");
+	public void apiTicketUpdateZone(RoutingContext context){		
 		JsonObject data = context.getBodyAsJson().getJsonObject("data");					
-		vertx.eventBus().send(EventBusNames.TICKET_UPDATE_STATE, Json.encodePrettily(data), r -> {				
+		vertx.eventBus().send(EventBusNames.TICKET_UPDATE_STATE, data, r -> {				
 			context.response().end(Json.encodePrettily("OK"));			
 		});				
 	}
 	
 	
-	public void apiTicketUpdateAll(RoutingContext context) {
-		System.out.println("apiTicketUpdateAll");
+	public void apiTicketUpdateAll(RoutingContext context) {		
 		JsonObject data = context.getBodyAsJson();		
 		Consumer<Message<Object>> callback = x -> context.response().end(Json.encodePrettily(x.body().toString())); 
 		if (data.getBoolean("insert")) {
-			vertx.eventBus().send(EventBusNames.TICKET_INSERT_ALL, data, x -> callback.accept(x.result()));
+			vertx.eventBus().send(EventBusNames.TICKET_INSERT_ALL, data.getJsonObject("card"), x -> callback.accept(x.result()));
 		} else {
-			vertx.eventBus().send(EventBusNames.TICKET_UPDATE_ALL, data, x -> callback.accept(x.result()));
+			vertx.eventBus().send(EventBusNames.TICKET_UPDATE_ALL, data.getJsonObject("card"), x -> callback.accept(x.result()));
 		}
 	}
 	
@@ -71,7 +69,7 @@ public class TicketHandler extends AbstractHandler {
 	
 	public void apiNewEmpty(RoutingContext context) {
 		context.response().end(
-				Json.encodePrettily(new CardTicket(sessionService.getCurrentUser(context.session()).getLogin()))
+				Json.encodePrettily(new Ticket(sessionService.getCurrentUser(context.session())))
 				); 
 	}
 	

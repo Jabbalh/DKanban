@@ -1,1 +1,17 @@
-application
+<md-content flex layout-padding >
+	<h2 class="md-title">Applications {Liste}</h2>
+	<div layout layout="column">
+		<md-list ng-cloak flex="40" >		
+  			<md-list-item ng-repeat="item in ctrl.applications" class="md-2-line" ng-click="ctrl.go(item)" >
+    			<img ng-src="/asset/svg/ic_translate_48px.svg" class="md-avatar" />
+    			<div class="md-list-item-text" layout="column">
+    				<h3>{{item.code}}</h3>
+    				<h4>{{item.libelle}}</h4>
+    				<p>{{item.description}}</p>
+    			</div>
+    			<md-divider></md-divider>
+  			</md-list-item>
+	  	</md-list>	  
+	  	<div ui-view flex ></div>
+	  </div>
+</md-content>

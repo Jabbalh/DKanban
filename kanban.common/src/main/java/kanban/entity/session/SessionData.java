@@ -1,6 +1,6 @@
 package kanban.entity.session;
 
-import kanban.entity.db.User;
+import kanban.db.entity.User;
 
 public class SessionData {
 	private User currentUser;

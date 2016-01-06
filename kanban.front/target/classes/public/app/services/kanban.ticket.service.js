@@ -1,36 +1,40 @@
 function KanbanTicketService($http) {
 
+	
+	
     
 	this.cloneTicket = function(ticket) {		
 		var result = {
-				ref 		: ticket.ref,
-				id			: ticket.id,
-				appli		: ticket.appli,
+				reference 	: ticket.reference,
+				_id			: ticket._id,
+				application	: ticket.application,
 				summary		: ticket.summary,
 				description	: ticket.description,
 				caisse		: ticket.caisse,
-				state		: ticket.state,
+				statut		: ticket.statut,
 				owner		: ticket.owner,
-				history		: ticket.history
+				zone		: ticket.zone,
+				histories		: ticket.histories
 		};
 		return result;
 		
 	}
 	
 	this.restorTicket = function(origin, updated) {
-		origin.ref 			= updated.ref;
-		origin.id			= updated.id;
-		origin.appli		= updated.appli;
+		origin.reference	= updated.reference;
+		origin._id			= updated._id;
+		origin.application	= updated.application;
 		origin.summary		= updated.summary;
 		origin.description	= updated.description;
 		origin.caisse		= updated.caisse;
-		origin.state		= updated.state;
-		origin.owner		= updated.owner;	
-		origin.history		= updated.history;
+		origin.statut		= updated.statut;
+		origin.owner		= updated.owner;
+		origin.zone		= updated.zone;	
+		origin.histories	= updated.histories;
 	}
 	
 	this.isModified = function(origin, returned) {
-		var properties = ['ref', 'id','appli','summary','description','caisse','state','owner'];	
+		var properties = ['reference', '_id','application.code','summary','description','caisse','statut.code','owner'];	
 		var result = false;
 		properties.forEach(function(value){
 			if (origin[value] != returned[value]){
@@ -38,15 +42,15 @@ function KanbanTicketService($http) {
 			}
 		});
 		
-		if (returned.history != null && origin.history == null) {
+		if (returned.histories != null && origin.histories == null) {
 			result = true;
 		}		
-		else if (returned.history.length != origin.history.legth){
+		else if (returned.histories.length != origin.histories.legth){
 			result = true;
-		} else if (returned.history != null && origin.history != null){
-			returned.history.forEach(function(value){
-				origin.history.forEach(function(valueOrigin){
-					if (value.id = valueOrigin.id){
+		} else if (returned.histories != null && origin.histories != null){
+			returned.histories.forEach(function(value){
+				origin.histories.forEach(function(valueOrigin){
+					if (value._id = valueOrigin._id){
 						if (value.summary != valueOrgin.summary) result = true;
 						else if (value.description = valueOrigin.description) result = true;
 					}

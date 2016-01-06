@@ -27,11 +27,11 @@ angular.module("DKanbanApp")
 		  }
 		})
 
-	.controller("KanbanController", function ($scope,$http,$filter,$mdDialog,updateService,listService,ticketService, socketService,$animate) {	
+	.controller("KanbanController", function ($scope,$http,$filter,$mdDialog,updateService,listService,ticketService,userService, socketService,$animate) {	
 	
 	
     var self = this;
-    var currentUser = 'user1';
+    var currentUser = userService.getCurrentUser();
     
 	/**
 	 * Objets internes
@@ -40,6 +40,7 @@ angular.module("DKanbanApp")
     this.listes = {};
     this.kanban = {values:[]};
 	this.headers = {};
+	this.zones = {};
     var eb = new EventBus("/eventbus");
     var helper = new KanbanHelper(this.kanban);
     
@@ -82,7 +83,7 @@ angular.module("DKanbanApp")
      */
     listService.applicationList().success(function (data) 	{ self.listes.applications = data;});    
     listService.stateList().success(function(data)			{ self.listes.states = data; });
-    
+    listService.zoneList().success(function(data)			{ self.zones = data;})		
     /**
 	 * Initialisation du kanban
 	 */
@@ -100,16 +101,14 @@ angular.module("DKanbanApp")
     		eb.registerHandler("update-card",function (err, msg) {	    	
             	var result = JSON.parse(msg.body);
             	console.log("update-card");
-            	var parent = helper.getCardZoneFromDoc(result);// document.getElementById(result.user+'$'+result.zone);
+            	var parent = helper.getCardZoneFromDoc(result);
             	
-            	var card = helper.getCardFromDocument(result);//document.getElementById(result.ticketId);
-            	
-            	//if (card == null){ card = document.getElementById(result.card.id); }	
+            	var card = helper.getCardFromDocument(result);
             	
             	var origin = helper.extracAfterChange(result,false);
             	
-            	if (ticketService.isModified(origin,result.card)){
-            		ticketService.restorTicket(origin,result.card);
+            	if (origin != null && result != null && ticketService.isModified(origin,result)){
+            		ticketService.restorTicket(origin,result);
             		if (card.parentElement.id != parent.id){
             			helper.moveAfterChange(result,helper.extracAfterChange(result,true));            			            			
             		}
@@ -127,12 +126,13 @@ angular.module("DKanbanApp")
     		// Evènement sur l'insertion d'un ticket
     	    eb.registerHandler("insert-card", function(err, msg) {
             	var result = JSON.parse(msg.body);	    		    	
-            	helper.moveAfterChange(result, result.card);
+            	helper.moveAfterChange(result, result);
         		$scope.$digest();
             });
     	    
     	    // Evènement sur la suppression ou l'archivage d'un ticket
     	    eb.registerHandler("delete-card", function(err,msg){
+    	    	var result = JSON.parse(msg.body);	
     	    	var origin = helper.extracAfterChange(result,true);
         		$scope.$digest();
     	    });
@@ -162,11 +162,11 @@ angular.module("DKanbanApp")
 	  this.filtreOnAll = function() {
 		  self.kanban.values = [];
 		  self.kanban.users = [];
-		  listService.userList().success(function(users) {
+		  userService.userList().success(function(users) {
 				self.kanban.users = users;
 				self.listes.users = users;
 				users.forEach(function(uValue,uKey) {
-					listService.kanbanByUser(uValue.login).success(function(tickets){					
+					listService.kanbanByUser(uValue.code).success(function(tickets){					
 						self.kanban.values.push(tickets);
 						
 					});
@@ -189,7 +189,7 @@ angular.module("DKanbanApp")
 								card : data,
 								user : currentUser
 						},
-						headers : self.headers					
+						headers : self.zones					
 					};			 
 			 self.openPopup(ev,send);			
 		 });
@@ -216,13 +216,13 @@ angular.module("DKanbanApp")
 		var send = {
 				listes : self.listes,
 				ticket :  {
-						title : "Ticket " + ticket.ref,
+						title : "Ticket " + ticket.reference,
 						insert : false,
 						zone : id.split('$')[1],
 						card : ticket,
 						user : ticket.owner
 				},
-				headers : self.headers					
+				headers : self.zones					
 			};				
 		this.openPopup(null,send)			          	 
 	}
@@ -241,7 +241,7 @@ angular.module("DKanbanApp")
 						card : {},
 						user : {}
 				},
-				headers : self.headers					
+				headers : self.zones					
 			};	
 		
 		$mdDialog.show({
@@ -254,7 +254,7 @@ angular.module("DKanbanApp")
 		           item: send
 		         },
 		    }).then(function(answer) {
-		    	var zone = helper.searchZone(answer.id);
+		    	var zone = helper.searchZone(answer._id);
 		    	var send = {
 						listes : self.listes,
 						ticket :  {
@@ -264,7 +264,7 @@ angular.module("DKanbanApp")
 								card : answer,
 								user : answer.owner
 						},
-						headers : self.headers					
+						headers : self.zones					
 					};				
 				self.openPopup(null,send)		
 		    	
@@ -322,7 +322,7 @@ angular.module("DKanbanApp")
 	 * Handler sur l'archivage d'un ticket
 	 */
 	this.handleDropDelete = function(data,event, id){		
-		var card = helper.extracAfterChange(self.cardForDropEvent(data,id),false);		
+		var card = helper.extracAfterChange(self.cardForDropEvent(data,id),false);
 		updateService.archiveTicket(card);		
 	};
 	
@@ -344,11 +344,12 @@ angular.module("DKanbanApp")
 .controller('TicketHistoryCreateCtrl', function($scope, $mdBottomSheet) {
 	 
 	$scope.history = {};
+	moment.locale('fr');
+	//$scope.history.dateCreation = moment(moment()).format('DD/MM/YYYY HH:mm');
 	
-	$scope.history.date = moment(moment()).format('DD/MM/YYYY HH:mm');
-	
-	  $scope.addHistory = function() {	  
-		  $scope.history.date = moment($scope.history.date).format('DD/MM/YYYY HH:mm')
+	  $scope.addHistory = function() {	 
+		  
+		  //$scope.history.dateCreation = moment($scope.history.dateCreation).format('DD/MM/YYYY HH:mm')
 		  $mdBottomSheet.hide($scope.history);
 	  };
 	})
@@ -360,10 +361,9 @@ function DialogController($scope, $mdDialog,item,$mdToast,$mdBottomSheet) {
 	$scope.headers = item.headers;
 	
 	/**
-	 * Ajout d'un nouveau ticket
+	 * Ajout d'un nouveau historique
 	 */
-	$scope.addNew = function(event){
-		 $scope.alert = '';
+	$scope.addNew = function(event){		 
 		    $mdBottomSheet.show({
 		      templateUrl: '/app/views/kanban/ticketHistoryCreate.html',
 		      controller: 'TicketHistoryCreateCtrl',
@@ -371,8 +371,8 @@ function DialogController($scope, $mdDialog,item,$mdToast,$mdBottomSheet) {
 		      targetEvent: event,
 		      parent : angular.element(document.getElementById('ticketDialog'))
 		    }).then(function(answer) {
-		      console.log(JSON.stringify($scope.ticket));
-		      $scope.ticket.card.history.push(answer);
+		      //console.log(JSON.stringify($scope.ticket));
+		      $scope.ticket.card.histories.push(answer);
 		    });
 	}
 	
@@ -388,8 +388,8 @@ function DialogController($scope, $mdDialog,item,$mdToast,$mdBottomSheet) {
 	 * SUppression d'un élément de l'historique
 	 */
 	$scope.deleteHistory = function(item) {
-		var index = $scope.ticket.card.history.indexOf(item);
-		$scope.ticket.card.history.splice(index,1);
+		var index = $scope.ticket.card.histories.indexOf(item);
+		$scope.ticket.card.histories.splice(index,1);
 	}
 	
 	/**

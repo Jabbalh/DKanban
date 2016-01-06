@@ -1,5 +1,9 @@
 package kanban.service;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import io.vertx.core.AbstractVerticle;
@@ -8,7 +12,8 @@ import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import kanban.bus.constants.EventBusNames;
 import kanban.bus.constants.Sort;
-import kanban.entity.db.User;
+import kanban.db.entity.ParamTuple;
+import kanban.db.entity.User;
 import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.BusUtils;
@@ -24,19 +29,48 @@ public class VerticleUserService extends AbstractVerticle {
 	
 	@Override	
 	public void start(){
-		vertx.eventBus().consumer(EventBusNames.USER_LIST, 			(Message<String> m) -> userList(m));
+		vertx.eventBus().consumer(EventBusNames.USER_LIST, 			(Message<String> m) -> fullUserList(m, 
+						users -> users
+							.stream().map(a -> new ParamTuple(a.getLogin(), a.getFirstName() + " " + a.getLastName()))
+							.collect(Collectors.toList())));
+		vertx.eventBus().consumer(EventBusNames.USER_SAVE, 			(Message<JsonObject> m) -> userSave(m));
+		vertx.eventBus().consumer(EventBusNames.USER_INSERT, 		(Message<JsonObject> m) -> userInsert(m));
+		
 		vertx.eventBus().consumer(EventBusNames.USER_FIND_BY_LOGIN, (Message<String> m) -> userFindByLogin(m));
 		vertx.eventBus().consumer(EventBusNames.USER_AUTHENTICATE, (Message<JsonObject> m) -> authenticate(m));
+		vertx.eventBus().consumer(EventBusNames.ADMIN_USER_LIST, (Message<String> x) -> fullUserList(x, u -> u));
 	}
 	
-	/**
-	 * Liste des utilisateurs
-	 * @param message
-	 */
-	private void userList(Message<String> message) {
-		JsonObject sort = new JsonObject().put("sort", "firstName");
-		Async.When(() -> mongoService.findAll( User.class, sort,Sort.ASC)).doThat(x -> message.reply(Json.encodePrettily(x)));
+	
+	
+	private void userSave(Message<JsonObject> message) {
+		User user = Json.decodeValue(message.body().encode(), User.class);	
+		Async.When(() -> mongoService.findOne(User.class, new JsonObject().put("_id", user.get_id())))
+		.doThat(userFind -> {
+			user.setPassword(userFind.getPassword());
+			Async.When(() -> mongoService.update(user)).doThat(c -> message.reply(Json.encode(c)));	
+		});
+		
 	}
+	
+	private void userInsert(Message<JsonObject> message) {	
+		User user = Json.decodeValue(message.body().encode(), User.class);		
+		user.setPassword(cryptoService.genHash256(user.getPassword()));		
+		Async.When(() -> mongoService.insert(user)).doThat(c -> message.reply(Json.encode(user)));
+		
+	}
+	
+	
+	private <R> void fullUserList(Message<String> message, Function<List<User>, List<R>> transform){
+		JsonObject sort = new JsonObject().put("sort", "firstName");
+		Async.When(() -> mongoService.findAll( User.class, sort,Sort.ASC))
+		.doThat(users -> {			
+			message.reply(Json.encode(transform.apply(users)));
+		});
+	}
+	
+	
+	
 	
 	/**
 	 * Recherche d'un utilisateur par le login

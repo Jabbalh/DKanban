@@ -16,6 +16,33 @@
   border-radius: 50%;
 }
 
+.ticket-NOT_STARTED {
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 5px auto;
+  background-color: Black;
+  border-radius: 50%;
+}
+
+.ticket-WAIT_CAISSE {
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 5px auto;
+  background-color: orange;
+  border-radius: 50%;
+}
+
+/*{{ticket.statut.code}}*/
+.ticket-status {
+	  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 5px auto;  
+  border-radius: 50%;
+}
+
 
 .grid-row > [class*="s"]  {
 	background-color: white;

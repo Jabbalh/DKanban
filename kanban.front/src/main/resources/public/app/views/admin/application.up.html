@@ -1,0 +1,26 @@
+<md-card class="md-padding" layout-padding >
+<md-card-content>
+		<div layout layout="column">
+			<md-input-container flex> 
+				<label>code</label>
+				<input ng-model="ctrl.internalData.code" disabled> 
+			</md-input-container>				
+		</div>
+		<div layout layout="column">			
+			<md-input-container flex> 
+				<label>libellé</label> 
+				<textarea ng-model="ctrl.internalData.libelle"> </textarea>
+			</md-input-container>			
+		</div>	
+		<div layout layout="column">			
+			<md-input-container flex> 
+				<label>description</label> 
+				<textarea ng-model="ctrl.internalData.description"> </textarea>
+			</md-input-container>			
+		</div>	
+			
+		</md-card-content>
+		 <md-card-actions layout="row" layout-align="end center">		 
+          	<md-button ng-click="ctrl.save()">sauver</md-button>          
+        </md-card-actions>
+</md-card>		

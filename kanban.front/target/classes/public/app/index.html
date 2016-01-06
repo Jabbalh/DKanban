@@ -20,7 +20,7 @@
           <md-icon md-svg-icon="/asset/svg/menu.svg"></md-icon>
         </md-button>      
         <h2>
-          <span>D-Kanban {CDC}</span>
+          <span>D-Kanban {{ctrl.applicationTitle}}</span>
         </h2>
         
         <span flex></span>
@@ -39,7 +39,7 @@
       </div>
     </md-toolbar>
     
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" id="leftNav">
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" id="leftNav" md-is-locked-open="false">
       <md-toolbar class="md-theme-light" layout="row">
         <h1 class="md-toolbar-tools">D-Kanban::Menu</h1>     
       </md-toolbar>
@@ -107,8 +107,8 @@
 	<script type="text/javascript" src="/app/services/kanban.update.service.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.ticket.service.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.socket.service.js"></script>
-	
-	
+	<script type="text/javascript" src="/app/services/kanban.user.service.js"></script>
+	<script type="text/javascript" src="/app/services/kanban.statut.service.js"></script>
 	
     <!-- Javascript -->
 

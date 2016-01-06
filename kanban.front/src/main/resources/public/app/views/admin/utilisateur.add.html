@@ -1,0 +1,33 @@
+<md-card class="md-padding" layout-padding >
+<md-card-content>
+		<div layout layout="column">
+			<md-input-container flex> 
+				<label>nom</label>
+				<input ng-model="user.firstName"> 
+			</md-input-container>
+			<md-input-container flex> 
+				<label>prenom</label> 
+				<input ng-model="user.lastName"> 
+			</md-input-container>
+			
+		</div>
+		<div layout layout="column">	
+			<md-input-container flex> 
+				<label>adresse E-Mail</label> 
+				<input ng-model="user.email"> 
+			</md-input-container>		
+			<md-input-container flex> 
+				<label>nom d'utilisateur</label>
+				<input ng-model="user.login" autocomplete="off"> 
+			</md-input-container>	
+			<md-input-container flex> 
+				<label>mot de passe</label>
+				<input type="password" ng-model="user.password" autocomplete="off"> 
+			</md-input-container>				
+		</div>
+		</md-card-content>
+		 <md-card-actions layout="row" layout-align="end center">
+		 <md-button ng-click="closeAddUser()">fermer</md-button>		 
+          <md-button ng-click="addUser()">sauver</md-button>                           
+        </md-card-actions>
+</md-card>		

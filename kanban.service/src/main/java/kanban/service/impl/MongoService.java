@@ -11,7 +11,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.MongoClient;
 import kanban.bus.constants.Sort;
-import kanban.entity.db.Ticket;
+import kanban.db.entity.KanbanParameter;
+import kanban.db.entity.Ticket;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.DbUtils;
 import kanban.utils.callback.MongoCallBack;
@@ -46,7 +47,9 @@ public class MongoService implements IMongoService {
 		MongoCallBack<Boolean> then = new MongoCallBack<>();
 		mongoClient.update(index, query, update, x -> {
 			logger.debug(() ->"MongoService.update.succeeded -> " + x.succeeded());			
-			if (x.failed()) logger.error(() ->"update " + index + " -> " + x.cause());			
+			if (x.failed()) {				
+				logger.error(() ->"update " + index + " -> " + x.cause());			
+			}
 			//this.secureThenCall(then, x.succeeded());
 			then.finish(x.succeeded());
 		});
@@ -106,8 +109,7 @@ public class MongoService implements IMongoService {
 	}
 	
 	@Override
-	public <T> MongoCallBack<T> findOne(Class<T> clazz, JsonObject request) {
-		System.out.println("MongoService.FindOne");
+	public <T> MongoCallBack<T> findOne(Class<T> clazz, JsonObject request) {		
 		MongoCallBack<T> then = new MongoCallBack<>();
 		mongoClient.findOne(DbUtils.index(clazz), request, null, x -> {
 			T result = null;
@@ -125,14 +127,14 @@ public class MongoService implements IMongoService {
 	}
 	
 	@Override
-	public <T,R> MongoCallBack<List<R>> findInternListFromObject(Class<T> clazz,Class<R> clazzR, JsonObject query, JsonObject fields) {
+	public <T,R> MongoCallBack<List<R>> findInternListFromObject(Class<T> clazz,Class<R> clazzR, JsonObject query, String fields) {
 		MongoCallBack<List<R>> then = new MongoCallBack<>();
 		
-		mongoClient.findOne(DbUtils.index(clazz), query, fields, x -> {
+		mongoClient.findOne(DbUtils.index(clazz), query, new JsonObject().put(fields, "1") , x -> {
 			
 			logger.debug(() -> "findInternListFromObject -> " + (x.result() != null));
 			
-			JsonArray array = x.result().getJsonArray("ticketHistory", new JsonArray());
+			JsonArray array = x.result().getJsonArray(fields, new JsonArray());
 			
 			List<R> result = new ArrayList<>();
 			if (array != null && array.getList().size()>0) {
@@ -150,6 +152,49 @@ public class MongoService implements IMongoService {
 		return then;
 	}
 	
+	@Override
+	public <T,S> MongoCallBack<S> findOneOnSubCollection(Class<T> clazz,Class<S> subClazz, String field,String value){
+		MongoCallBack<S> then = new MongoCallBack<>();
+		mongoClient.findOne(DbUtils.index(KanbanParameter.class), 
+				new JsonObject().put("$and", 
+						new JsonArray()
+							.add(new JsonObject().put("_id", KanbanParameter.EXPOSED_ID))
+							.add(new JsonObject().put(field,new JsonObject().put("$in", new JsonArray().add(value))))), 
+				new JsonObject().put("zones", "1"), x -> {
+			if (x.result() == null || x.result().getJsonArray("zones") == null){
+				then.finish(null);
+			} else {
+				
+				JsonArray result = x.result().getJsonArray("zones");
+				then.finish(Json.decodeValue(result.getJsonObject(0).encode(), subClazz));
+				
+			}
+		});
+		
+		return then;
+	}
+	
+	@Override
+	public <T,R> MongoCallBack<R> findFieldFromEntity(Class<T> clazz,Class<R> clazzR,JsonObject query, String fields){
+		
+		MongoCallBack<R> then = new MongoCallBack<>();
+		
+		mongoClient.findOne(DbUtils.index(clazz), query, new JsonObject().put(fields, "1") , x -> {
+			
+			logger.debug(() -> "findInternListFromObject -> " + x.result());
+			
+			Object result = x.result().getValue(fields);						
+			if (result != null) {
+				then.finish(Json.decodeValue(Json.encodePrettily(result), clazzR));
+			} else {
+				then.finish(null);
+			}
+				
+		});
+		
+		return then;
+	}
+	
 	
 	@Override
 	public <T> MongoCallBack<Boolean> insert(T entity){
@@ -157,7 +202,9 @@ public class MongoService implements IMongoService {
 		String json = Json.encode(entity);
 		JsonObject jsonEntity = new JsonObject(json);
 		mongoClient.insert(DbUtils.index(entity.getClass()), jsonEntity, x -> {
-			//logger.debug(() -> "MongoService.insert -> " + x.succeeded());
+			if (!x.succeeded()){
+				logger.error(()-> "MongoService.Insert", x.cause());				
+			}
 			then.finish(x.succeeded());
 		});	
 		return then;
@@ -242,8 +289,7 @@ public class MongoService implements IMongoService {
 		command.put("find", DbUtils.index(index));
 		mongoClient.runCommand("find", command, x -> {
 			List<T> liste = new ArrayList<>();
-			if (x.succeeded()){
-				System.out.println("fullSearchCommand -> " + x.result().encodePrettily());
+			if (x.succeeded()){				
 				
 				JsonArray array = x.result().getJsonObject("cursor").getJsonArray("firstBatch");
 				for (Object itemObject : array){
@@ -253,7 +299,7 @@ public class MongoService implements IMongoService {
 				}
 				this.secureThenCall(callback, liste);
 			} else {
-				System.out.println("fullSearchCommand failled -> " + x.cause());
+				logger.error(()-> "MongoService.fullSearchCommand",x.cause());				
 			}
 			
 		});
@@ -266,10 +312,7 @@ public class MongoService implements IMongoService {
 	public void createIndex(Consumer<Boolean> callback){
 		//{ dropIndexes: "collection", index: "*" }
 		
-		mongoClient.runCommand("listIndexes", new JsonObject().put("listIndexes", DbUtils.index(Ticket.class)), indexs -> {
-			System.out.println("indexes ->" + Json.encodePrettily(indexs.result()));
-		
-		
+		mongoClient.runCommand("listIndexes", new JsonObject().put("listIndexes", DbUtils.index(Ticket.class)), indexs -> {			
 		
 		mongoClient.runCommand("dropIndexes", new JsonObject()
 				.put("dropIndexes",  DbUtils.index(Ticket.class))
@@ -297,15 +340,11 @@ public class MongoService implements IMongoService {
 											
 										)
 									
-								), x -> {									
-								System.out.println("createIndex ok -> " + Json.encode(x.result()));
-								
-								mongoClient.runCommand("listIndexes", new JsonObject().put("listIndexes", DbUtils.index(Ticket.class)),
-										secondIndexes -> System.out.println("second indexes -> " + Json.encodePrettily(secondIndexes)));
+								), x -> {																	
 								
 								
 								if (x.failed()){
-									System.out.println("createIndex KO -> " + x.cause());
+									logger.error(() -> "MongoService.createIndex", x.cause());									
 								}
 								callback.accept(x.succeeded());
 								

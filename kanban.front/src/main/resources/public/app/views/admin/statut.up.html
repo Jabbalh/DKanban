@@ -1,0 +1,28 @@
+<md-card class="md-padding" layout-padding >
+<md-card-content>
+		<div layout layout="column">
+			<md-input-container flex> 
+				<label>Code</label> 
+				<input ng-model="ctrl.internalData.code" > 
+			</md-input-container>			
+			<md-input-container flex> 
+				<label>Nom</label>
+				<input ng-model="ctrl.internalData.libelle"> 
+			</md-input-container>	
+			<md-input-container flex> 
+				<label>Couleur</label>
+				<input type="color" ng-model="ctrl.internalData.color"> 
+			</md-input-container>			
+		</div>		
+		<div layout layout="column">			
+			<md-input-container flex> 
+				<label>description</label> 
+				<textarea ng-model="ctrl.internalData.description"> </textarea>
+			</md-input-container>			
+		</div>	
+		</md-card-content>
+		 <md-card-actions layout="row" layout-align="end center">
+		 <md-button ng-click="ctrl.delete()">supprimer</md-button>		 
+          <md-button ng-click="ctrl.save()">sauver</md-button>                   
+        </md-card-actions>
+</md-card>		

@@ -16,7 +16,7 @@
 		<div layout layout="column">
 			<md-input-container flex> 
 				<label>Référence</label>
-				<input ng-model="ticket.card.ref"> 
+				<input ng-model="ticket.card.reference"> 
 			</md-input-container>
 			<md-input-container flex> 
 				<label>Caisse</label> 
@@ -24,8 +24,8 @@
 			</md-input-container>
 			<md-input-container flex>
 				<label>Application</label>
-				<md-select ng-model="ticket.card.appli"> 
-					<md-option ng-repeat="app in listes.applications" value="{{app}}">{{app}} </md-option> 
+				<md-select ng-model="ticket.card.application" ng-model-options="{trackBy: '$value.code'}"> 
+					<md-option ng-repeat="app in listes.applications" ng-value="app">{{app.libelle}} </md-option>
 				</md-select> 
 			</md-input-container>
 		</div>
@@ -33,20 +33,26 @@
 		<div layout layout="column">
 			<md-input-container flex> 
 				<label>Propriétaire</label>
-				<md-select ng-model="ticket.card.owner"> 
-					<md-option ng-repeat="item in listes.users" value="{{item.login}}">{{item.login}} </md-option> 
+				<md-select ng-model="ticket.card.owner" ng-model-options="{trackBy: '$value.code'}"> 
+					<md-option ng-repeat="item in listes.users" ng-value="item">{{item.libelle}} </md-option> 
 				</md-select> 
 			</md-input-container>
 			<md-input-container flex> 
 				<label>Etat</label> 						
-				<md-select ng-model="ticket.card.state"> 
-					<md-option ng-repeat="state in listes.states" value="{{state.code}}">{{state.libelle}} </md-option> 
+				<md-select ng-model="ticket.card.statut" ng-model-options="{trackBy: '$value.code'}"> 
+					<md-option ng-repeat="state in listes.states" ng-value="state">{{state.libelle}} </md-option> 
 				</md-select>
-			</md-input-container>							
+			</md-input-container>		
+			<md-input-container flex> 
+				<label>Etat</label> 						
+				<md-select ng-model="ticket.card.priority" ng-model-options="{trackBy: '$value.code'}"> 
+					<md-option ng-repeat="priority in listes.priority" ng-value="priority">{{priority.libelle}} </md-option> 
+				</md-select>
+			</md-input-container>						
 			<md-input-container flex> 
 				<label>Zone</label> 
-				<md-select ng-model="ticket.zone"> 
-					<md-option ng-repeat="header in headers" value="{{header.libelle}}">{{header.libelle}} </md-option> 
+				<md-select ng-model="ticket.card.zone" ng-model-options="{trackBy: '$value.code'}"> 
+					<md-option ng-repeat="header in headers" ng-value="header">{{header.libelle}} </md-option> 
 				</md-select> 
 			</md-input-container>
 		</div>
@@ -65,16 +71,16 @@
 	</md-content>
 	</md-tab>
 	<md-tab label="Historique">
-		<md-content>
+		<md-content flex layout-padding>
 			 <md-list>
 		      <md-subheader class="md-no-sticky">
 		      	<md-button ng-click="addNew($event)" style="margin-right:20px;">Add</md-button> 
 		      	{{ticket.card.history.length}} entrée(s)
 		      </md-subheader>
-		      <md-list-item class="md-2-line" ng-repeat="item in ticket.card.history | orderBy:'date':true">	
+		      <md-list-item class="md-2-line" ng-repeat="item in ticket.card.histories | orderBy:'dateCreation':true">	
 		      <img ng-src="/asset/svg/trash.svg" class="md-avatar" ng-click="deleteHistory(item)"  />   		        
 		        <div class="md-list-item-text" layout="column">
-		          <h3>{{ item.date }} - {{ item.summary }}</h3>			          
+		          <h3>{{ item.dateCreation | date:'dd/MM/yyyy HH:mm'}} - {{ item.summary }}</h3>			          
 		          <p>{{ item.description }}</p>
 		        </div>
 		         <md-divider ></md-divider>

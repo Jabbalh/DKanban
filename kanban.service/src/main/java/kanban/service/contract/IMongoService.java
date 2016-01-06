@@ -48,7 +48,7 @@ public interface IMongoService {
 	<T> MongoCallBack<Integer> getNextSequence(Class<T> clazz);
 
 
-	<T,R> MongoCallBack<List<R>> findInternListFromObject(Class<T> clazz, Class<R> clazzR, JsonObject query, JsonObject fields);
+	<T,R> MongoCallBack<List<R>> findInternListFromObject(Class<T> clazz, Class<R> clazzR, JsonObject query, String fields);
 
 
 
@@ -61,6 +61,14 @@ public interface IMongoService {
 
 
 	<T> MongoCallBack<Boolean> deleteEntity(Class<T> clazz, String id);
+
+
+
+	<T,R> MongoCallBack<R> findFieldFromEntity(Class<T> clazz, Class<R> clazzR, JsonObject query, String fields);
+
+
+
+	<T,S> MongoCallBack<S> findOneOnSubCollection(Class<T> clazz, Class<S> subClazz, String field, String value);
 
 
 

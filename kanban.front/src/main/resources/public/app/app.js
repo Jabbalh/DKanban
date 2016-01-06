@@ -13,11 +13,24 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
         $stateProvider
         	.state('kanban', 	{ url: "/kanban", 	templateUrl: "/app/views/kanban/kanban.html", 	controller: 'KanbanController as ctrl' 	})
           	.state('login', 	{ url: "/login", 	templateUrl: "/app/views/login/login.html", 	controller: 'LoginController as ctrl' 	})
+          	
           	.state('admin', 	{ url: "/admin", 	templateUrl: "/app/views/admin/admin.html", 	controller: 'AdminController as ctrl' 	})
-          	.state('admin.application', 	{ url: "/application", 	templateUrl: "/app/views/admin/application.html", 	controller: 'AdminAppController as ctrl' 	})
-          	.state('admin.statut', 			{ url: "/statut", 		templateUrl: "/app/views/admin/statut.html", 		controller: 'AdminStatutController as ctrl' 	})
-          	.state('admin.zones', 			{ url: "/zones", 		templateUrl: "/app/views/admin/zones.html", 		controller: 'AdminZoneController as ctrl' 	})
-          	.state('admin.utilisateur', 	{ url: "/utilisateur", 	templateUrl: "/app/views/admin/utilisateur.html", 	controller: 'AdminUtilisateurController as ctrl' 	});
+          	
+          	.state('admin.application', 	{ url: "/application", 		templateUrl: "/app/views/admin/application.html", 										controller: 'AdminAppController as ctrl' 			})
+          	.state('admin.application.up', 	{ url: "/application/up", 	templateUrl: "/app/views/admin/application.up.html",params:{data:null, key:'APP'},		controller: 'AdminUpController as ctrl' 	})
+          	
+          	.state('admin.statut', 			{ url: "/statut", 			templateUrl: "/app/views/admin/statut.html", 											controller: 'AdminStatutController as ctrl' 		})
+          	.state('admin.statut.up', 		{ url: "/statut/up", 		templateUrl: "/app/views/admin/statut.up.html", 	params:{data:null, key:'STATE'},	controller: 'AdminUpController as ctrl' 		})
+          	
+          	.state('admin.zones', 			{ url: "/zones", 			templateUrl: "/app/views/admin/zones.html", 											controller: 'AdminZoneController as ctrl' 			})
+          	.state('admin.zones.up', 		{ url: "/zones/up", 		templateUrl: "/app/views/admin/zones.up.html", 		params:{data:null, key:'ZONE'},		controller: 'AdminUpController as ctrl' 		})
+        
+          	.state('admin.utilisateur', 	{ url: "/utilisateur", 		templateUrl: "/app/views/admin/utilisateur.html", 										controller: 'AdminUtilisateurController as ctrl' 	})        
+          	.state('admin.utilisateur.up', 	{ url: "/utilisateur/up", 	templateUrl: "/app/views/admin/utilisateur.up.html", params:{data:null, key:'USER'},	controller: 'AdminUtilisateurUpController as ctrl' 	})
+          	
+          	.state('admin.priority', 		{ url: "/priority", 		templateUrl: "/app/views/admin/param.color.html", 										controller: 'AdminPriorityController as ctrl' 	})        
+          	.state('admin.priority.up', 	{ url: "/priority/up", 		templateUrl: "/app/views/admin/param.color.up.html", 	params:{data:null, key:'PRIORITY'},	controller: 'AdminUpController as ctrl' 	});
+          	          	
           	
         $urlRouterProvider.otherwise("/login");
         
@@ -55,12 +68,16 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
 		  });   	    
     })
     
-    .controller('AppCtrl', function ($scope, $http,$timeout, $mdSidenav, $log,$state) {		    
+    .controller('AppCtrl', function ($scope, $http,$timeout, $mdSidenav, $log,$state, updateService) {		    
 		    
     	var self = this;    		
     	this.toggleLeft = function() { $mdSidenav('left').toggle(); }
 		this.isAuth = false;
-								
+		this.applicationTitle = "";
+		
+		updateService.getApplicationTitle().success(function(data){self.applicationTitle = '{'+ data+ '}';})
+		
+		
 	    $http.get("/public/is/auth").success(	function(data){ self.isAuth = data.auth;  	});		    
 	    $scope.$on("authenticate", 				function(data){	self.isAuth = data;			});
 	    
