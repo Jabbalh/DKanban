@@ -2,13 +2,17 @@
 <md-card-content>
 		<div layout layout="column">
 			<md-input-container flex> 
-				<label>Code</label> 
+				<label>code</label> 
 				<input ng-model="internalData.code"> 
 			</md-input-container>			
 			<md-input-container flex> 
-				<label>Nom</label>
+				<label>libelle</label>
 				<input ng-model="internalData.libelle"> 
 			</md-input-container>			
+			<md-input-container flex> 
+				<label>couleur</label>
+				<input type="color" ng-model="internalData.color"> 
+			</md-input-container>	
 		</div>
 		<div layout layout="column">
 			<md-input-container flex> 

@@ -33,8 +33,10 @@ angular.module("DKanbanApp")
 .controller("AdminAppController", function ($scope,$state,listService) {	
 	
 	var self = this;
-	this.applications = [];
-	listService.adminApplicationList().success(function(data) {self.applications = data;})
+	this.paramList = [];
+	this.ParamTitle = "Applications";
+	
+	listService.adminApplicationList().success(function(data) {self.paramList = data;})
 	
 	this.go = function(item) {
 		$state.go("admin.application.up",{data:item});
@@ -43,8 +45,9 @@ angular.module("DKanbanApp")
 
 .controller("AdminStatutController", function ($scope,$state,listService,statutService,$mdDialog) {	
 	var self = this;
-	this.states = [];
-	listService.adminStateList().success(function(data) {self.states = data;})
+	this.Paramtitle = "Statut";
+	this.paramList = [];
+	listService.adminStateList().success(function(data) {self.paramList = data;})
 	
 	this.go = function(item) {
 		$state.go("admin.statut.up",{data:item});
@@ -53,7 +56,7 @@ angular.module("DKanbanApp")
 	this.add = function(ev){
 		$mdDialog.show({
 		      controller: StatutAddCtrl,
-		      templateUrl: '/app/views/admin/statut.add.html',
+		      templateUrl: '/app/views/admin/param.color.add.html',
 		      parent: angular.element(document.body),
 		      targetEvent: ev,
 		      clickOutsideToClose:true,
@@ -63,7 +66,7 @@ angular.module("DKanbanApp")
 		    }).then(function(answer) {		    				    	
 		    	statutService.insertStatut({data:answer}).success(function(data){
 		    		console.log(data);
-		    		self.states.push(data);			    		
+		    		self.paramList.push(data);			    		
 		    	});
 		     }, function() { });
 	}

@@ -18,7 +18,7 @@ public class MainVerticle extends AbstractVerticle {
 		Properties properties = System.getProperties();
 		properties.setProperty("vertx.disableFileCaching", "false");
 		
-		boolean reinit = true;
+		boolean reinit = false;
 		if (reinit){
 			VerticleUtils.DeployeVertical(vertx,ApplicationService.class, x -> {
 				if (x.succeeded()){

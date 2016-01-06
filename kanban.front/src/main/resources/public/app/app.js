@@ -16,11 +16,11 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
           	
           	.state('admin', 	{ url: "/admin", 	templateUrl: "/app/views/admin/admin.html", 	controller: 'AdminController as ctrl' 	})
           	
-          	.state('admin.application', 	{ url: "/application", 		templateUrl: "/app/views/admin/application.html", 										controller: 'AdminAppController as ctrl' 			})
-          	.state('admin.application.up', 	{ url: "/application/up", 	templateUrl: "/app/views/admin/application.up.html",params:{data:null, key:'APP'},		controller: 'AdminUpController as ctrl' 	})
+          	.state('admin.application', 	{ url: "/application", 		templateUrl: "/app/views/admin/param.html", 										controller: 'AdminAppController as ctrl' 			})
+          	.state('admin.application.up', 	{ url: "/application/up", 	templateUrl: "/app/views/admin/param.up.html",params:{data:null, key:'APP'},		controller: 'AdminUpController as ctrl' 	})
           	
-          	.state('admin.statut', 			{ url: "/statut", 			templateUrl: "/app/views/admin/statut.html", 											controller: 'AdminStatutController as ctrl' 		})
-          	.state('admin.statut.up', 		{ url: "/statut/up", 		templateUrl: "/app/views/admin/statut.up.html", 	params:{data:null, key:'STATE'},	controller: 'AdminUpController as ctrl' 		})
+          	.state('admin.statut', 			{ url: "/statut", 			templateUrl: "/app/views/admin/param.color.html", 											controller: 'AdminStatutController as ctrl' 		})
+          	.state('admin.statut.up', 		{ url: "/statut/up", 		templateUrl: "/app/views/admin/param.color.up.html", 	params:{data:null, key:'STATE'},	controller: 'AdminUpController as ctrl' 		})
           	
           	.state('admin.zones', 			{ url: "/zones", 			templateUrl: "/app/views/admin/zones.html", 											controller: 'AdminZoneController as ctrl' 			})
           	.state('admin.zones.up', 		{ url: "/zones/up", 		templateUrl: "/app/views/admin/zones.up.html", 		params:{data:null, key:'ZONE'},		controller: 'AdminUpController as ctrl' 		})
