@@ -23,7 +23,7 @@
 
 
 <div layout="row" layout-wrap class="grid-row-header" ng-init="ctrl.init()">
-	<div   ng-repeat="item in ctrl.headers | orderBy: 'order'" class="mdl-cell--{{item.width}}-col ">
+	<div   ng-repeat="item in ctrl.headers | orderBy: 'order'" class="mdl-cell--{{item.width}}-col " flex>
 			<center><h4>{{item.libelle}}</h4></center>
 		</div>
 </div>
@@ -38,53 +38,61 @@
 	</div>
 		
 		
-	<div ng-repeat="other in zone.columns" class="mdl-cell--{{other.zone.width}}-col" id="{{other.id}}"
+	<div ng-repeat="other in zone.columns"  id="{{other.id}}" flex
 	ng-drop="true" ng-drop-success="ctrl.handleDrop($data,$event,other.id)" 
 	>
 
+		<div class='md-padding' layout="row" layout-wrap>
 
-
-		<div class="card-margin-border drag-auto-item"  id="{{ticket._id}}"
-		ng-drag="true" ng-drag-data="{data:{card:ticket, zone:other.id}}" data-allow-transform="true" 
-		ng-repeat="ticket in other.tickets">
-			<div>
-			<div layout="row">
-				<div flex>
+				<div class="card-margin-border drag-auto-item"  id="{{ticket._id}}" style="max-width:250px;"
+					 ng-drag="true" ng-drag-data="{data:{card:ticket, zone:other.id}}" data-allow-transform="true"
+					 ng-repeat="ticket in other.tickets" layout="column">
+					<div>
+						<div layout="row">
+							<div flex>
 					<span class="md-caption truncate cursor-edit" ng-click="ctrl.updateTicket($event,ticket,other.id)">{{ticket.reference}}
 						<md-tooltip md-direction="top">
-          					{{ticket.reference}}
-        				</md-tooltip>
+							{{ticket.reference}}
+						</md-tooltip>
 					</span>
-				</div>
-				<div class="card-title-middle" flex>
-					<span class="md-caption">{{ticket.caisse}}</span>
-				</div>
-				<div flex>
-					<span class="md-caption">{{ticket.application.libelle}}</span>
-				</div>
-				</div>
-				<div class="divider"></div>
-				<div layout="row">
-					<div flex>
-						<span class="md-caption">{{ticket.summary}}</span>
-					</div>					
-				</div>
-				<div class="divider"></div>
-				<div layout="row">
-					<div flex="10">
+							</div>
+							<div class="card-title-middle" flex>
+								<span class="md-caption">{{ticket.caisse}}</span>
+							</div>
+							<div flex>
+								<span class="md-caption">{{ticket.application.libelle}}</span>
+							</div>
+						</div>
+						<div class="divider"></div>
+						<div layout="row">
+							<div flex>
+								<span class="md-caption">{{ticket.summary}}</span>
+							</div>
+						</div>
+						<div class="divider"></div>
+						<div layout="row">
+							<div flex="10">
 						<span class="ticket-status" style="background-color:{{ticket.priority.color}}" layout-align="start">
 							<md-tooltip md-direction="top">Priorité {{ticket.priority.libelle}}</md-tooltip>
-						</span>					
-					</div>
-					<div flex="10">
+						</span>
+							</div>
+							<div flex="10">
 						<span class="ticket-status" style="background-color:{{ticket.statut.color}}" layout-align="end">
 						<md-tooltip md-direction="top">Statut {{ticket.statut.libelle}}</md-tooltip>
 						</span>
+							</div>
+						</div>
+
 					</div>
-				</div>
-				
-			</div>										
+
+			</div>
 		</div>
+
+
+
+
+
+
 
 	</div>
 </div>	

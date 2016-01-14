@@ -63,11 +63,14 @@ angular.module("DKanbanApp")
 		      locals: {
 		           item: {}
 		         },
-		    }).then(function(answer) {		    				    	
-		    	statutService.insertStatut({data:answer}).success(function(data){
-		    		console.log(data);
-		    		self.paramList.push(data);			    		
-		    	});
+		    }).then(function(answer) {	
+		    	if (answer != null) {
+		    		statutService.insertStatut({data:answer}).success(function(data){
+			    		console.log(data);
+			    		self.paramList.push(data);			    		
+			    	});
+		    	}
+		    	
 		     }, function() { });
 	}
 	
@@ -87,8 +90,10 @@ angular.module("DKanbanApp")
 
 .controller("AdminZoneController", function ($scope,$state,listService) {	
 	var self = this;
-	this.zones = [];
-	listService.adminZoneList().success(function(data) {self.zones = data;})
+	this.Paramtitle = "Zone";
+	this.paramList = [];
+	
+	listService.adminZoneList().success(function(data) {self.paramList = data;})
 	
 	this.go = function(item) {
 		$state.go("admin.zones.up",{data:item});
@@ -119,10 +124,13 @@ angular.module("DKanbanApp")
 			      locals: {
 			           item: {}
 			         },
-			    }).then(function(answer) {			    			    	
-			    	userService.saveNewUser(answer).success(function(data){			    		
-			    		self.users.push(data);			    		
-			    	});
+			    }).then(function(answer) {	
+			    	if (answer != null) {
+			    		userService.saveNewUser(answer).success(function(data){			    		
+				    		self.users.push(data);			    		
+				    	});
+			    	}
+			    	
 			     }, function() { });
 		});
 		
@@ -139,12 +147,10 @@ angular.module("DKanbanApp")
 			$mdDialog.hide();
 		}
 	}
-	
-	
-		
+
 })
 
-.controller("AdminUtilisateurUpController", function ($scope,$http,$filter,$state,$stateParams,updateService) {	
+.controller("AdminUtilisateurUpController", function ($scope,$http,$filter,$state,$stateParams,$mdDialog,updateService) {
 	var self = this;
 	this.user = $stateParams.data	
 	
@@ -155,8 +161,40 @@ angular.module("DKanbanApp")
 	}
 	
 	this.updatePassword = function(){
-		alert('fonction non disponible');
+
+		$mdDialog.show({
+        			      controller: UserUpdatePassword,
+        			      templateUrl: '/app/views/admin/utilisateur.mdp.html',
+        			      parent: angular.element(document.body),
+        			      clickOutsideToClose:true,
+        			      locals: {
+        			           item: {login:self.user.login}
+        			         },
+        			    }).then(function(answer) {
+
+
+        			     }, function() { });
 	}
+
+
+	function UserUpdatePassword($scope,$mdDialog,item){
+    	    $scope.data = item;
+    	    $scope.save = function() {
+    	        updateService.updateUserPassword({data : $scope.data}).success(function(data) {
+    	            if (data == true) {
+    	                $mdDialog.hide($scope.data);
+    	            } else {
+    	                $scope.error = true;
+    	                $scope.errorMsg = data;
+    	            }
+    	        });
+
+    	    }
+
+    	    $scope.cancel = function(){
+    	        $mdDialog.hide();
+    	    }
+    	}
 		
 })
 
@@ -181,11 +219,14 @@ angular.module("DKanbanApp")
 		      locals: {
 		           item: {}
 		         },
-		    }).then(function(answer) {		    				    	
-		    	statutService.insertPriority({data:answer}).success(function(data){
-		    		console.log(data);
-		    		self.paramList.push(data);			    		
-		    	});
+		    }).then(function(answer) {	
+		    	if (answer != null) {
+		    		statutService.insertPriority({data:answer}).success(function(data){
+			    		console.log(data);
+			    		self.paramList.push(data);			    		
+			    	});
+		    	}
+		    	
 		     }, function() { });
 	}
 	

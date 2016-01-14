@@ -4,25 +4,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+
 
 public class Runner {
 
 	private static final String CORE_EXAMPLES_JAVA_DIR = "/src/main/java/";
 	
 	public static void main(String[] args){
-		
-		VertxOptions options = new VertxOptions().setClustered(false);
-		runExample(CORE_EXAMPLES_JAVA_DIR,MainVerticle.class,options,null);
+		runExample(CORE_EXAMPLES_JAVA_DIR,MainVerticle.class,new VertxOptions().setClustered(false));
 		
 	}
 	
-	public static void runExample(String exampleDir, Class<? extends AbstractVerticle> clazz, VertxOptions options, DeploymentOptions
-		      deploymentOptions) {
-		    runExample(exampleDir + clazz.getPackage().getName().replace(".", "/"), clazz.getName(), options, deploymentOptions);
+	public static void runExample(String exampleDir, Class<MainVerticle> clazz, VertxOptions options) {
+		    runExample(exampleDir + clazz.getPackage().getName().replace(".", "/"), clazz.getName(), options, null);
 		  }
 	
 	public static void runExample(String exampleDir, String verticleID, VertxOptions options, DeploymentOptions deploymentOptions) {

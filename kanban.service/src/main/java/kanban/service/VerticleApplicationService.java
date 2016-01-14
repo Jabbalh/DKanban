@@ -13,24 +13,22 @@ import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import kanban.bus.constants.EventBusNames;
-import kanban.db.entity.AbstractParameter;
-import kanban.db.entity.ApplicationParameter;
-import kanban.db.entity.KanbanParameter;
-import kanban.db.entity.ParamColorTuple;
-import kanban.db.entity.ParamTuple;
-import kanban.db.entity.PriorityParameter;
-import kanban.db.entity.StatutParameter;
-import kanban.db.entity.Ticket;
-import kanban.db.entity.ZoneParameter;
+import kanban.db.entity.*;
 import kanban.entity.session.ApplicationData;
+import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
+import kanban.service.impl.CryptoService;
 import kanban.service.utils.DbUtils;
+import kanban.ui.entity.UserMdp;
 import kanban.utils.callback.Async;
 
 public class VerticleApplicationService extends AbstractVerticle {
 
 	@Inject
 	private IMongoService mongoService;
+
+	@Inject
+	private ICryptoService cryptoService;
 	
 	@Override
 	public void start(){
@@ -43,10 +41,11 @@ public class VerticleApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.APPLICATION_LIST, (Message<String> x) 	-> listForTicketParameter(x, ApplicationParameter.class, 0, t -> new ParamTuple(t))); // appList(x);
 		vertx.eventBus().consumer(EventBusNames.STATE_LIST, (Message<String> x) 		-> listForTicketParameter(x, StatutParameter.class, 0, new JsonObject().put("sort", "libelle"), t -> new ParamColorTuple(t))); //stateList(x));
 		vertx.eventBus().consumer(EventBusNames.ZONE_LIST, (Message<String> x) 			-> listForTicketParameter(x, ZoneParameter.class, 1, new JsonObject().put("sort", "order"), t -> new ParamTuple(t))); //zoneList(x));
+		vertx.eventBus().consumer(EventBusNames.PRIORITY_LIST, (Message<String> x) 		-> listForTicketParameter(x, PriorityParameter.class, 0, new JsonObject().put("sort", "libelle"), t -> new ParamColorTuple(t))); //priorityList(x));
 		
 		// gestion du titre
-		vertx.eventBus().consumer(EventBusNames.GLOBAL_TITLE_GET, (Message<JsonObject> x) -> globalTitleGet(x));
-		vertx.eventBus().consumer(EventBusNames.GLOBAL_TITLE_SET, (Message<JsonObject> x) -> globalTitleSet(x));
+		vertx.eventBus().consumer(EventBusNames.GLOBAL_TITLE_GET, this::globalTitleGet);
+		vertx.eventBus().consumer(EventBusNames.GLOBAL_TITLE_SET, this::globalTitleSet);
 		
 		
 		// Liste des paramètres des écrans d'admin
@@ -67,10 +66,32 @@ public class VerticleApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.PRIORITY_INSERT, (Message<JsonObject> x)-> insert(x, PriorityParameter.class));
 	
 		// Suppression d'un paramètre
-		vertx.eventBus().consumer(EventBusNames.ADMIN_DELETE, (Message<JsonObject> x) 	-> deleteAdminEntity(x));
-		
+		vertx.eventBus().consumer(EventBusNames.ADMIN_DELETE, this::deleteAdminEntity);
+
+		// modification d'un mot de passe utilisateur
+		vertx.eventBus().consumer(EventBusNames.ADMIN_USER_UP_PASSWORD, this::userUpdatePassword);
 	}
-	
+
+	private void userUpdatePassword(Message<JsonObject> message) {
+		UserMdp userMdp = Json.decodeValue(message.body().getJsonObject("data").encode(),UserMdp.class);
+
+		userMdp.setNewPassword(cryptoService.genHash256(userMdp.getNewPassword()));
+		userMdp.setOldPassword(cryptoService.genHash256(userMdp.getOldPassword()));
+
+		Async.When(() -> mongoService.findOne(User.class,new JsonObject().put("login",userMdp.getLogin())))
+				.Rule(user -> (user.getPassword().equals(userMdp.getOldPassword())))
+				.Otherwise(user -> message.reply(Json.encode("L'ancien mot de passe ne correspond pas")))
+				.doThat(user -> {
+					Async.When(() -> mongoService.update(
+										DbUtils.index(User.class),
+										new JsonObject().put("login",userMdp.getLogin()),
+										new JsonObject().put("$set",new JsonObject().put("password",userMdp.getNewPassword()))))
+					.doThat(x -> message.reply(Json.encode(x)));
+				});
+
+	}
+
+
 	/**
 	 * Renvois la liste complète d'un paramètre d'administration
 	 * @param message

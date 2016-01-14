@@ -1,24 +1,28 @@
 package kanban.ui.entity;
 
+import kanban.db.entity.ParamTuple;
+
 public class SearchQuery {
 
 	private String reference = "";
-	private String owner = "";
+	private ParamTuple owner = null;
 	private String description = "";
-	private String application = "";
-	
-	
-	
+	private ParamTuple application = null;
+	private Boolean archive = false;
+
+
+	public Boolean getArchive() {return archive; }
+	public void setArchive(Boolean archive) { this.archive = archive; 	}
 	public String getReference() {
 		return reference;
 	}
 	public void setReference(String reference) {
 		this.reference = reference;
 	}
-	public String getOwner() {
+	public ParamTuple getOwner() {
 		return owner;
 	}
-	public void setOwner(String owner) {
+	public void setOwner(ParamTuple owner) {
 		this.owner = owner;
 	}
 	public String getDescription() {
@@ -27,10 +31,10 @@ public class SearchQuery {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getApplication() {
+	public ParamTuple getApplication() {
 		return application;
 	}
-	public void setApplication(String application) {
+	public void setApplication(ParamTuple application) {
 		this.application = application;
 	}
 	

@@ -1,34 +1,35 @@
 <div layout="row" layout-fill >
 
 	<md-list ng-cloak flex="20" style="border-right: 1px solid;">
-		 <md-subheader class="md-no-sticky">Utilisateurs</md-subheader>
+	
+	<md-subheader class="md-no-sticky">Paramètres généraux</md-subheader>
   			<md-list-item ng-click="ctrl.goTo('admin.utilisateur')">
     			<img ng-src="/asset/svg/ic_person_24px.svg" class="md-avatar" />
-    			<p>Liste des utilisateurs du kanban</p>    			
+    			<p>Liste des utilisateurs</p>    			
   			</md-list-item>	  	
 	
-		<md-subheader class="md-no-sticky">Applications</md-subheader>
-  			<md-list-item ng-click="ctrl.goTo('admin.application')">
-    			<img ng-src="/asset/svg/ic_translate_48px.svg" class="md-avatar" />
-    			<p>Liste des applications</p>    			
-  			</md-list-item>	  	
-	  	
-	  	<md-subheader class="md-no-sticky">Statuts</md-subheader>
-  			<md-list-item ng-click="ctrl.goTo('admin.statut')">
-    			<img ng-src="/asset/svg/ic_feedback_48px.svg" class="md-avatar" />
-    			<p>Liste des statuts</p>    			
-  			</md-list-item>	  	
-	  	
-	  	<md-subheader class="md-no-sticky">Zones</md-subheader>
+		 <md-subheader class="md-no-sticky">Paramètres liés au Kanban</md-subheader>
+  					
   			<md-list-item ng-click="ctrl.goTo('admin.zones')">
     			<img ng-src="/asset/svg/ic_view_carousel_48px.svg" class="md-avatar" />
     			<p>Liste des zones du kanban</p>    			
   			</md-list-item>
   			
-  			<md-subheader class="md-no-sticky">Priorités</md-subheader>
+		<md-subheader class="md-no-sticky">Paramètres liés au ticket</md-subheader>
+		
+  			<md-list-item ng-click="ctrl.goTo('admin.application')">
+    			<img ng-src="/asset/svg/ic_translate_48px.svg" class="md-avatar" />
+    			<p>Liste des applications d'un tickets</p>    			
+  			</md-list-item>	  	
+	  		  	
+  			<md-list-item ng-click="ctrl.goTo('admin.statut')">
+    			<img ng-src="/asset/svg/ic_comment_24px.svg" class="md-avatar" />
+    			<p>Liste des statuts d'un ticket</p>    			
+  			</md-list-item>	  	
+	  		  		
   			<md-list-item ng-click="ctrl.goTo('admin.priority')">
-    			<img ng-src="/asset/svg/ic_view_carousel_48px.svg" class="md-avatar" />
-    			<p>Liste des zones du kanban</p>    			
+    			<img ng-src="/asset/svg/ic_feedback_48px.svg" class="md-avatar" />
+    			<p>Liste des priorités d'un ticket</p>    			
   			</md-list-item>
 	  		
 	</md-list>

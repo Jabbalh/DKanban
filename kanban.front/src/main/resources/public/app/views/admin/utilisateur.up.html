@@ -9,7 +9,9 @@
 				<label>Prenom</label> 
 				<input ng-model="ctrl.user.lastName"> 
 			</md-input-container>
-			
+			<md-input-container flex>
+				<md-checkbox ng-model="ctrl.user.deleted">supprimé</md-checkbox>
+			</md-input-container>
 		</div>
 		<div layout layout="column">	
 			<md-input-container flex> 

@@ -48,11 +48,17 @@
         <form>
 	          <md-input-container>
 		          <div layout layout="column" layout-align="start center">
-		          	<md-button class="md-icon-button" aria-label="Kanban" href="/app/index.html#kanban">
+		          	<md-button class="md-icon-button" aria-label="Kanban::couloir" href="/app/index.html#kanban">
 		          		<md-icon md-svg-icon="/asset/svg/ic_people_24px.svg" ></md-icon>          		
 		        	</md-button>
-		          	<span class="md-body-2">Kanban</span>
+		          	<span class="md-body-2">Kanban/couloir</span>
 		          </div>
+				  <div layout layout="column" layout-align="start center">
+					  <md-button class="md-icon-button" aria-label="Kanban::priorité" href="/app/index.html#kanbanPriority">
+						  <md-icon md-svg-icon="/asset/svg/ic_people_24px.svg" ></md-icon>
+					  </md-button>
+					  <span class="md-body-2">Kanban/priorité</span>
+				  </div>
 		            <div layout layout="column" layout-align="start center">
 		           		<md-button class="md-icon-button" aria-label="Vue synthétique">
 		          			<md-icon md-svg-icon="/asset/svg/presentation.svg" ></md-icon>          		
@@ -101,6 +107,7 @@
     <script type="text/javascript" src="/app/controllers/kanban/helpers/KanbanHelper.js"></script>
     
 	<script type="text/javascript" src="/app/controllers/kanban/KanbanController.js"></script>
+	<script type="text/javascript" src="/app/controllers/kanban/KanbanPriority.js"></script>
 	<script type="text/javascript" src="/app/controllers/login/LoginController.js"></script>
 	<script type="text/javascript" src="/app/controllers/admin/AdminController.js"></script>
 	<script type="text/javascript" src="/app/services/kanban.list.service.js"></script>

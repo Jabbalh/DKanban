@@ -1,0 +1,27 @@
+<md-card class="md-padding" layout-padding >
+<md-card-content>
+		<div layout layout="column">
+			<md-input-container flex>
+				<label>nom d'utilisateur</label>
+				<input ng-model="data.login" disabled>
+			</md-input-container>
+		</div>
+		<div layout layout="column">
+			<md-input-container flex> 
+				<label>ancien mot de passe</label>
+				<input ng-model="data.oldPassword">
+			</md-input-container>
+			<md-input-container flex> 
+				<label>nouveau mot de passe</label>
+				<input ng-model="data.newPassword">
+			</md-input-container>
+		</div>
+		<div style="color:Red" ng-hide="{{error}}" layout layout="column">
+			{{errorMsg}}
+		</div>
+		</md-card-content>
+		 <md-card-actions layout="row" layout-align="end center">
+		 <md-button ng-click="cancel()">fermer</md-button>
+          <md-button ng-click="save()">sauver</md-button>
+        </md-card-actions>
+</md-card>		

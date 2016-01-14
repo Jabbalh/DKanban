@@ -11,7 +11,10 @@ angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ng
         //
         // Now set up the states
         $stateProvider
-        	.state('kanban', 	{ url: "/kanban", 	templateUrl: "/app/views/kanban/kanban.html", 	controller: 'KanbanController as ctrl' 	})
+        	.state('kanban', 	    { url: "/kanban", 	        templateUrl: "/app/views/kanban/kanban.html", 	controller: 'KanbanController as ctrl' 	})
+        	.state('kanbanPriority',{ url: "/kanbanPriority", 	templateUrl: "/app/views/kanban/kanbanSynthese.html", 	controller: 'KanbanPriorityController as ctrl' 	})
+
+
           	.state('login', 	{ url: "/login", 	templateUrl: "/app/views/login/login.html", 	controller: 'LoginController as ctrl' 	})
           	
           	.state('admin', 	{ url: "/admin", 	templateUrl: "/app/views/admin/admin.html", 	controller: 'AdminController as ctrl' 	})

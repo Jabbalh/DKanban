@@ -33,6 +33,20 @@ public class ApplicationHandler extends AbstractHandler {
 	public void apiSet(RoutingContext context, String eventBusName){
 		apiSet(context,eventBusName, context.getBodyAsJson());
 	}
+
+	/**
+	 * Mise à jour du mot de passe
+	 * @param context
+     */
+	public void apiUserUpdatePassword(RoutingContext context){
+		// Structure :
+		// data.login
+		// data.oldPassword
+		//data.newPassword
+		JsonObject data = context.getBodyAsJson();
+		vertx.eventBus().send(EventBusNames.ADMIN_USER_UP_PASSWORD, data, x -> context.response().end(x.result().body().toString()));
+
+	}
 	
 	
 }

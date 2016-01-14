@@ -14,7 +14,11 @@ public class EventBusNames {
 	 */
 	public final static String KANBAN_TICKET_BY_USER = "KANBAN_TICKET_BY_USER";
 	public final static String KANBAN_HEADER_LIST = "KANBAN_HEADER_LIST";
+	public final static String KANBAN_HEADER_LIST_PRIORITY = "KANBAN_HEADER_LIST_PRIORITY";
+
 	public final static String KANBAN_BY_USER = "KANBAN_BY_USER";
+	public final static String KANBAN_BY_USER_FOR_PRIORITY = "KANBAN_BY_USER_FOR_PRIORITY";
+
 	
 	/**
 	 * BUS relatif aux tickets
@@ -72,5 +76,6 @@ public class EventBusNames {
 	 */
 	public final static String GLOBAL_TITLE_GET = "GLOBAL_TITLE_GET";
 	public final static String GLOBAL_TITLE_SET = "GLOBAL_TITLE_SET";
-	
+
+	public static final String ADMIN_USER_UP_PASSWORD = "ADMIN_USER_UP_PASSWORD";
 }

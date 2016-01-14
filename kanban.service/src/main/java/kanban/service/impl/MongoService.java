@@ -38,6 +38,7 @@ public class MongoService implements IMongoService {
 				.put("port", 27017)
 				.put("db_name", "kanban");				
 			mongoClient = MongoClient.createShared(vertx, mongoConf);
+			
 		}
 	}
 	
@@ -56,6 +57,7 @@ public class MongoService implements IMongoService {
 		return then;
 		
 	}
+	
 	
 	/**
 	 * Appels d'un apply sur un then avec log d'erreur

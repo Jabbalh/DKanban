@@ -1,7 +1,9 @@
 function KanbanTicketService($http) {
 
 	
-	
+	this.getSearchQuery = function(){
+	    return $http.get("/api/ticket/search/get");
+	}
     
 	this.cloneTicket = function(ticket) {		
 		var result = {
@@ -14,7 +16,9 @@ function KanbanTicketService($http) {
 				statut		: ticket.statut,
 				owner		: ticket.owner,
 				zone		: ticket.zone,
-				histories		: ticket.histories
+				histories	: ticket.histories,
+				priority	: ticket.priority,
+				archive     : ticket.archive
 		};
 		return result;
 		
@@ -29,12 +33,14 @@ function KanbanTicketService($http) {
 		origin.caisse		= updated.caisse;
 		origin.statut		= updated.statut;
 		origin.owner		= updated.owner;
-		origin.zone		= updated.zone;	
+		origin.zone			= updated.zone;	
 		origin.histories	= updated.histories;
+		origin.priority		= updated.priority;
+		origin.archive      = updated.archive;
 	}
 	
 	this.isModified = function(origin, returned) {
-		var properties = ['reference', '_id','application.code','summary','description','caisse','statut.code','owner'];	
+		var properties = ['reference', '_id','application.code','summary','description','caisse','statut.code','owner','priority.code', 'archive'];
 		var result = false;
 		properties.forEach(function(value){
 			if (origin[value] != returned[value]){

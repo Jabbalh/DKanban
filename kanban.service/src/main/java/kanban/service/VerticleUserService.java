@@ -32,7 +32,7 @@ public class VerticleUserService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.USER_LIST, 			(Message<String> m) -> fullUserList(m, 
 						users -> users
 							.stream().map(a -> new ParamTuple(a.getLogin(), a.getFirstName() + " " + a.getLastName()))
-							.collect(Collectors.toList())));
+							.collect(Collectors.toList()),false));
 		vertx.eventBus().consumer(EventBusNames.USER_SAVE, 			(Message<JsonObject> m) -> userSave(m));
 		vertx.eventBus().consumer(EventBusNames.USER_INSERT, 		(Message<JsonObject> m) -> userInsert(m));
 		
@@ -59,14 +59,21 @@ public class VerticleUserService extends AbstractVerticle {
 		Async.When(() -> mongoService.insert(user)).doThat(c -> message.reply(Json.encode(user)));
 		
 	}
-	
-	
+
+
+	private <R> void fullUserList(Message<String> message, Function<List<User>, List<R>> transform, Boolean withDeleted){
+		JsonObject query = new JsonObject().put("sort", "firstName");
+		if (!withDeleted) query.put("deleted",false);
+
+		Async.When(() -> mongoService.findAll( User.class, query,Sort.ASC))
+				.doThat(users -> {
+					message.reply(Json.encode(transform.apply(users)));
+				});
+	}
+
 	private <R> void fullUserList(Message<String> message, Function<List<User>, List<R>> transform){
-		JsonObject sort = new JsonObject().put("sort", "firstName");
-		Async.When(() -> mongoService.findAll( User.class, sort,Sort.ASC))
-		.doThat(users -> {			
-			message.reply(Json.encode(transform.apply(users)));
-		});
+		fullUserList(message, transform,true);
+
 	}
 	
 	

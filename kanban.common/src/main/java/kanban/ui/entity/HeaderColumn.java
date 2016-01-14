@@ -5,7 +5,7 @@ public class HeaderColumn {
 	private Integer width;
 	private String libelle;
 	private Integer order;
-	
+	private String code;
 	
 	
 	public HeaderColumn(Integer width, String libelle, Integer order) {
@@ -14,6 +14,15 @@ public class HeaderColumn {
 		this.libelle = libelle;
 		this.order = order;
 	}
+
+	public HeaderColumn(Integer width, String libelle, Integer order, String code) {
+		super();
+		this.width = width;
+		this.libelle = libelle;
+		this.order = order;
+		this.code = code;
+	}
+
 	public Integer getWidth() {
 		return width;
 	}
@@ -31,5 +40,13 @@ public class HeaderColumn {
 	}
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 }

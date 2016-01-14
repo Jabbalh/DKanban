@@ -18,14 +18,18 @@
 			<md-input-container flex>
 				<label>Application</label>
 				<md-select ng-model="search.application"> 
-					<md-option ng-repeat="app in listes.applications" value="{{app}}">{{app}} </md-option> 
+					<md-option ng-repeat="app in listes.applications"  ng-value="app">{{app.libelle}} </md-option>
 				</md-select> 
 			</md-input-container>
 			<md-input-container flex>
 				<label>Propriétaire</label>
 				<md-select ng-model="search.owner"> 
-					<md-option ng-repeat="item in listes.users" value="{{item.login}}">{{item.login}} </md-option> 
+					<md-option ng-repeat="item in listes.users" ng-value="item">{{item.libelle}} </md-option>
 				</md-select> 
+			</md-input-container>
+			<md-input-container flex>
+				<label>Archive</label>
+				<md-checkbox ng-model="search.archive" aria-label="Checkbox 1">Archive</md-checkbox>
 			</md-input-container>
 			
 		</div>

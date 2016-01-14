@@ -65,16 +65,11 @@ public class VerticleTicketService extends AbstractVerticle {
 		
 		if (!textQuery.equals("")) query.put("$text", new JsonObject().put("$search",textQuery));				
 		
-		if (!searchQuery.getApplication().equals("") || !searchQuery.getOwner().equals(""))
-		{
-			if (!searchQuery.getApplication().equals("")) query.put("application.code", searchQuery.getApplication());
-			if (!searchQuery.getOwner().equals("")) query.put("owner.code", searchQuery.getOwner());															
-		}
+		if (searchQuery.getApplication() != null) 		{ query.put("application",new JsonObject(Json.encode(searchQuery.getApplication()))); }
+		if (searchQuery.getOwner() != null)				{ query.put("owner", new JsonObject(Json.encode(searchQuery.getOwner()))); }
+		if (searchQuery.getArchive() != null)			{ query.put("archive", searchQuery.getArchive()); }
 				
-		Async.When(()->mongoService.findAll(Ticket.class,query))
-		.doThat(x -> {			
-			m.reply(Json.encodePrettily(x));
-		});
+		Async.When(()->mongoService.findAll(Ticket.class,query)).doThat(x -> m.reply(Json.encodePrettily(x)) );
 		
 		
 	}
@@ -144,14 +139,12 @@ public class VerticleTicketService extends AbstractVerticle {
 				
 			});		
 	}
-	
+
 
 	/**
 	 * Mise à jour d'un ticket
 	 * @param message
-	 * @param ticket
-	 * @param fullCard
-	 */
+     */
 	private void update(Message<JsonObject> message) {
 		Ticket ticket = Json.decodeValue(message.body().encode(), Ticket.class);
 		Async.When(() -> mongoService.update(ticket))
@@ -163,13 +156,11 @@ public class VerticleTicketService extends AbstractVerticle {
 			vertx.eventBus().publish(EventBusNames.UPDATE_CARD, Json.encodePrettily(ticket));						
 		});		
 	}
-	
+
 	/**
 	 * Insertion d'un ticket
 	 * @param message
-	 * @param ticket
-	 * @param fullCard
-	 */
+     */
 	private void insert(Message<JsonObject> message){
 		Ticket ticket = Json.decodeValue(message.body().encode(), Ticket.class);
 		Async.When(()->mongoService.getNextSequence(Ticket.class)).doThat(id -> {			

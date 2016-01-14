@@ -17,6 +17,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 import kanban.bus.constants.EventBusNames;
 import kanban.db.entity.StatutParameter;
 import kanban.db.entity.User;
+import kanban.ui.entity.SearchQuery;
 import kanban.utils.log.Logger;
 import kanban.web.services.ISessionService;
 
@@ -101,12 +102,12 @@ public class FrontVerticle extends AbstractVerticle {
 		sockBuServer.initSokJs();
 
 	}
-	
+
 	/**
 	 * Routes relative aux tickets
 	 * @param router
 	 * @param ticketHandler
-	 */
+     */
 	private void handleRouteForTicket(Router router, TicketHandler ticketHandler) {
 		
 		/**
@@ -125,6 +126,7 @@ public class FrontVerticle extends AbstractVerticle {
 		router.get("/api/ticket/list")				.handler(ticketHandler::apiTicketList);
 		router.get("/api/ticket/new/empty")			.handler(ticketHandler::apiNewEmpty);
 
+		router.get("/api/ticket/search/get")		.handler(x -> x.response().end(Json.encode(new SearchQuery())));
 		
 	}
 
@@ -134,12 +136,12 @@ public class FrontVerticle extends AbstractVerticle {
 		router.post("/api/state/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.STATE_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/state/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.STATE_INSERT, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/zone/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.ZONE_SAVE, x.getBodyAsJson().getJsonObject("data")));
-		router.post("/api/priority/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.PRIORITY_SAVE, x.getBodyAsJson().getJsonObject("data")));
+		router.post("/api/priority/save")			.handler(x -> appHandler.apiSet(x, EventBusNames.PRIORITY_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/priority/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.PRIORITY_INSERT, x.getBodyAsJson().getJsonObject("data")));
 		
 		router.post("/api/global/title")			.handler(x -> appHandler.apiSet(x, EventBusNames.GLOBAL_TITLE_SET));
 		
-		
+		router.post("/api/admin/user/updatePassword").handler(appHandler::apiUserUpdatePassword);
 		
 		router.get("/api/admin/zone/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.ADMIN_ZONE_LIST));
 		router.get("/api/admin/user/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.ADMIN_USER_LIST));
@@ -155,20 +157,27 @@ public class FrontVerticle extends AbstractVerticle {
 		
 		
 	}
-	
+
+
 	/**
 	 * Routes relative au kanban
 	 * @param router
 	 * @param appHandler
-	 */
+	 * @param kanbanHandler
+     */
 	private void handleRouteForKanban(Router router, ApplicationHandler appHandler, KanbanHandler kanbanHandler) {
 		router.get("/api/application/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.APPLICATION_LIST));
 		router.get("/api/state/list")				.handler(x -> appHandler.apiGet(x, EventBusNames.STATE_LIST));
 		router.get("/api/zone/list")				.handler(x -> appHandler.apiGet(x, EventBusNames.ZONE_LIST));
+		router.get("/api/priority/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.PRIORITY_LIST));
 		
 		//On renvois la liste des tickets par login non archivé
 		router.get("/api/kanban/by/user/:user")		.handler(kanbanHandler::apiKanbanByUser);
+		router.get("/api/kanban/by/:user/:key")		.handler(kanbanHandler::apiKanbanByPriority);
 		router.get("/api/kanban/headers")			.handler(kanbanHandler::apiKanbanHeaders);
+
+		router.get("/api/kanban/headers/priority")	.handler(kanbanHandler::apiKanbanHeadersPriority);
+
 	}
 
 

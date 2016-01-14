@@ -2,10 +2,15 @@ function KanbanListService($http) {
 
     this.applicationList = 			function() { return $http.get("/api/application/list"); }        
        
-    this.headerList = 				function(){ return $http.get("/api/kanban/headers"); }    
-    this.kanbanByUser = 			function(login) { return $http.get("/api/kanban/by/user/"+login); }    
+    this.headerList = 				function(){ return $http.get("/api/kanban/headers"); }
+
+    this.headerViewList =           function(key) { return $http.get("/api/kanban/headers/"+key);}
+
+    this.kanbanByUser = 			function(login) { return $http.get("/api/kanban/by/user/"+login); }
+    this.kanbanBy = 			    function(login, priority) { return $http.get("/api/kanban/by/"+login+"/"+priority); }
     this.stateList = 				function() { return $http.get("/api/state/list"); }    
     this.zoneList = 				function() { return $http.get("/api/zone/list"); }
+    this.priorityList =				function() { return $http.get("/api/priority/list"); }
     
     this.adminZoneList = 			function(){ return $http.get("/api/admin/zone/list");}
     

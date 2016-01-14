@@ -50,6 +50,10 @@ function KanbanUpdateService($http) {
     	}
     	
     }
+
+    this.updateUserPassword = function(data){
+        return $http.post("/api/admin/user/updatePassword",data);
+    }
 }
 
 angular.module("DKanbanApp").factory("updateService", function($http) {

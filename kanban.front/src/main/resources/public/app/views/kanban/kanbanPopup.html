@@ -28,6 +28,10 @@
 					<md-option ng-repeat="app in listes.applications" ng-value="app">{{app.libelle}} </md-option>
 				</md-select> 
 			</md-input-container>
+			<md-input-container flex>
+				<label>archive</label>
+				<md-checkbox ng-model="ticket.card.archive" aria-label="Checkbox 1">Archive</md-checkbox>
+			</md-input-container>
 		</div>
 
 		<div layout layout="column">
@@ -44,9 +48,9 @@
 				</md-select>
 			</md-input-container>		
 			<md-input-container flex> 
-				<label>Etat</label> 						
+				<label>Priorité</label> 						
 				<md-select ng-model="ticket.card.priority" ng-model-options="{trackBy: '$value.code'}"> 
-					<md-option ng-repeat="priority in listes.priority" ng-value="priority">{{priority.libelle}} </md-option> 
+					<md-option ng-repeat="priority in listes.priorities" ng-value="priority">{{priority.libelle}} </md-option> 
 				</md-select>
 			</md-input-container>						
 			<md-input-container flex> 
@@ -65,7 +69,7 @@
 		<div layout layout="row">
 			<md-input-container flex> 
 				<label>Description</label>
-				<textarea ng-model="ticket.card.description" /> 
+				<textarea ng-model="ticket.card.description" ></textarea>
 			</md-input-container>
 		</div>		
 	</md-content>
@@ -92,7 +96,8 @@
 </md-dialog-content> 
 <div class="md-actions"> 
 	<span flex></span>
-	<md-button ng-click="delete(ticket)" style="margin-right:20px;">Supprimer</md-button> 
+	<md-button ng-click="delete(ticket)" style="margin-right:20px;">Supprimer</md-button>
+	<md-button ng-click="archive(ticket)" style="margin-right:20px;">Archiver</md-button>
 	<md-button ng-click="cancel()"> Annuler </md-button> 
 	<md-button ng-click="answer(ticket)" style="margin-right:20px;">Sauver</md-button> 
 </div>
