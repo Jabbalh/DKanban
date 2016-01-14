@@ -35,9 +35,9 @@ public class ApplicationHandler extends AbstractHandler {
 	}
 
 	/**
-	 * Mise à jour du mot de passe
+	 * Mise &agrave; jour du mot de passe
 	 * @param context
-     */
+	 */
 	public void apiUserUpdatePassword(RoutingContext context){
 		// Structure :
 		// data.login

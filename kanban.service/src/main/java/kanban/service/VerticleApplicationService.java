@@ -17,7 +17,6 @@ import kanban.db.entity.*;
 import kanban.entity.session.ApplicationData;
 import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
-import kanban.service.impl.CryptoService;
 import kanban.service.utils.DbUtils;
 import kanban.ui.entity.UserMdp;
 import kanban.utils.callback.Async;
@@ -33,15 +32,13 @@ public class VerticleApplicationService extends AbstractVerticle {
 	@Override
 	public void start(){
 		
-		vertx.eventBus().consumer(EventBusNames.KANBAN_FULL, (Message<String> x) -> {
-			Async.When(() -> mongoService.findAll(KanbanParameter.class)).doThat(r -> x.reply(Json.encode(r)));
-		});
+		vertx.eventBus().consumer(EventBusNames.KANBAN_FULL, (Message<String> x) -> Async.When(() -> mongoService.findAll(KanbanParameter.class)).doThat(r -> x.reply(Json.encode(r))));
 		
 		// List des paramètres d'admin transformé pour un ticket
-		vertx.eventBus().consumer(EventBusNames.APPLICATION_LIST, (Message<String> x) 	-> listForTicketParameter(x, ApplicationParameter.class, 0, t -> new ParamTuple(t))); // appList(x);
-		vertx.eventBus().consumer(EventBusNames.STATE_LIST, (Message<String> x) 		-> listForTicketParameter(x, StatutParameter.class, 0, new JsonObject().put("sort", "libelle"), t -> new ParamColorTuple(t))); //stateList(x));
-		vertx.eventBus().consumer(EventBusNames.ZONE_LIST, (Message<String> x) 			-> listForTicketParameter(x, ZoneParameter.class, 1, new JsonObject().put("sort", "order"), t -> new ParamTuple(t))); //zoneList(x));
-		vertx.eventBus().consumer(EventBusNames.PRIORITY_LIST, (Message<String> x) 		-> listForTicketParameter(x, PriorityParameter.class, 0, new JsonObject().put("sort", "libelle"), t -> new ParamColorTuple(t))); //priorityList(x));
+		vertx.eventBus().consumer(EventBusNames.APPLICATION_LIST, (Message<String> x) 	-> listForTicketParameter(x, ApplicationParameter.class, 0, ParamTuple::new)); // appList(x);
+		vertx.eventBus().consumer(EventBusNames.STATE_LIST, (Message<String> x) 		-> listForTicketParameter(x, StatutParameter.class, 0, new JsonObject().put("sort", "libelle"), ParamColorTuple::new)); //stateList(x));
+		vertx.eventBus().consumer(EventBusNames.ZONE_LIST, (Message<String> x) 			-> listForTicketParameter(x, ZoneParameter.class, 1, new JsonObject().put("sort", "order"), ParamTuple::new)); //zoneList(x));
+		vertx.eventBus().consumer(EventBusNames.PRIORITY_LIST, (Message<String> x) 		-> listForTicketParameter(x, PriorityParameter.class, 0, new JsonObject().put("sort", "libelle"), ParamColorTuple::new)); //priorityList(x));
 		
 		// gestion du titre
 		vertx.eventBus().consumer(EventBusNames.GLOBAL_TITLE_GET, this::globalTitleGet);
@@ -56,10 +53,10 @@ public class VerticleApplicationService extends AbstractVerticle {
 		
 		
 		// Sauvegarde des paramètres
-		vertx.eventBus().consumer(EventBusNames.PRIORITY_SAVE, (Message<JsonObject> x) 	-> saveAndUpdateTicket(x, PriorityParameter.class, "priority", t -> new ParamColorTuple( t), (t,e) -> t.setPriority(e), () -> ApplicationData.get().getPriority()) ); 
-		vertx.eventBus().consumer(EventBusNames.STATE_SAVE, (Message<JsonObject> x) 	-> saveAndUpdateTicket(x, StatutParameter.class, "statut", t -> new ParamColorTuple(t), (t,e) -> t.setStatut(e), () -> ApplicationData.get().getStatut()) );		
-		vertx.eventBus().consumer(EventBusNames.ZONE_SAVE, (Message<JsonObject> x) 		-> saveAndUpdateTicket(x, ZoneParameter.class, "zone", t -> new ParamTuple(t), (t,e) -> t.setZone(e), () -> ApplicationData.get().getZones()) );		
-		vertx.eventBus().consumer(EventBusNames.APPLICATION_SAVE,(Message<JsonObject> x)-> saveAndUpdateTicket(x, ApplicationParameter.class, "application", t -> new ParamTuple(t), (t,e) -> t.setApplication(e), () -> ApplicationData.get().getApplications()) );
+		vertx.eventBus().consumer(EventBusNames.PRIORITY_SAVE, (Message<JsonObject> x) 	-> saveAndUpdateTicket(x, PriorityParameter.class, "priority", ParamColorTuple::new, Ticket::setPriority, () -> ApplicationData.get().getPriority()) );
+		vertx.eventBus().consumer(EventBusNames.STATE_SAVE, (Message<JsonObject> x) 	-> saveAndUpdateTicket(x, StatutParameter.class, "statut",ParamColorTuple::new, Ticket::setStatut, () -> ApplicationData.get().getStatut()) );
+		vertx.eventBus().consumer(EventBusNames.ZONE_SAVE, (Message<JsonObject> x) 		-> saveAndUpdateTicket(x, ZoneParameter.class, "zone", ParamTuple::new, Ticket::setZone, () -> ApplicationData.get().getZones()) );
+		vertx.eventBus().consumer(EventBusNames.APPLICATION_SAVE,(Message<JsonObject> x)-> saveAndUpdateTicket(x, ApplicationParameter.class, "application", ParamTuple::new, Ticket::setApplication, () -> ApplicationData.get().getApplications()) );
 		
 		// Insertion des paramètres
 		vertx.eventBus().consumer(EventBusNames.STATE_INSERT, (Message<JsonObject> x) 	-> insert(x, StatutParameter.class));		
@@ -81,13 +78,11 @@ public class VerticleApplicationService extends AbstractVerticle {
 		Async.When(() -> mongoService.findOne(User.class,new JsonObject().put("login",userMdp.getLogin())))
 				.Rule(user -> (user.getPassword().equals(userMdp.getOldPassword())))
 				.Otherwise(user -> message.reply(Json.encode("L'ancien mot de passe ne correspond pas")))
-				.doThat(user -> {
-					Async.When(() -> mongoService.update(
-										DbUtils.index(User.class),
-										new JsonObject().put("login",userMdp.getLogin()),
-										new JsonObject().put("$set",new JsonObject().put("password",userMdp.getNewPassword()))))
-					.doThat(x -> message.reply(Json.encode(x)));
-				});
+				.doThat(user -> Async.When(() -> mongoService.update(
+                                    DbUtils.index(User.class),
+                                    new JsonObject().put("login",userMdp.getLogin()),
+                                    new JsonObject().put("$set",new JsonObject().put("password",userMdp.getNewPassword()))))
+                .doThat(x -> message.reply(Json.encode(x))));
 
 	}
 
@@ -184,9 +179,7 @@ public class VerticleApplicationService extends AbstractVerticle {
 						DbUtils.index(Ticket.class), 
 						new JsonObject().put("_id",item.get_id()), 
 						new JsonObject().put("$set", new JsonObject().put(propertyName, new JsonObject(Json.encode(paramTuple))))))
-				.doThat(b -> {					
-					vertx.eventBus().publish(EventBusNames.UPDATE_CARD, Json.encodePrettily(item));
-				});
+				.doThat(b -> vertx.eventBus().publish(EventBusNames.UPDATE_CARD, Json.encodePrettily(item)));
 			}						
 		});
 	}

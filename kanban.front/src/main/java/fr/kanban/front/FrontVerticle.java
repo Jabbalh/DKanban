@@ -25,6 +25,7 @@ public class FrontVerticle extends AbstractVerticle {
 
 	private static final Logger logger = Logger.Get(FrontVerticle.class);
 
+	@SuppressWarnings("FieldCanBeLocal")
 	private SockBusServer sockBuServer;
 	@Inject
 	private ISessionService sessionService;

@@ -35,11 +35,11 @@ public class VerticleKanbanService extends AbstractVerticle {
 	public void start() {
 				
 				
-		vertx.eventBus().consumer(EventBusNames.KANBAN_HEADER_LIST, 			(Message<String> m) -> handlerHeaderList(m) );
-		vertx.eventBus().consumer(EventBusNames.KANBAN_HEADER_LIST_PRIORITY, 	(Message<String> m) -> handlerHeaderPriorityList(m) );
+		vertx.eventBus().consumer(EventBusNames.KANBAN_HEADER_LIST, 			this::handlerHeaderList );
+		vertx.eventBus().consumer(EventBusNames.KANBAN_HEADER_LIST_PRIORITY, 	this::handlerHeaderPriorityList );
 
-		vertx.eventBus().consumer(EventBusNames.KANBAN_BY_USER, 				(Message<String> m) -> handleByUser(m));
-		vertx.eventBus().consumer(EventBusNames.KANBAN_BY_USER_FOR_PRIORITY, 	(Message<String> m) -> handleByUserForPriority(m));
+		vertx.eventBus().consumer(EventBusNames.KANBAN_BY_USER, 				this::handleByUser);
+		vertx.eventBus().consumer(EventBusNames.KANBAN_BY_USER_FOR_PRIORITY, 	this::handleByUserForPriority);
 		
 		
 	}

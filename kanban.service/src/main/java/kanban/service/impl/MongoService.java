@@ -103,9 +103,7 @@ public class MongoService implements IMongoService {
 	@Override
 	public <T> MongoCallBack<Boolean> deleteEntity(Class<T> clazz, String id){
 		MongoCallBack<Boolean> then = new MongoCallBack<>();		
-		mongoClient.removeOne(DbUtils.index(clazz), new JsonObject().put("_id", id), x -> {
-			then.finish(x.succeeded());
-		});		
+		mongoClient.removeOne(DbUtils.index(clazz), new JsonObject().put("_id", id), x -> then.finish(x.succeeded()));
 		
 		return then;
 	}
@@ -267,9 +265,8 @@ public class MongoService implements IMongoService {
 				new JsonObject().put("_id", DbUtils.index(clazz)), 
 				new JsonObject().put("$inc", new JsonObject().put("seq", 1)), s -> {
 					if (s.succeeded()){						
-						mongoClient.findOne("counters", new JsonObject().put("_id", DbUtils.index(clazz)), null, i -> {
-							this.secureThenCall(then, i.result().getInteger("seq"));							
-						});
+						mongoClient.findOne("counters", new JsonObject().put("_id", DbUtils.index(clazz)), null,
+								i -> this.secureThenCall(then, i.result().getInteger("seq")));
 					}
 					
 				});
@@ -278,10 +275,9 @@ public class MongoService implements IMongoService {
 	
 	@Override
 	public void reinitCounters() {
-		mongoClient.dropCollection("counters", x -> {
-			mongoClient.insert("counters", new JsonObject().put("_id", DbUtils.index(Ticket.class)).put("seq", 5), r -> {				
-			});
-		});
+		mongoClient.dropCollection("counters",
+				x -> mongoClient.insert("counters", new JsonObject().put("_id", DbUtils.index(Ticket.class)).put("seq", 5), r -> {
+        }));
 	}
 	
 	@Override
@@ -314,47 +310,40 @@ public class MongoService implements IMongoService {
 	public void createIndex(Consumer<Boolean> callback){
 		//{ dropIndexes: "collection", index: "*" }
 		
-		mongoClient.runCommand("listIndexes", new JsonObject().put("listIndexes", DbUtils.index(Ticket.class)), indexs -> {			
-		
-		mongoClient.runCommand("dropIndexes", new JsonObject()
-				.put("dropIndexes",  DbUtils.index(Ticket.class))
-				.put("index", "*"), r -> {
-					
-					mongoClient.runCommand("createIndexes"	, new JsonObject()
-							.put("createIndexes", DbUtils.index(Ticket.class))
-							.put("indexes", 
-									new JsonArray()
-									.add(new JsonObject()
-											.put("key",new JsonObject()			
-													.put("reference", "text")
-													.put("summary", "text")
-													.put("description", "text")													
-													.put("owner.login", 1)		
-													.put("application.name", 1)
-												)							
-											.put("weights", new JsonObject()
-													.put("reference", 10)
-													.put("summary", 2)
-													.put("description", 1))
-												
-											.put("name", "ticket_fields_index")
-											
-											
-										)
-									
-								), x -> {																	
-								
-								
-								if (x.failed()){
-									logger.error(() -> "MongoService.createIndex", x.cause());									
-								}
-								callback.accept(x.succeeded());
-								
-							});
-					
-				});
-		
-		});
+		mongoClient.runCommand("listIndexes", new JsonObject().put("listIndexes", DbUtils.index(Ticket.class)),
+					indexs -> mongoClient.runCommand("dropIndexes", new JsonObject()
+							.put("dropIndexes",  DbUtils.index(Ticket.class))
+							.put("index", "*"), r -> mongoClient.runCommand("createIndexes"	, new JsonObject()
+									.put("createIndexes", DbUtils.index(Ticket.class))
+									.put("indexes",
+											new JsonArray()
+											.add(new JsonObject()
+													.put("key",new JsonObject()
+															.put("reference", "text")
+															.put("summary", "text")
+															.put("description", "text")
+															.put("owner.login", 1)
+															.put("application.name", 1)
+														)
+													.put("weights", new JsonObject()
+															.put("reference", 10)
+															.put("summary", 2)
+															.put("description", 1))
+
+													.put("name", "ticket_fields_index")
+
+
+												)
+
+										), x -> {
+
+
+										if (x.failed()){
+											logger.error(() -> "MongoService.createIndex", x.cause());
+										}
+										callback.accept(x.succeeded());
+
+									})));
 	}
 	
 	

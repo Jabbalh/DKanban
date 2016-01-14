@@ -33,11 +33,11 @@ public class VerticleUserService extends AbstractVerticle {
 						users -> users
 							.stream().map(a -> new ParamTuple(a.getLogin(), a.getFirstName() + " " + a.getLastName()))
 							.collect(Collectors.toList()),false));
-		vertx.eventBus().consumer(EventBusNames.USER_SAVE, 			(Message<JsonObject> m) -> userSave(m));
-		vertx.eventBus().consumer(EventBusNames.USER_INSERT, 		(Message<JsonObject> m) -> userInsert(m));
+		vertx.eventBus().consumer(EventBusNames.USER_SAVE, 			this::userSave);
+		vertx.eventBus().consumer(EventBusNames.USER_INSERT, 		this::userInsert);
 		
-		vertx.eventBus().consumer(EventBusNames.USER_FIND_BY_LOGIN, (Message<String> m) -> userFindByLogin(m));
-		vertx.eventBus().consumer(EventBusNames.USER_AUTHENTICATE, (Message<JsonObject> m) -> authenticate(m));
+		vertx.eventBus().consumer(EventBusNames.USER_FIND_BY_LOGIN, this::userFindByLogin);
+		vertx.eventBus().consumer(EventBusNames.USER_AUTHENTICATE, this::authenticate);
 		vertx.eventBus().consumer(EventBusNames.ADMIN_USER_LIST, (Message<String> x) -> fullUserList(x, u -> u));
 	}
 	
@@ -66,9 +66,7 @@ public class VerticleUserService extends AbstractVerticle {
 		if (!withDeleted) query.put("deleted",false);
 
 		Async.When(() -> mongoService.findAll( User.class, query,Sort.ASC))
-				.doThat(users -> {
-					message.reply(Json.encode(transform.apply(users)));
-				});
+				.doThat(users -> message.reply(Json.encode(transform.apply(users))));
 	}
 
 	private <R> void fullUserList(Message<String> message, Function<List<User>, List<R>> transform){
@@ -85,10 +83,7 @@ public class VerticleUserService extends AbstractVerticle {
 	 */
 	private void userFindByLogin(Message<String> message){
 		Async.When(()-> mongoService.findOne(User.class, new JsonObject().put("login", message.body())))
-		.doThat(x -> 
-		{		
-			message.reply(Json.encodePrettily(x));
-		});
+		.doThat(x -> message.reply(Json.encodePrettily(x)));
 	}
 	
 	/**

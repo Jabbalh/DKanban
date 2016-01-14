@@ -65,13 +65,13 @@ public class SessionService implements ISessionService {
 	 * @return
 	 */
 	public static SessionData getSessionData(Session session) {
-		SessionData sessionData = null;
+		SessionData sessionData;
 		
 		if (session.get(SESSION_DATA) == null){
 			sessionData = new SessionData();
 			session.put(SESSION_DATA, sessionData);			
 		} else {
-			sessionData = (SessionData) session.get(SESSION_DATA);					
+			sessionData = session.get(SESSION_DATA);
 		}
 		
 		return sessionData;

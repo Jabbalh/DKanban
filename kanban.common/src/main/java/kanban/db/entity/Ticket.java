@@ -88,9 +88,7 @@ public class Ticket {
 	public String getCaisse() {
 		return caisse;
 	}
-	public void setCaisse(String caisse) {
-		this.caisse = caisse;
-	}
+	public void setCaisse(String caisse) { this.caisse = caisse;}
 	public ParamColorTuple getStatut() {
 		return statut;
 	}

@@ -45,9 +45,9 @@ public class ApplicationService extends AbstractVerticle {
 	@Override
 	public void start() {
 		
-		vertx.eventBus().consumer(INIT_FIRST_APP, 	x -> this.initParameter(x) );
-		vertx.eventBus().consumer(INIT_DATA_APP, 	x -> this.initData(x));
-		vertx.eventBus().consumer(INIT_APPLICATION,	x -> this.initApplication(x));
+		vertx.eventBus().consumer(INIT_FIRST_APP, 	this::initParameter );
+		vertx.eventBus().consumer(INIT_DATA_APP, 	this::initData);
+		vertx.eventBus().consumer(INIT_APPLICATION,	this::initApplication);
 		
 		logger.debug("ApplicationService .. run ...");
 		
@@ -250,19 +250,13 @@ public class ApplicationService extends AbstractVerticle {
 		deleteAndInit(mongoService,User.class, users, x -> "user " + x.getLogin());
 		
 		
-		mongoService.delete(DbUtils.index(Ticket.class), () -> {
-			
-			
-			mongoService.createIndex(indexCreated -> {
-				if (indexCreated) {
-					for (Ticket u : tickets) {				
-						Async.When(() -> mongoService.insert(u)).doThat(x ->  genericCallback("Ticket" + u.getReference()));
-					}
-				}
-			});	
-			
-			
-		});
+		mongoService.delete(DbUtils.index(Ticket.class), () -> mongoService.createIndex(indexCreated -> {
+            if (indexCreated) {
+                for (Ticket u : tickets) {
+                    Async.When(() -> mongoService.insert(u)).doThat(x ->  genericCallback("Ticket" + u.getReference()));
+                }
+            }
+        }));
 		
 		
 						

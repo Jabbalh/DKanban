@@ -33,21 +33,19 @@ public class VerticleTicketService extends AbstractVerticle {
 	@Override
 	public void start() {
 		
-		vertx.eventBus().consumer(EventBusNames.KANBAN_TICKET_BY_USER, (Message<String> m) -> handleTicketByUser(m));		
-		vertx.eventBus().consumer(EventBusNames.TICKET_LIST, x -> 
-			{
-				Async.When(() -> mongoService.findAll(Ticket.class, new JsonObject())).doThat(r -> x.reply(Json.encodePrettily(r)));			
-			});
+		vertx.eventBus().consumer(EventBusNames.KANBAN_TICKET_BY_USER, this::handleTicketByUser);
+		vertx.eventBus().consumer(EventBusNames.TICKET_LIST, x ->
+				Async.When(() -> mongoService.findAll(Ticket.class, new JsonObject())).doThat(r -> x.reply(Json.encodePrettily(r))));
 		
-		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_STATE, 	(Message<JsonObject> m) -> updateTicketState(m));
+		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_STATE, 	this::updateTicketState);
 		
-		vertx.eventBus().consumer(EventBusNames.TICKET_INSERT_ALL, 	(Message<JsonObject> m) -> insert(m));
-		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_ALL, 	(Message<JsonObject> m) -> update(m));
-		vertx.eventBus().consumer(EventBusNames.TICKET_ARCHIVE, 	(Message<JsonObject> m) -> archiveTicket(m));
+		vertx.eventBus().consumer(EventBusNames.TICKET_INSERT_ALL, 	this::insert);
+		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_ALL, 	this::update);
+		vertx.eventBus().consumer(EventBusNames.TICKET_ARCHIVE, 	this::archiveTicket);
 		
-		vertx.eventBus().consumer(EventBusNames.TICKET_SEARCH, (Message<JsonObject> m) -> searchTicket(m));
+		vertx.eventBus().consumer(EventBusNames.TICKET_SEARCH, this::searchTicket);
 		
-		vertx.eventBus().consumer(EventBusNames.TICKET_DELETE, (Message<JsonObject> m) -> deleteTicket(m));
+		vertx.eventBus().consumer(EventBusNames.TICKET_DELETE, this::deleteTicket);
 		
 	}
 	
@@ -91,7 +89,7 @@ public class VerticleTicketService extends AbstractVerticle {
 	
 	private void deleteTicket(Message<JsonObject> message){
 		Async.When(()->mongoService.deleteEntity(Ticket.class,message.body().getString("_id")))
-		.Rule(r -> r == true)
+		.Rule(r -> r)
 		.Otherwise(c -> message.reply(Json.encodePrettily("KO")))
 		.doThat(r -> {				
 			vertx.eventBus().publish(EventBusNames.DELETE_CARD, Json.encodePrettily(message.body()));

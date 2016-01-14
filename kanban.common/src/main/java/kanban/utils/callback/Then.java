@@ -76,7 +76,7 @@ public class Then<T> {
 	 */
 	public void doThat(Consumer<T> callback){		
 		this.consumer = callback;
-		toDo.apply().finishHandler(x -> apply(x));		
+		toDo.apply().finishHandler(this::apply);
 	}
 
 	/**
