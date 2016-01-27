@@ -1,0 +1,67 @@
+<md-card class="md-padding" layout-padding >
+<md-card-content>
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>code</label>
+			<input ng-model="ctrl.internalData.code" disabled>
+		</md-input-container>
+		<md-input-container flex>
+			<label>Version</label>
+			<input type="text" ng-model="ctrl.internalData.libelle">
+		</md-input-container>
+
+	</div>
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>Date passage en VFO</label>
+			<input type="date" ng-model="ctrl.internalData.dateVfo" />
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date passage en UTI</label>
+			<input type="date" ng-model="ctrl.internalData.dateUti" />
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date de PV UTI</label>
+			<input type="date" ng-model="ctrl.internalData.datePvUti" />
+		</md-input-container>
+	</div>
+
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>Date de passage en QPA</label>
+			<input type="date" ng-model="ctrl.internalData.dateQpa" />
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date de PV QPA</label>
+			<input type="date" ng-model="ctrl.internalData.datePvQpa" />
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date de mise en production</label>
+			<input type="date" ng-model="ctrl.internalData.dateProd" />
+		</md-input-container>
+	</div>
+
+	<div layout layout="column">
+		<md-input-container flex>
+			<label class="active">Couleur lorsque la date UTI est dépassée</label>
+			<input type="color" ng-model="ctrl.internalData.colorPvUtiToLate" />
+		</md-input-container>
+		<md-input-container flex>
+			<label class="active">Couleur lorsque la date QPA est dépassée</label>
+			<input type="color" ng-model="ctrl.internalData.colorPvQpaToLate" />
+		</md-input-container>
+	</div>
+
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>description</label>
+			<textarea ng-model="ctrl.internalData.description"></textarea>
+		</md-input-container>
+	</div>
+
+		</md-card-content>
+		 <md-card-actions layout="row" layout-align="end center">
+
+          	<md-button ng-click="ctrl.save()">sauver</md-button>
+        </md-card-actions>
+</md-card>

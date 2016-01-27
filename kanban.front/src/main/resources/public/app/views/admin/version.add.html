@@ -1,0 +1,67 @@
+<md-card class="md-padding" layout-padding >
+<md-card-content>
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>code</label>
+			<input ng-model="internalData.code">
+		</md-input-container>
+		<md-input-container flex>
+			<label>version</label>
+			<input type="text" ng-model="internalData.libelle">
+		</md-input-container>
+
+	</div>
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>Date VFO</label>
+			<input type="date" ng-model="internalData.dateVfo" >
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date UTI</label>
+			<input type="date" ng-model="internalData.dateUti" >
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date PV UTI</label>
+			<input type="date" ng-model="internalData.datePvUti" >
+		</md-input-container>
+	</div>
+
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>Date QPA</label>
+			<input type="date" ng-model="internalData.dateQpa" >
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date PV QPA</label>
+			<input type="date" ng-model="internalData.datePvQpa" >
+		</md-input-container>
+		<md-input-container flex>
+			<label>Date MEP</label>
+			<input type="date" ng-model="internalData.dateProd" >
+		</md-input-container>
+	</div>
+
+	<div layout layout="column">
+		<md-input-container flex>
+			<label class="active" active>Couleur PV UTI dépassée</label>
+			<input type="color" ng-model="internalData.colorPvUtiToLate" >
+		</md-input-container>
+		<md-input-container flex>
+			<label class="active" active>Couleur PV QPA est dépassée</label>
+			<input type="color" ng-model="internalData.colorPvQpaToLate" >
+		</md-input-container>
+	</div>
+
+	<div layout layout="column">
+		<md-input-container flex>
+			<label>description</label>
+			<textarea ng-model="internalData.description"></textarea>
+		</md-input-container>
+	</div>
+		
+		</md-card-content>
+		 <md-card-actions layout="row" layout-align="end center">
+			 <md-button ng-click="closeAdd()">fermer</md-button>
+			 <md-button ng-click="add()">sauver</md-button>
+        </md-card-actions>
+</md-card>		
