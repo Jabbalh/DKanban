@@ -33,11 +33,20 @@ public class TicketHandler extends AbstractHandler {
 	}
 	
 	public void apiTicketUpdateZone(RoutingContext context){		
-		JsonObject data = context.getBodyAsJson().getJsonObject("data");					
-		vertx.eventBus().send(EventBusNames.TICKET_UPDATE_STATE, data, r -> {				
-			context.response().end(Json.encodePrettily("OK"));			
-		});				
+		ticketUpdateProperty(context,EventBusNames.TICKET_UPDATE_STATE);
 	}
+
+	public void apiTicketUpdatePriority(RoutingContext context){
+		ticketUpdateProperty(context,EventBusNames.TICKET_UPDATE_PRIORITY);
+	}
+
+	private void ticketUpdateProperty(RoutingContext context, String eventBus){
+		JsonObject data = context.getBodyAsJson().getJsonObject("data");
+		vertx.eventBus().send(eventBus, data, r -> {
+			context.response().end(Json.encodePrettily("OK"));
+		});
+	}
+
 	
 	
 	public void apiTicketUpdateAll(RoutingContext context) {		

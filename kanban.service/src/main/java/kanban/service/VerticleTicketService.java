@@ -11,11 +11,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import kanban.bus.constants.EventBusNames;
-import kanban.db.entity.ParamTuple;
-import kanban.db.entity.Ticket;
-import kanban.db.entity.TicketHistory;
-import kanban.db.entity.User;
-import kanban.db.entity.ZoneParameter;
+import kanban.db.entity.*;
 import kanban.entity.session.ApplicationData;
 import kanban.service.contract.IMongoService;
 import kanban.service.utils.DbUtils;
@@ -38,6 +34,7 @@ public class VerticleTicketService extends AbstractVerticle {
 				Async.When(() -> mongoService.findAll(Ticket.class, new JsonObject())).doThat(r -> x.reply(Json.encodePrettily(r))));
 		
 		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_STATE, 	this::updateTicketState);
+		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_PRIORITY,	this::updateTicketPriority);
 		
 		vertx.eventBus().consumer(EventBusNames.TICKET_INSERT_ALL, 	this::insert);
 		vertx.eventBus().consumer(EventBusNames.TICKET_UPDATE_ALL, 	this::update);
@@ -136,6 +133,43 @@ public class VerticleTicketService extends AbstractVerticle {
 				});
 				
 			});		
+	}
+
+	/**
+	 * Mise à jour de l'état du ticket
+	 * @param message
+	 */
+	private void updateTicketPriority(Message<JsonObject> message){
+		// On récupère les paramètres
+		String priority = message.body().getString("zone");
+		Ticket ticket = Json.decodeValue(message.body().getJsonObject("card").encode(), Ticket.class);
+		String login = message.body().getString("user");
+
+
+		PriorityParameter priorityParameter = ApplicationData.get().getPriority().stream().filter(x -> x.getCode().equals(priority)).findFirst().get();
+
+
+		Async.When(()-> mongoService.findOne(User.class, new JsonObject().put("login", login)))
+				.doThat(user -> {
+					ticket.addHistory(new TicketHistory(t -> {
+						String desc = String.format("Changement de priorité:  %s de %s vers %s de %s",ticket.getPriority().getCode(),ticket.getOwner().getCode(),priority,login);
+						t.setDateCreation(new Date());
+						t.setSummary("Mise à jour de la zone");
+						t.setDescription(desc);
+					}));
+
+					ticket.setOwner(ParamTuple.from(user));
+					ticket.setPriority(ParamTuple.from(priorityParameter));
+					Async.When(()-> mongoService.update(ticket) )
+							.Rule(r -> r)
+							.Otherwise(x -> message.reply(Json.encode(x)))
+							.doThat(r -> {
+								message.reply(Json.encodePrettily("OK"));
+								logger.debug("updateTicketState -> vertx.eventBus().publish(\"update-card\"");
+								vertx.eventBus().publish(EventBusNames.UPDATE_CARD, Json.encodePrettily(ticket));
+							});
+
+				});
 	}
 
 

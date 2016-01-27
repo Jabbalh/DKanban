@@ -32,7 +32,7 @@ public class AuthenticateHandler {
 		router.route().handler(CookieHandler.create());
 		SessionStore store = LocalSessionStore.create(vertx);
 		SessionHandler sessionHandler = SessionHandler.create(store);
-		
+		sessionHandler.setSessionTimeout(14400000);
 		router.route().handler(sessionHandler);
 		
 		

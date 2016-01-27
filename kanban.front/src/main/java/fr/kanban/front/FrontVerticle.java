@@ -117,6 +117,7 @@ public class FrontVerticle extends AbstractVerticle {
 		router.route("/api/ticket/update/*").consumes("application/json");
 		
 		router.post("/api/ticket/update/zone")		.handler(ticketHandler::apiTicketUpdateZone);
+		router.post("/api/ticket/update/priority")	.handler(ticketHandler::apiTicketUpdatePriority);
 		router.post("/api/ticket/update/all")		.handler(ticketHandler::apiTicketUpdateAll);
 		router.post("/api/ticket/search")			.handler(ticketHandler::apiTicketSearch);
 		router.post("/api/ticket/delete")			.handler(ticketHandler::apiTicketDelete);
@@ -134,12 +135,15 @@ public class FrontVerticle extends AbstractVerticle {
 	private void handleRouteForAdmin(Router router, ApplicationHandler appHandler){
 		
 		router.post("/api/app/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.APPLICATION_SAVE, x.getBodyAsJson().getJsonObject("data")));
+		router.post("/api/app/insert")				.handler(x -> appHandler.apiSet(x, EventBusNames.APPLICATION_INSERT, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/state/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.STATE_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/state/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.STATE_INSERT, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/zone/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.ZONE_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/priority/save")			.handler(x -> appHandler.apiSet(x, EventBusNames.PRIORITY_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/priority/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.PRIORITY_INSERT, x.getBodyAsJson().getJsonObject("data")));
-		
+		router.post("/api/version/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.VERSION_INSERT, x.getBodyAsJson().getJsonObject("data")));
+		router.post("/api/priority/save")			.handler(x -> appHandler.apiSet(x, EventBusNames.VERSION_SAVE, x.getBodyAsJson().getJsonObject("data")));
+
 		router.post("/api/global/title")			.handler(x -> appHandler.apiSet(x, EventBusNames.GLOBAL_TITLE_SET));
 		
 		router.post("/api/admin/user/updatePassword").handler(appHandler::apiUserUpdatePassword);
@@ -149,6 +153,7 @@ public class FrontVerticle extends AbstractVerticle {
 		router.get("/api/admin/application/list")	.handler(x -> appHandler.apiGet(x, EventBusNames.ADMIN_APP_LIST));
 		router.get("/api/admin/state/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.ADMIN_STATUT_LIST));
 		router.get("/api/admin/priority/list")		.handler(x -> appHandler.apiGet(x, EventBusNames.ADMIN_PRORITY_LIST));
+		router.get("/api/admin/version/list")		.handler(x -> appHandler.apiGet(x, EventBusNames.ADMIN_VERSION_LIST));
 		
 		router.get("/public/global/title")			.handler(x -> appHandler.apiGet(x, EventBusNames.GLOBAL_TITLE_GET));		
 		router.get("/public/dev/kanban")			.handler(x -> appHandler.apiGet(x, EventBusNames.KANBAN_FULL));
@@ -171,6 +176,7 @@ public class FrontVerticle extends AbstractVerticle {
 		router.get("/api/state/list")				.handler(x -> appHandler.apiGet(x, EventBusNames.STATE_LIST));
 		router.get("/api/zone/list")				.handler(x -> appHandler.apiGet(x, EventBusNames.ZONE_LIST));
 		router.get("/api/priority/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.PRIORITY_LIST));
+		router.get("/api/version/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.VERSION_LIST));
 		
 		//On renvois la liste des tickets par login non archivé
 		router.get("/api/kanban/by/user/:user")		.handler(kanbanHandler::apiKanbanByUser);

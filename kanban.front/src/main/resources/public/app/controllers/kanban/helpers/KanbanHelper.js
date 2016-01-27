@@ -2,6 +2,13 @@ function KanbanHelper(kanban)
 {
 	var self = this;
 
+    var findZone;
+    this.setFindZone = function(fct){ this.findZone = fct};
+    this.getFindZone = function(value)
+    {
+        return this.findZone(value);
+    }
+
 	/**
 	   * Renvois un ticket de la collection
 	   */
@@ -49,27 +56,27 @@ function KanbanHelper(kanban)
 	   * Insere dans la collection après un changement
 	   */
 	  this.moveAfterChange = function(result,obj) {
-		  var objCard = obj;
-		  var done = false;
-		  var toFind = (result.owner.code+"$"+result.zone.code);
-	    	kanban.values.forEach(function(value,key){	    		
-	    		value.columns.forEach(function(oValue,oKey){	    				    			
-	    			if (oValue.id == toFind) {	   	    				
-	    				oValue.tickets.push(objCard);	    					    				
-	    				done = true;
-	    			}	    			
-	    		});
-	    		if (done) return;
-	    	});
-	    	return objCard;
-	  }
+      		  var objCard = obj;
+      		  var done = false;
+              var toFind = this.getFindZone(result);
+      	    	kanban.values.forEach(function(value,key){
+      	    		value.columns.forEach(function(oValue,oKey){
+      	    			if (oValue.id == toFind) {
+      	    				oValue.tickets.push(objCard);
+      	    				done = true;
+      	    			}
+      	    		});
+      	    		if (done) return;
+      	    	});
+      	    	return objCard;
+      	  }
 	  
 	  /**
 	   * Renvois la zone du parent d'un ticket
 	   */
 	  this.getCardZoneFromDoc = function(result) {
-		  return document.getElementById(result.owner.code +'$'+result.zone.code);
-	  }
+      		  return document.getElementById(result);
+      }
 	  
 	  /**
 	   * Renvois la ticket provenant du document HTML

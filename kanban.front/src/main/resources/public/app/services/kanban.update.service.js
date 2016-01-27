@@ -3,6 +3,10 @@ function KanbanUpdateService($http) {
     this.updateTicketZone = function(data) {
     	return $http.post("/api/ticket/update/zone",data);    	
     }
+
+    this.updateTicketPriority = function(data) {
+        	return $http.post("/api/ticket/update/priority",data);
+        }
     
     this.updateTicket = function(data){
     	return $http.post("/api/ticket/update/all",data);
@@ -35,7 +39,8 @@ function KanbanUpdateService($http) {
 	    	case "STATE": 	return $http.post("/api/state/save",data);    
 			case "ZONE": 	return $http.post("/api/zone/save",data);		
 			case "USER": 	return $http.post("/api/user/save",data);
-			case "PRIORITY":return $http.post("/api/priority/save",data);   
+			case "PRIORITY":return $http.post("/api/priority/save",data);
+			case "VERSION": return $http.post("/api/version/save",data);
     	}
     	
     }
@@ -46,7 +51,8 @@ function KanbanUpdateService($http) {
 	    	case "STATE": 	return $http.post("/api/state/delete",data);    
 			case "ZONE": 	return $http.post("/api/zone/delete",data);		
 			case "USER": 	return $http.post("/api/user/delete",data);
-			case "PRIORITY": 	return $http.post("/api/priority/delete",data);
+			case "PRIORITY":return $http.post("/api/priority/delete",data);
+			case "VERSION": return $http.post("/api/version/delete",data);
     	}
     	
     }

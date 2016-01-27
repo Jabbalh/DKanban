@@ -30,7 +30,7 @@ angular.module("DKanbanApp")
 	
 })
 
-.controller("AdminAppController", function ($scope,$state,listService) {	
+.controller("AdminAppController", function ($scope,$state,appService,listService,$mdDialog) {
 	
 	var self = this;
 	this.paramList = [];
@@ -41,6 +41,38 @@ angular.module("DKanbanApp")
 	this.go = function(item) {
 		$state.go("admin.application.up",{data:item});
 	}
+
+	this.add = function(ev){
+    		$mdDialog.show({
+    		      controller: AppAddCtrl,
+    		      templateUrl: '/app/views/admin/param.add.html',
+    		      parent: angular.element(document.body),
+    		      targetEvent: ev,
+    		      clickOutsideToClose:true,
+    		      locals: {
+    		           item: {}
+    		         },
+    		    }).then(function(answer) {
+    		    	if (answer != null) {
+    		    		appService.insertApp({data:answer}).success(function(data){
+    			    		console.log(data);
+    			    		self.paramList.push(data);
+    			    	});
+    		    	}
+
+    		     }, function() { });
+    	}
+
+    	function AppAddCtrl($scope, $mdDialog,item){
+        		$scope.internalData = item;
+        		$scope.add = function(){
+        			$mdDialog.hide($scope.internalData);
+        		}
+
+        		$scope.closeAdd = function () {
+        			$mdDialog.hide();
+        		}
+        	}
 })
 
 .controller("AdminStatutController", function ($scope,$state,listService,statutService,$mdDialog) {	
@@ -242,6 +274,97 @@ angular.module("DKanbanApp")
 	}
 		
 	
+})
+
+.controller("AdminPriorityController", function ($scope,$state,listService,versionService,$mdDialog) {
+	var self = this;
+	this.paramList = [];
+	this.Paramtitle = 'Versions';
+
+	listService.adminVersionList().success(function(data) {self.paramList = data;})
+
+	this.go = function(item) {
+		$state.go("admin.version.up",{data:item});
+	}
+
+	this.add = function(ev){
+		$mdDialog.show({
+		      controller: VersionAddCtrl,
+		      templateUrl: '/app/views/admin/version.add.html',
+		      parent: angular.element(document.body),
+		      targetEvent: ev,
+		      clickOutsideToClose:true,
+		      locals: {
+		           item: {}
+		         },
+		    }).then(function(answer) {
+		    	if (answer != null) {
+		    		versionService.insertVersion({data:answer}).success(function(data){
+			    		console.log(data);
+			    		self.paramList.push(data);
+			    	});
+		    	}
+
+		     }, function() { });
+	}
+
+	function PriorityAddCtrl($scope, $mdDialog,item){
+		$scope.internalData = item;
+		$scope.add = function(){
+			$mdDialog.hide($scope.internalData);
+		}
+
+		$scope.closeAdd = function () {
+			$mdDialog.hide();
+		}
+	}
+
+
+})
+
+.controller("AdminVersionController", function ($scope,$state,listService,versionService,$mdDialog) {
+	var self = this;
+	this.Paramtitle = "Version";
+	this.paramList = [];
+	listService.adminVersionList().success(function(data) {self.paramList = data; console.log(data);})
+
+	this.go = function(item) {
+		$state.go("admin.version.up",{data:item});
+	}
+
+	this.add = function(ev){
+		$mdDialog.show({
+		      controller: VersionAddCtrl,
+		      templateUrl: '/app/views/admin/version.add.html',
+		      parent: angular.element(document.body),
+		      targetEvent: ev,
+		      clickOutsideToClose:true,
+		      locals: {
+		           item: {}
+		         },
+		    }).then(function(answer) {
+		    	if (answer != null) {
+		    		versionService.insertVersion({data:answer}).success(function(data){
+			    		console.log(data);
+			    		self.paramList.push(data);
+			    	});
+		    	}
+
+		     }, function() { });
+	}
+
+	function VersionAddCtrl($scope, $mdDialog,item){
+		$scope.internalData = item;
+		$scope.add = function(){
+			$mdDialog.hide($scope.internalData);
+		}
+
+		$scope.closeAdd = function () {
+			$mdDialog.hide();
+		}
+	}
+
+
 })
 
 .controller("AdminUpController", function ($scope,$http,$filter,$state,$stateParams,updateService) {	

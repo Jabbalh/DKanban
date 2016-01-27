@@ -1,5 +1,4 @@
- <md-fab-speed-dial ng-hide="demo.hidden" md-direction="up" 
-                       class="md-scale fixed-action-btn" >
+ <md-fab-speed-dial ng-hide="demo.hidden" md-direction="up"  class="md-scale fixed-action-btn" >
   <md-fab-trigger>
     <md-button aria-label="menu" class="md-fab md-warn">
       <md-icon md-svg-src="/asset/svg/menu.svg"></md-icon>
@@ -23,7 +22,8 @@
 
 
 <div layout="row" layout-wrap class="grid-row-header" ng-init="ctrl.init()">
-	<div   ng-repeat="item in ctrl.headers | orderBy: 'order'" class="mdl-cell--{{item.width}}-col " flex>
+	<div class="mdl-cell--1-col "></div>
+	<div   ng-repeat="item in ctrl.headers | orderBy: 'order'" ng-hide="$first" class="mdl-cell--{{item.width}}-col " flex>
 			<center><h4>{{item.libelle}}</h4></center>
 		</div>
 </div>
@@ -38,23 +38,23 @@
 	</div>
 		
 		
-	<div ng-repeat="other in zone.columns"  id="{{other.id}}" flex
-	ng-drop="true" ng-drop-success="ctrl.handleDrop($data,$event,other.id)" 
+	<div ng-repeat="other in zone.columns"   flex
+	 ng-drop-success="ctrl.handleDrop($data,$event,other.id)"
 	>
 
-		<div class='md-padding' layout="row" layout-wrap>
+		<div  layout="row" layout-wrap id="{{other.id}}" ng-drop="true" ng-drop-success="ctrl.handleDrop($data,$event,other.id)" >
 
-				<div class="card-margin-border drag-auto-item"  id="{{ticket._id}}" style="max-width:250px;"
+				<div class="card-margin-border drag-auto-item"  id="{{ticket._id}}" style="width:250px;"
 					 ng-drag="true" ng-drag-data="{data:{card:ticket, zone:other.id}}" data-allow-transform="true"
 					 ng-repeat="ticket in other.tickets" layout="column">
 					<div>
 						<div layout="row">
 							<div flex>
-					<span class="md-caption truncate cursor-edit" ng-click="ctrl.updateTicket($event,ticket,other.id)">{{ticket.reference}}
-						<md-tooltip md-direction="top">
-							{{ticket.reference}}
-						</md-tooltip>
-					</span>
+								<span class="md-caption truncate cursor-edit" ng-click="ctrl.updateTicket($event,ticket,other.id)">{{ticket.reference}}
+									<md-tooltip md-direction="top">
+										{{ticket.reference}}
+									</md-tooltip>
+								</span>
 							</div>
 							<div class="card-title-middle" flex>
 								<span class="md-caption">{{ticket.caisse}}</span>
@@ -71,29 +71,23 @@
 						</div>
 						<div class="divider"></div>
 						<div layout="row">
-							<div flex="10">
-						<span class="ticket-status" style="background-color:{{ticket.priority.color}}" layout-align="start">
-							<md-tooltip md-direction="top">Priorité {{ticket.priority.libelle}}</md-tooltip>
-						</span>
+							<div flex>
+								<span class="md-caption">{{ticket.zone.libelle}}</span>
 							</div>
 							<div flex="10">
-						<span class="ticket-status" style="background-color:{{ticket.statut.color}}" layout-align="end">
-						<md-tooltip md-direction="top">Statut {{ticket.statut.libelle}}</md-tooltip>
-						</span>
+								<span class="ticket-status" style="background-color:{{ticket.priority.color}}" layout-align="start">
+									<md-tooltip md-direction="top">Priorité {{ticket.priority.libelle}}</md-tooltip>
+								</span>
+							</div>
+							<div flex="10">
+								<span class="ticket-status" style="background-color:{{ticket.statut.color}}" layout-align="end">
+									<md-tooltip md-direction="top">Statut {{ticket.statut.libelle}}</md-tooltip>
+								</span>
 							</div>
 						</div>
-
 					</div>
-
 			</div>
 		</div>
-
-
-
-
-
-
-
 	</div>
 </div>	
 

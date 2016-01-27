@@ -40,11 +40,7 @@
 			<artifactId>vertx-mongo-client</artifactId>
 			<version>${vertx.version}</version>
 		</dependency>
-		<!-- <dependency> <groupId>io.vertx</groupId> <artifactId>vertx-auth-shiro</artifactId> 
-			<version>${vertx.version}</version> </dependency> <dependency> <groupId>io.vertx</groupId> 
-			<artifactId>vertx-dropwizard-metrics</artifactId> <version>${vertx.version}</version> 
-			</dependency> <dependency> <groupId>io.vertx</groupId> <artifactId>vertx-hazelcast</artifactId> 
-			<version>${vertx.version}</version> </dependency> -->
+
 		<dependency>
 			<groupId>com.englishtown.vertx</groupId>
 			<artifactId>vertx-hk2</artifactId>

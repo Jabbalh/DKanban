@@ -18,8 +18,10 @@ angular.module("DKanbanApp")
 	this.zones = [];
     var eb = new EventBus("/eventbus");
     var helper = new KanbanHelper(this.kanban);
-
-
+     helper.setFindZone(function(result)
+        {
+            return result.owner.code+"$"+result.priority.code;
+        })
     /**
      * Méthode de test
      */
@@ -95,7 +97,7 @@ angular.module("DKanbanApp")
     this.updateCard = function(msg) {
         var result = JSON.parse(msg.body);
             console.log("update-card");
-            var parent = helper.getCardZoneFromDoc(result);
+            var parent = helper.getCardZoneFromDoc(result.owner.code +'$'+result.priority.code);
 
             var card = helper.getCardFromDocument(result);
 
@@ -326,7 +328,7 @@ angular.module("DKanbanApp")
 			zone = helper.searchZone(data.data.card.id);
 			if (zone != id){
 				$animate.enabled(false);
-				$http.post("/api/ticket/update/zone",{data : self.cardForDropEvent(data,id)});
+				$http.post("/api/ticket/update/priority",{data : self.cardForDropEvent(data,id)});
 			}
 		}
 	};

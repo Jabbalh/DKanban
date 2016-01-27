@@ -1,5 +1,9 @@
 <md-content flex layout-padding >
-	<h2 class="md-title">{{ctrl.ParamTitle}} {Liste}</h2>
+	<h2 class="md-title">{{ctrl.ParamTitle}} {Liste}
+		<md-button class="md-icon-button" aria-label="Ajouter" ng-click="ctrl.add($event)">
+			<md-icon md-svg-icon="/asset/svg/add_cross.svg"></md-icon>
+		</md-button>
+	</h2>
 	<div layout layout="column">
 		<md-list ng-cloak flex="40" >		
   			<md-list-item ng-repeat="item in ctrl.paramList" class="md-2-line" ng-click="ctrl.go(item)" >

@@ -26,6 +26,8 @@ public class EventBusNames {
 	
 	public final static String TICKET_LIST = "TICKET_LIST";
 	public final static String TICKET_UPDATE_STATE = "TICKET_UPDATE_STATE";
+	public final static String TICKET_UPDATE_PRIORITY = "TICKET_UPDATE_PRIORITY";
+
 	public final static String TICKET_UPDATE_ALL = "TICKET_UPDATE_ALL";
 	public final static String TICKET_INSERT_ALL = "TICKET_INSERT_ALL";
 	public final static String TICKET_ARCHIVE = "TICKET_ARCHIVE";
@@ -46,7 +48,8 @@ public class EventBusNames {
 	 * BUS relatif aux applications
 	 */
 	public final static String APPLICATION_LIST = "APPLICATION_LIST";
-	public final static String APPLICATION_SAVE = "APPLICATION_SAVE";		
+	public final static String APPLICATION_SAVE = "APPLICATION_SAVE";
+	public final static String APPLICATION_INSERT = "APPLICATION_INSERT";
 	
 	public final static String STATE_LIST = "STATE_LIST";
 	public final static String STATE_SAVE = "STATE_SAVE";
@@ -61,9 +64,15 @@ public class EventBusNames {
 	public final static String PRIORITY_INSERT = "PRIORITY_INSERT";
 	
 	public final static String KANBAN_FULL = "KANBAN_FULL";
-	
+
+	public final static String VERSION_LIST = "VERSION_LIST";
+	public static final String VERSION_SAVE = "VERSION_SAVE";
+	public static final String VERSION_INSERT = "VERSION_INSERT";
+
 	public final static String ADMIN_ZONE_LIST = "ADMIN_ZONE_LIST";
 	public final static String ADMIN_PRORITY_LIST = "ADMIN_PRORITY_LIST";
+	public final static String ADMIN_VERSION_LIST = "ADMIN_VERSION_LIST";
+
 	public final static String ADMIN_USER_LIST = "ADMIN_USER_LIST";
 	public final static String ADMIN_APP_LIST = "ADMIN_APP_LIST";
 	public final static String ADMIN_STATUT_LIST = "ADMIN_STATUT_LIST";
@@ -78,4 +87,5 @@ public class EventBusNames {
 	public final static String GLOBAL_TITLE_SET = "GLOBAL_TITLE_SET";
 
 	public static final String ADMIN_USER_UP_PASSWORD = "ADMIN_USER_UP_PASSWORD";
+
 }

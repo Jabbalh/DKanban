@@ -13,15 +13,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import kanban.db.entity.ApplicationParameter;
-import kanban.db.entity.KanbanParameter;
-import kanban.db.entity.ParamColorTuple;
-import kanban.db.entity.ParamTuple;
-import kanban.db.entity.PriorityParameter;
-import kanban.db.entity.StatutParameter;
-import kanban.db.entity.Ticket;
-import kanban.db.entity.User;
-import kanban.db.entity.ZoneParameter;
+import kanban.db.entity.*;
 import kanban.entity.session.ApplicationData;
 import kanban.service.contract.ICryptoService;
 import kanban.service.contract.IMongoService;
@@ -63,6 +55,7 @@ public class ApplicationService extends AbstractVerticle {
 		Async.When(()-> mongoService.findAll(StatutParameter.class)).doThat(status -> ApplicationData.get().setStatut(status));
 		Async.When(()-> mongoService.findAll(ZoneParameter.class)).doThat(zones -> ApplicationData.get().setZones(zones));
 		Async.When(()-> mongoService.findAll(PriorityParameter.class)).doThat(priority -> ApplicationData.get().setPriority(priority));
+		Async.When(()-> mongoService.findAll(VersionParameter.class)).doThat(version -> ApplicationData.get().setVersions(version));
 			/*
 		Async.When(() -> mongoService.findAll(User.class))
 		.doThat(users -> {

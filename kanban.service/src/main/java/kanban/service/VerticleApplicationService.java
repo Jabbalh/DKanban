@@ -1,5 +1,7 @@
 package kanban.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.Json;
@@ -39,6 +42,9 @@ public class VerticleApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.STATE_LIST, (Message<String> x) 		-> listForTicketParameter(x, StatutParameter.class, 0, new JsonObject().put("sort", "libelle"), ParamColorTuple::new)); //stateList(x));
 		vertx.eventBus().consumer(EventBusNames.ZONE_LIST, (Message<String> x) 			-> listForTicketParameter(x, ZoneParameter.class, 1, new JsonObject().put("sort", "order"), ParamTuple::new)); //zoneList(x));
 		vertx.eventBus().consumer(EventBusNames.PRIORITY_LIST, (Message<String> x) 		-> listForTicketParameter(x, PriorityParameter.class, 0, new JsonObject().put("sort", "libelle"), ParamColorTuple::new)); //priorityList(x));
+
+		vertx.eventBus().consumer(EventBusNames.VERSION_LIST, (Message<String> x) 		-> listForTicketParameter(x, VersionParameter.class, 0, new JsonObject().put("archive","false").put("sort", "dateProd"), ParamTuple::new)); //priorityList(x));
+
 		
 		// gestion du titre
 		vertx.eventBus().consumer(EventBusNames.GLOBAL_TITLE_GET, this::globalTitleGet);
@@ -50,6 +56,8 @@ public class VerticleApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.ADMIN_STATUT_LIST, (Message<String> x) 	-> fullAdminList(x, StatutParameter.class));		
 		vertx.eventBus().consumer(EventBusNames.ADMIN_ZONE_LIST, (Message<String> x) 	-> fullAdminList(x,ZoneParameter.class));
 		vertx.eventBus().consumer(EventBusNames.ADMIN_PRORITY_LIST, (Message<String> x) -> fullAdminList(x,PriorityParameter.class));
+		vertx.eventBus().consumer(EventBusNames.ADMIN_VERSION_LIST, (Message<String> x) -> fullAdminList(x,VersionParameter.class));
+
 		
 		
 		// Sauvegarde des paramètres
@@ -57,10 +65,13 @@ public class VerticleApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.STATE_SAVE, (Message<JsonObject> x) 	-> saveAndUpdateTicket(x, StatutParameter.class, "statut",ParamColorTuple::new, Ticket::setStatut, () -> ApplicationData.get().getStatut()) );
 		vertx.eventBus().consumer(EventBusNames.ZONE_SAVE, (Message<JsonObject> x) 		-> saveAndUpdateTicket(x, ZoneParameter.class, "zone", ParamTuple::new, Ticket::setZone, () -> ApplicationData.get().getZones()) );
 		vertx.eventBus().consumer(EventBusNames.APPLICATION_SAVE,(Message<JsonObject> x)-> saveAndUpdateTicket(x, ApplicationParameter.class, "application", ParamTuple::new, Ticket::setApplication, () -> ApplicationData.get().getApplications()) );
+		vertx.eventBus().consumer(EventBusNames.VERSION_SAVE,(Message<JsonObject> x)-> saveAndUpdateTicket(x, VersionParameter.class, "version", ParamTuple::new, Ticket::setVersion, () -> ApplicationData.get().getVersions()) );
 		
 		// Insertion des paramètres
 		vertx.eventBus().consumer(EventBusNames.STATE_INSERT, (Message<JsonObject> x) 	-> insert(x, StatutParameter.class));		
 		vertx.eventBus().consumer(EventBusNames.PRIORITY_INSERT, (Message<JsonObject> x)-> insert(x, PriorityParameter.class));
+		vertx.eventBus().consumer(EventBusNames.APPLICATION_INSERT, (Message<JsonObject> x)-> insert(x, ApplicationParameter.class));
+		vertx.eventBus().consumer(EventBusNames.VERSION_INSERT, (Message<JsonObject> x)-> insert(x, VersionParameter.class));
 	
 		// Suppression d'un paramètre
 		vertx.eventBus().consumer(EventBusNames.ADMIN_DELETE, this::deleteAdminEntity);
@@ -93,8 +104,9 @@ public class VerticleApplicationService extends AbstractVerticle {
 	 * @param clazz
 	 */
 	private <T> void fullAdminList(Message<String> message,Class<T> clazz){
+
 		Async.When(()-> mongoService.findAll(clazz, kanbanQuery()))
-		.doThat(x -> message.reply(Json.encode(x)));
+		.doThat(x -> message.reply( Json.encode(x)));
 	}
 	
 	/**

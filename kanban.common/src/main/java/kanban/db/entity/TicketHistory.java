@@ -12,6 +12,7 @@ public class TicketHistory {
 	private String _id;
 	private String summary;
 	private String description;
+
 	private Date dateCreation;
 	
 	public TicketHistory() {}

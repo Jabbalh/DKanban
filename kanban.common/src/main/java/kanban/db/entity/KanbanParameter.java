@@ -16,7 +16,7 @@ public class KanbanParameter {
 	private List<ApplicationParameter> applications = new ArrayList<>();
 	private List<StatutParameter> statut = new ArrayList<>();
 	private List<PriorityParameter> priority = new ArrayList<>();
-	
+	private List<VersionParameter> versions = new ArrayList<>();
 	public KanbanParameter() {}
 	
 	
@@ -60,7 +60,13 @@ public class KanbanParameter {
 	public void setPriority(List<PriorityParameter> priority) {
 		this.priority = priority;
 	}
-	
-	
-	
+
+
+	public List<VersionParameter> getVersions() {
+		return versions;
+	}
+
+	public void setVersions(List<VersionParameter> versions) {
+		this.versions = versions;
+	}
 }

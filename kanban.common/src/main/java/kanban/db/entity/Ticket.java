@@ -20,7 +20,7 @@ public class Ticket {
 	private ParamColorTuple priority = new ParamColorTuple();
 	private List<TicketHistory> histories = new ArrayList<>(); 
 	private Boolean archive = false;	
-	
+	private ParamTuple version = new ParamTuple();
 	
 	public Ticket() {
 		
@@ -128,8 +128,13 @@ public class Ticket {
 	public void setPriority(ParamColorTuple priority) {
 		this.priority = priority;
 	}
-	
-	
-	
-	
+
+
+	public ParamTuple getVersion() {
+		return version;
+	}
+
+	public void setVersion(ParamTuple version) {
+		this.version = version;
+	}
 }
