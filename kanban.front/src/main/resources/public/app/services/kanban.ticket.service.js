@@ -18,7 +18,8 @@ function KanbanTicketService($http) {
 				zone		: ticket.zone,
 				histories	: ticket.histories,
 				priority	: ticket.priority,
-				archive     : ticket.archive
+				archive     : ticket.archive,
+				version     : ticket.version
 		};
 		return result;
 		
@@ -37,10 +38,11 @@ function KanbanTicketService($http) {
 		origin.histories	= updated.histories;
 		origin.priority		= updated.priority;
 		origin.archive      = updated.archive;
+		origin.version      = updated.version;
 	}
 	
 	this.isModified = function(origin, returned) {
-		var properties = ['reference', '_id','application.code','summary','description','caisse','statut.code','owner','priority.code', 'archive'];
+		var properties = ['reference', '_id','application.code','summary','description','caisse','statut.code','owner','priority.code', 'archive', 'version.code'];
 		var result = false;
 		properties.forEach(function(value){
 			if (origin[value] != returned[value]){

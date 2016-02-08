@@ -1,4 +1,4 @@
-angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ngMaterial','angular-jwt'])
+angular.module("DKanbanApp", ['ui.router','ngDraggable','ngAnimate','ngAria','ngMaterial','angular-jwt','base64'])
 	.config(function($mdThemingProvider) {
 		$mdThemingProvider.theme('default')
 	    .primaryPalette('indigo')

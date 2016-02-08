@@ -35,6 +35,12 @@
 		</div>
 
 		<div layout layout="column">
+			<md-input-container flex>
+				<label>Version</label>
+				<md-select ng-model="ticket.card.version" ng-model-options="{trackBy: '$value.code'}">
+					<md-option ng-repeat="item in listes.versions | filter: {archive:false}" ng-value="item">{{item.libelle}} </md-option>
+				</md-select>
+			</md-input-container>
 			<md-input-container flex> 
 				<label>Propriétaire</label>
 				<md-select ng-model="ticket.card.owner" ng-model-options="{trackBy: '$value.code'}"> 

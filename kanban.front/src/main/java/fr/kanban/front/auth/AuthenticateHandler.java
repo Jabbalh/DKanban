@@ -121,7 +121,9 @@ public class AuthenticateHandler {
 		context.response().end(new JsonObject().put("auth", sessionService.isAuthenticate(context.session(), context.request())).encodePrettily());
 		
 	}
-	
-	
-	
+
+	public void currentUser(RoutingContext context) {
+		context.response().end(Json.encode(new JsonObject().put("currentUser",sessionService.getCurrentUser(context.session()).getLogin())));
+	}
+
 }

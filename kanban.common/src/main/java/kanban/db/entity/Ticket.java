@@ -20,7 +20,7 @@ public class Ticket {
 	private ParamColorTuple priority = new ParamColorTuple();
 	private List<TicketHistory> histories = new ArrayList<>(); 
 	private Boolean archive = false;	
-	private ParamTuple version = new ParamTuple();
+	private ArchivableParamTuple version = new ArchivableParamTuple();
 	
 	public Ticket() {
 		
@@ -130,11 +130,15 @@ public class Ticket {
 	}
 
 
-	public ParamTuple getVersion() {
+	public ArchivableParamTuple getVersion() {
 		return version;
 	}
 
-	public void setVersion(ParamTuple version) {
+	public void setVersion(ArchivableParamTuple version) {
 		this.version = version;
 	}
+
+
+	@Override
+	public String toString() { return this.reference;}
 }

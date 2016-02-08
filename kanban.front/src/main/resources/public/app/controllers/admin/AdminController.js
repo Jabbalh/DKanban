@@ -44,8 +44,8 @@ angular.module("DKanbanApp")
 
 	this.add = function(ev){
     		$mdDialog.show({
-    		      controller: AppAddCtrl,
-    		      templateUrl: '/app/views/admin/param.add.html',
+    		      controller: adminAddController,
+    		      templateUrl: '/app/views/admin/param.up.html',
     		      parent: angular.element(document.body),
     		      targetEvent: ev,
     		      clickOutsideToClose:true,
@@ -62,17 +62,6 @@ angular.module("DKanbanApp")
 
     		     }, function() { });
     	}
-
-    	function AppAddCtrl($scope, $mdDialog,item){
-        		$scope.internalData = item;
-        		$scope.add = function(){
-        			$mdDialog.hide($scope.internalData);
-        		}
-
-        		$scope.closeAdd = function () {
-        			$mdDialog.hide();
-        		}
-        	}
 })
 
 .controller("AdminStatutController", function ($scope,$state,listService,statutService,$mdDialog) {	
@@ -87,8 +76,8 @@ angular.module("DKanbanApp")
 	
 	this.add = function(ev){
 		$mdDialog.show({
-		      controller: StatutAddCtrl,
-		      templateUrl: '/app/views/admin/param.color.add.html',
+		      controller: adminAddController,
+		      templateUrl: '/app/views/admin/param.color.up.html',
 		      parent: angular.element(document.body),
 		      targetEvent: ev,
 		      clickOutsideToClose:true,
@@ -106,18 +95,7 @@ angular.module("DKanbanApp")
 		     }, function() { });
 	}
 	
-	function StatutAddCtrl($scope, $mdDialog,item){
-		$scope.internalData = item;
-		$scope.add = function(){
-			$mdDialog.hide($scope.internalData);
-		}
-		
-		$scope.closeAdd = function () {
-			$mdDialog.hide();
-		}
-	}
-		
-	
+
 })
 
 .controller("AdminZoneController", function ($scope,$state,listService) {	
@@ -148,7 +126,7 @@ angular.module("DKanbanApp")
 			console.log("error -> " + error);
 		}).success(function(data){			
 			$mdDialog.show({
-			      controller: UserAddCtrl,
+			      controller: adminAddController,
 			      templateUrl: '/app/views/admin/utilisateur.add.html',
 			      parent: angular.element(document.body),
 			      targetEvent: ev,
@@ -167,17 +145,6 @@ angular.module("DKanbanApp")
 		});
 		
 		
-	}
-	
-	function UserAddCtrl($scope, $mdDialog,item){
-		$scope.user = item;
-		$scope.addUser = function(){
-			$mdDialog.hide($scope.user);
-		}
-		
-		$scope.closeAddUser = function () {
-			$mdDialog.hide();
-		}
 	}
 
 })
@@ -243,8 +210,8 @@ angular.module("DKanbanApp")
 	
 	this.add = function(ev){
 		$mdDialog.show({
-		      controller: PriorityAddCtrl,
-		      templateUrl: '/app/views/admin/param.color.add.html',
+		      controller: adminAddController,
+		      templateUrl: '/app/views/admin/param.color.up.html',
 		      parent: angular.element(document.body),
 		      targetEvent: ev,
 		      clickOutsideToClose:true,
@@ -261,64 +228,6 @@ angular.module("DKanbanApp")
 		    	
 		     }, function() { });
 	}
-	
-	function PriorityAddCtrl($scope, $mdDialog,item){
-		$scope.internalData = item;
-		$scope.add = function(){
-			$mdDialog.hide($scope.internalData);
-		}
-		
-		$scope.closeAdd = function () {
-			$mdDialog.hide();
-		}
-	}
-		
-	
-})
-
-.controller("AdminPriorityController", function ($scope,$state,listService,versionService,$mdDialog) {
-	var self = this;
-	this.paramList = [];
-	this.Paramtitle = 'Versions';
-
-	listService.adminVersionList().success(function(data) {self.paramList = data;})
-
-	this.go = function(item) {
-		$state.go("admin.version.up",{data:item});
-	}
-
-	this.add = function(ev){
-		$mdDialog.show({
-		      controller: VersionAddCtrl,
-		      templateUrl: '/app/views/admin/version.add.html',
-		      parent: angular.element(document.body),
-		      targetEvent: ev,
-		      clickOutsideToClose:true,
-		      locals: {
-		           item: {}
-		         },
-		    }).then(function(answer) {
-		    	if (answer != null) {
-		    		versionService.insertVersion({data:answer}).success(function(data){
-			    		console.log(data);
-			    		self.paramList.push(data);
-			    	});
-		    	}
-
-		     }, function() { });
-	}
-
-	function PriorityAddCtrl($scope, $mdDialog,item){
-		$scope.internalData = item;
-		$scope.add = function(){
-			$mdDialog.hide($scope.internalData);
-		}
-
-		$scope.closeAdd = function () {
-			$mdDialog.hide();
-		}
-	}
-
 
 })
 
@@ -329,13 +238,25 @@ angular.module("DKanbanApp")
 	listService.adminVersionList().success(function(data) {self.paramList = data; console.log(data);})
 
 	this.go = function(item) {
+	    item.dateVfo =  this.convertToDate(item.dateVfo);
+	    item.dateUti =  this.convertToDate(item.dateUti);
+	    item.datePvUti =  this.convertToDate(item.datePvUti);
+	    item.dateQpa =  this.convertToDate(item.dateQpa);
+	    item.datePvQpa =  this.convertToDate(item.datePvQpa);
+	    item.dateProd =  this.convertToDate(item.dateProd);
+
+
 		$state.go("admin.version.up",{data:item});
+	}
+
+	this.convertToDate = function(data){
+	    return new Date(data);
 	}
 
 	this.add = function(ev){
 		$mdDialog.show({
-		      controller: VersionAddCtrl,
-		      templateUrl: '/app/views/admin/version.add.html',
+		      controller: adminAddController,
+		      templateUrl: '/app/views/admin/version.up.html',
 		      parent: angular.element(document.body),
 		      targetEvent: ev,
 		      clickOutsideToClose:true,
@@ -353,24 +274,14 @@ angular.module("DKanbanApp")
 		     }, function() { });
 	}
 
-	function VersionAddCtrl($scope, $mdDialog,item){
-		$scope.internalData = item;
-		$scope.add = function(){
-			$mdDialog.hide($scope.internalData);
-		}
-
-		$scope.closeAdd = function () {
-			$mdDialog.hide();
-		}
-	}
-
-
 })
 
 .controller("AdminUpController", function ($scope,$http,$filter,$state,$stateParams,updateService) {	
 	var self = this;
 	this.internalData = $stateParams.data;	
-	
+    this.canDelete = true;
+
+
 	this.save = function(){
 		updateService.save($stateParams.key,{data:this.internalData}).success(function(data){
 			console.log("AdminUpController.save -> " + data);
@@ -384,6 +295,21 @@ angular.module("DKanbanApp")
 	}
 	
 		
-})
+});
+
+function adminAddController($scope, $mdDialog,item){
+    $scope.ctrl = { internalData : {}}
+    $scope.ctrl.internalData = item;
+    $scope.ctrl.canDelete = false;
+    $scope.ctrl.save = function(){
+        $mdDialog.hide($scope.ctrl.internalData);
+    }
+
+    $scope.ctrl.close = function () {
+        $mdDialog.hide();
+    }
+}
+
+
 
 

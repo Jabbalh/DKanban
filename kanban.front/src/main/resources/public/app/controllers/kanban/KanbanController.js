@@ -31,7 +31,7 @@ angular.module("DKanbanApp")
 
 
     var self = this;
-    var currentUser = userService.getCurrentUser();
+    this.currentUser = userService.getCurrentUser();
 
 	/**
 	 * Objets internes
@@ -57,6 +57,10 @@ angular.module("DKanbanApp")
     listService.stateList().success(function(data)			{ self.listes.states = data; });
     listService.zoneList().success(function(data)			{ self.zones = data;})
     listService.priorityList().success(function(data)		{ self.listes.priorities = data; });
+    listService.versionList().success(function(data)
+    {
+        self.listes.versions = data;
+    });
     /**
 	 * Initialisation du kanban
 	 */
@@ -91,7 +95,6 @@ angular.module("DKanbanApp")
 
     this.updateCard = function(msg) {
         var result = JSON.parse(msg.body);
-            console.log("update-card");
             var parent = helper.getCardZoneFromDoc(result.owner.code +'$'+result.zone.code);
 
             var card = helper.getCardFromDocument(result);
@@ -141,7 +144,7 @@ angular.module("DKanbanApp")
      * Filtre sur le current user
      */
 	  this.filtreOnUs = function() {
-		  $http.get("/api/user/"+currentUser).success(function(result){
+		  $http.get("/api/user/"+this.currentUser).success(function(result){
 			 var data = JSON.parse(result);
 			 self.kanban.values = [];
 			 self.kanban.users = [];
@@ -183,7 +186,7 @@ angular.module("DKanbanApp")
 								insert : true,
 								zone : "BackLog",
 								card : data,
-								user : currentUser
+								user : this.currentUser
 						},
 						headers : self.zones
 					};
@@ -196,7 +199,6 @@ angular.module("DKanbanApp")
 	  * Sauvegarde d'un ticket (modification ou insertion)
 	  */
 	 this.saveTicket = function(data) {
-		 console.log(data);
 		 updateService.updateTicket(data).success(function(resultData){
 			 if (resultData != "OK"){
 				 alert("Zut !!!");
@@ -251,7 +253,6 @@ angular.module("DKanbanApp")
             		         },
             		    }).then(function(answer) {
             		        if (answer == null ) return;
-                            console.log(answer);
             		    	var  zone = helper.searchZone(answer._id);
             		    	if (zone == null) {
                                 zone = answer.zone.code;
@@ -298,7 +299,7 @@ angular.module("DKanbanApp")
 		    .then(function(answer) {
 		    	if (answer.delete != 'undefined' && answer.delete == true){
 		    		updateService.deleteTicket(answer.card).success(function(data){
-		    			console.log("ticket deleted");
+
 		    		});
 		    	} else if (answer.archive != 'undefined' && answer.archive == true) {
                     updateService.archiveTicket(answer.card);
@@ -307,7 +308,6 @@ angular.module("DKanbanApp")
 			    	if (send.ticket.insert == false) {
 						ticketService.restorTicket(cloneTicket,send.ticket.card);
 					}
-			    	console.log("save -> " + JSON.stringify(answer));
 			    	self.saveTicket(answer);
 		    	}
 		     }, function() { });
@@ -468,7 +468,6 @@ function DialogSearchController($scope, $mdDialog,$http,item) {
 	 * Recherhe du ticket (execution de la requète)
 	 */
 	$scope.answer = function(answer) {
-		console.log(JSON.stringify($scope.search));
 		$http.post("/api/ticket/search", {data:$scope.search}).success(function(data){
 			$scope.tickets = data;
 		})

@@ -11,32 +11,32 @@ import java.util.Date;
 /**
  * Created by S0089075 on 26/01/2016.
  */
-public class VersionParameter extends AbstractParameter {
+public class VersionParameter extends AbstractArchivableParameter {
 
 
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
+    //@JsonSerialize(using = JsonDateSerializer.class)
+    //@JsonDeserialize(using = JsonDateDeserializer.class)
     private Date dateVfo;
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
+    //@JsonSerialize(using = JsonDateSerializer.class)
+    //@JsonDeserialize(using = JsonDateDeserializer.class)
     private Date dateUti;
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
+    //@JsonSerialize(using = JsonDateSerializer.class)
+    //@JsonDeserialize(using = JsonDateDeserializer.class)
     private Date datePvUti;
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
+    //@JsonSerialize(using = JsonDateSerializer.class)
+    //@JsonDeserialize(using = JsonDateDeserializer.class)
     private Date dateQpa;
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
+    //@JsonSerialize(using = JsonDateSerializer.class)
+    //@JsonDeserialize(using = JsonDateDeserializer.class)
     private Date datePvQpa;
-    @JsonSerialize(using = JsonDateSerializer.class)
-    @JsonDeserialize(using = JsonDateDeserializer.class)
+    //@JsonSerialize(using = JsonDateSerializer.class)
+    //@JsonDeserialize(using = JsonDateDeserializer.class)
     private Date dateProd;
 
     private String colorPvUtiToLate;
     private String colorPvQpaToLate;
 
-    private Boolean archive = false;
+
 
 
     public VersionParameter() {
@@ -112,12 +112,4 @@ public class VersionParameter extends AbstractParameter {
     }
 
 
-
-    public Boolean getArchive() {
-        return archive;
-    }
-
-    public void setArchive(Boolean archive) {
-        this.archive = archive;
-    }
 }

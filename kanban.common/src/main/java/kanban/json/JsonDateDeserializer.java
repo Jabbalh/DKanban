@@ -19,7 +19,7 @@ public class JsonDateDeserializer extends JsonDeserializer<Date> {
     public Date deserialize(JsonParser jsonparser,
                             DeserializationContext deserializationcontext) throws IOException, JsonProcessingException {
 
-        SimpleDateFormat format = new SimpleDateFormat("\"yyyy-MM-dd'T'HH:mm:ss'.000Z'\"");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = jsonparser.getText();
         try {
             return format.parse(date);

@@ -2,6 +2,8 @@ package fr.bootstrap;
 
 import javax.inject.Singleton;
 
+import kanban.service.contract.ITicketService;
+import kanban.service.impl.TicketService;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import io.vertx.core.logging.Logger;
@@ -24,6 +26,7 @@ public class BootstrapBinder extends AbstractBinder {
     	bind(MongoService.class).to(IMongoService.class).in(Singleton.class);
     	bind(SessionService.class).to(ISessionService.class).in(Singleton.class);
     	bind(CryptoService.class).to(ICryptoService.class).in(Singleton.class);
+		bind(TicketService.class).to(ITicketService.class).in(Singleton.class);
     	
         // Configure bindings
         //bind(PropertiesConfigValueManager.class).to(ConfigValueManager.class).in(Singleton.class);

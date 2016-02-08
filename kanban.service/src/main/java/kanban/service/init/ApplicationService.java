@@ -51,37 +51,12 @@ public class ApplicationService extends AbstractVerticle {
 	private void initApplication(Message<Object> message) {
 		logger.debug("INIT_APPLICATION -> initApplication");
 		 ApplicationData.set(new KanbanParameter());
-		Async.When(()-> mongoService.findAll(ApplicationParameter.class)).doThat(application -> ApplicationData.get().setApplications(application));
-		Async.When(()-> mongoService.findAll(StatutParameter.class)).doThat(status -> ApplicationData.get().setStatut(status));
-		Async.When(()-> mongoService.findAll(ZoneParameter.class)).doThat(zones -> ApplicationData.get().setZones(zones));
-		Async.When(()-> mongoService.findAll(PriorityParameter.class)).doThat(priority -> ApplicationData.get().setPriority(priority));
-		Async.When(()-> mongoService.findAll(VersionParameter.class)).doThat(version -> ApplicationData.get().setVersions(version));
-			/*
-		Async.When(() -> mongoService.findAll(User.class))
-		.doThat(users -> {
-			for (User u : users) {
-				u.setPassword(cryptoService.genHash256(u.getLogin()));
-				Async.When(() -> mongoService.update(u)).doThat(b -> logger.info("User " + u.getLogin() + " update " + b));					
-			}
-		});		
-		*/
-		/*
-		Async.When(() -> mongoService.findAll(KanbanParameter.class))
-		.doThat( x -> {
-			
-			ApplicationData.set(x.get(0));	
-			message.reply("OK");
-			
-			Async.When(() -> mongoService.findAll(User.class))
-			.doThat(users -> {
-				for (User u : users) {
-					u.setPassword(cryptoService.genHash256(u.getLogin()));
-					Async.When(() -> mongoService.update(u)).doThat(b -> System.out.println("User " + u.getLogin() + " update " + b));					
-				}
-			});
-			
-		});
-		*/
+		Async.When(()-> mongoService.findAll(ApplicationParameter.class))	.doThat(application -> ApplicationData.get().setApplications(application));
+		Async.When(()-> mongoService.findAll(StatutParameter.class))		.doThat(status 		-> ApplicationData.get().setStatut(status));
+		Async.When(()-> mongoService.findAll(ZoneParameter.class))			.doThat(zones 		-> ApplicationData.get().setZones(zones));
+		Async.When(()-> mongoService.findAll(PriorityParameter.class))		.doThat(priority 	-> ApplicationData.get().setPriority(priority));
+		Async.When(()-> mongoService.findAll(VersionParameter.class))		.doThat(version 	-> ApplicationData.get().setVersions(version));
+
 	}
 	
 	/**
@@ -92,9 +67,12 @@ public class ApplicationService extends AbstractVerticle {
 		List<ApplicationParameter> applications = new ArrayList<>();
 		applications.add(new ApplicationParameter("DEI PART", "DEI PART"));
 		applications.add(new ApplicationParameter("DEI PRO", "DEI PRO"));
+		applications.add(new ApplicationParameter("DEI PP", "DEI PP"));
 		applications.add(new ApplicationParameter("DEA", "DEA"));
 		applications.add(new ApplicationParameter("NOSA WEB", "NOSA WEB"));
 		applications.add(new ApplicationParameter("SVI", "SVI"));
+		applications.add(new ApplicationParameter("CFN", "CFN"));
+		applications.add(new ApplicationParameter("EVI", "EVI"));
 		
 		ApplicationData.set(new KanbanParameter());
 		ApplicationData.get().setApplications(applications);
@@ -137,10 +115,20 @@ public class ApplicationService extends AbstractVerticle {
 		
 		
 		List<StatutParameter> statesTicket = new ArrayList<>();
-		statesTicket.add(new StatutParameter("IN_PROGRESS", "En cours"));
-		statesTicket.add(new StatutParameter("STAND_BY", "En attente"));
+		statesTicket.add(new StatutParameter(s -> {s.setCode("IN_PROGRESS"); 		s.setLibelle("En cours"); 			s.setColor("#008000"); }));
+		statesTicket.add(new StatutParameter(s -> {s.setCode("AFFECTE"); 			s.setLibelle("Affecte"); 			s.setColor("#2F4F4F"); }));
+		statesTicket.add(new StatutParameter(s -> {s.setCode("STAND_BY"); 			s.setLibelle("En attente"); 		s.setColor("#FF8C00"); }));
+		statesTicket.add(new StatutParameter(s -> {s.setCode("FINISH"); 			s.setLibelle("Resolu"); 			s.setColor("#A9A9A9"); }));
+		statesTicket.add(new StatutParameter(s -> {s.setCode("STAND_BY_CAISSE"); 	s.setLibelle("En attente caisse"); 	s.setColor("#FFA07A"); }));
 		ApplicationData.get().setStatut(statesTicket);
-		
+
+
+		List<PriorityParameter> priorities = new ArrayList<>();
+		priorities.add(new PriorityParameter(p -> { p.setCode("PO"); p.setLibelle("Critique"); 		p.setColor("#FF0000"); }));
+		priorities.add(new PriorityParameter(p -> { p.setCode("P1"); p.setLibelle("Importante"); 	p.setColor("#FFA500"); }));
+		priorities.add(new PriorityParameter(p -> { p.setCode("P2"); p.setLibelle("Moyenne"); 		p.setColor("#F4A460"); }));
+		priorities.add(new PriorityParameter(p -> { p.setCode("P3"); p.setLibelle("Faible"); 		p.setColor("#F5DEB3"); }));
+		ApplicationData.get().setPriority(priorities);
 		
 		if (!ApplicationData.isInit){
 			mongoService.delete(DbUtils.index(KanbanParameter.class), () -> {
@@ -154,9 +142,10 @@ public class ApplicationService extends AbstractVerticle {
 							message.reply("OK");					
 				});*/
 				
-				deleteAndInit(mongoService, ApplicationParameter.class, applications, a -> "ApplicationParameter " + a.getCode()); 
-				deleteAndInit(mongoService, StatutParameter.class, statesTicket, a -> "StatutParameter " + a.getCode());
-				deleteAndInit(mongoService, ZoneParameter.class, zoneApps, a -> "ZoneParameter " + a.getCode());
+				deleteAndInit(mongoService, ApplicationParameter.class, applications, 	a -> "ApplicationParameter "+ a.getCode());
+				deleteAndInit(mongoService, StatutParameter.class, 		statesTicket, 	a -> "StatutParameter " 	+ a.getCode());
+				deleteAndInit(mongoService, ZoneParameter.class, 		zoneApps, 		a -> "ZoneParameter " 		+ a.getCode());
+				deleteAndInit(mongoService, PriorityParameter.class, 	priorities, 	a -> "PriorityParameter " 	+ a.getCode());
 			});
 		}
 		
@@ -188,12 +177,15 @@ public class ApplicationService extends AbstractVerticle {
 		//ApplicationData.get().getZones().forEach(x -> zones.add(x.getZoneTicket()));
 				
 		List<User> users = new LinkedList<>();
-		users.add(new User("user1", cryptoService.genHash256("user1"), "User 1", "User 1"));
-		users.add(new User("user2", cryptoService.genHash256("user2"), "User 2", "User 2"));
+		users.add(new User("NIHU", cryptoService.genHash256("NIHU"), "Nicolas", "HUET"));
+		users.add(new User("GUTA", cryptoService.genHash256("GUTA"), "Guillaume", "TASSET"));
+		users.add(new User("ISHE", cryptoService.genHash256("ISHE"), "Isabelle", "HEMONIC"));
+		users.add(new User("CAPI", cryptoService.genHash256("CAPI"), "Catherine", "PICARDA"));
+		users.add(new User("QUGU", cryptoService.genHash256("QUGU"), "Quentin", "GUILLEE"));
 		
 		//List<StateTicket> states = ApplicationData.get().getStatesTicket();
-				
-		List<Ticket> tickets = new LinkedList<>();				
+			/*
+		List<Ticket> tickets = new LinkedList<>();
 		tickets.add(
 				new Ticket(
 						x -> {
@@ -206,7 +198,7 @@ public class ApplicationService extends AbstractVerticle {
 							x.setOwner(new ParamTuple("user1", "user1 user1"));
 							x.setCaisse("14445");
 							x.setStatut(new ParamColorTuple("IN_PROGRESS","En cours"));
-						}						
+						}
 				));
 		tickets.add(
 				new Ticket(
@@ -220,7 +212,7 @@ public class ApplicationService extends AbstractVerticle {
 							x.setOwner(new ParamTuple("user1", "user1 user1"));
 							x.setCaisse("14445");
 							x.setStatut(new ParamColorTuple("IN_PROGRESS","En cours"));
-						}						
+						}
 				));
 		tickets.add(
 				new Ticket(
@@ -234,10 +226,10 @@ public class ApplicationService extends AbstractVerticle {
 							x.setOwner(new ParamTuple("user2", "user2 user2"));
 							x.setCaisse("14445");
 							x.setStatut(new ParamColorTuple("STAND_BY","En attente"));
-						}						
+						}
 				));
-		
-		
+		*/
+
 		
 		
 		deleteAndInit(mongoService,User.class, users, x -> "user " + x.getLogin());
@@ -245,9 +237,10 @@ public class ApplicationService extends AbstractVerticle {
 		
 		mongoService.delete(DbUtils.index(Ticket.class), () -> mongoService.createIndex(indexCreated -> {
             if (indexCreated) {
-                for (Ticket u : tickets) {
+                /*for (Ticket u : tickets) {
                     Async.When(() -> mongoService.insert(u)).doThat(x ->  genericCallback("Ticket" + u.getReference()));
-                }
+                }*/
+				System.out.println("Init index done...");
             }
         }));
 		

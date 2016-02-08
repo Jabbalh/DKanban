@@ -6,48 +6,53 @@
 			<input ng-model="ctrl.internalData.code" disabled>
 		</md-input-container>
 		<md-input-container flex>
-			<label>Version</label>
+			<label>version</label>
 			<input type="text" ng-model="ctrl.internalData.libelle">
 		</md-input-container>
+		<md-input-container flex>
+			<label>archivé</label>
+			<input type="checkbox" ng-model="ctrl.internalData.archive">
+		</md-input-container>
+
 
 	</div>
 	<div layout layout="column">
 		<md-input-container flex>
-			<label>Date passage en VFO</label>
+			<label>Date VFO</label>
 			<input type="date" ng-model="ctrl.internalData.dateVfo" />
 		</md-input-container>
 		<md-input-container flex>
-			<label>Date passage en UTI</label>
+			<label>Date UTI</label>
 			<input type="date" ng-model="ctrl.internalData.dateUti" />
 		</md-input-container>
 		<md-input-container flex>
-			<label>Date de PV UTI</label>
+			<label>Date PV UTI</label>
 			<input type="date" ng-model="ctrl.internalData.datePvUti" />
 		</md-input-container>
 	</div>
 
 	<div layout layout="column">
 		<md-input-container flex>
-			<label>Date de passage en QPA</label>
+			<label>Date QPA</label>
 			<input type="date" ng-model="ctrl.internalData.dateQpa" />
 		</md-input-container>
 		<md-input-container flex>
-			<label>Date de PV QPA</label>
+			<label>Date PV QPA</label>
 			<input type="date" ng-model="ctrl.internalData.datePvQpa" />
 		</md-input-container>
 		<md-input-container flex>
-			<label>Date de mise en production</label>
+			<label>Date MEP</label>
 			<input type="date" ng-model="ctrl.internalData.dateProd" />
 		</md-input-container>
 	</div>
 
 	<div layout layout="column">
 		<md-input-container flex>
-			<label class="active">Couleur lorsque la date UTI est dépassée</label>
+			<label class="active">Couleur date UTI dépassée</label>
 			<input type="color" ng-model="ctrl.internalData.colorPvUtiToLate" />
 		</md-input-container>
 		<md-input-container flex>
-			<label class="active">Couleur lorsque la date QPA est dépassée</label>
+			<label class="active">Couleur date QPA dépassée</label>
 			<input type="color" ng-model="ctrl.internalData.colorPvQpaToLate" />
 		</md-input-container>
 	</div>
@@ -61,7 +66,8 @@
 
 		</md-card-content>
 		 <md-card-actions layout="row" layout-align="end center">
-
-          	<md-button ng-click="ctrl.save()">sauver</md-button>
+			 <md-button ng-click="ctrl.delete()" ng-if="ctrl.canDelete">supprimer</md-button>
+			 <md-button ng-click="ctrl.close()" ng-if="ctrl.canDelete == false">fermer</md-button>
+			 <md-button ng-click="ctrl.save()">sauver</md-button>
         </md-card-actions>
 </md-card>

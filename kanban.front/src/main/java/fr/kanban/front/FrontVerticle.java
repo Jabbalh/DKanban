@@ -11,15 +11,25 @@ import fr.kanban.front.user.UserHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import kanban.bus.constants.EventBusNames;
+import kanban.db.entity.PriorityParameter;
 import kanban.db.entity.StatutParameter;
 import kanban.db.entity.User;
+import kanban.service.contract.ITicketService;
 import kanban.ui.entity.SearchQuery;
+import kanban.ui.entity.UploadTicket;
+import kanban.utils.callback.Async;
 import kanban.utils.log.Logger;
 import kanban.web.services.ISessionService;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FrontVerticle extends AbstractVerticle {
 
@@ -29,6 +39,9 @@ public class FrontVerticle extends AbstractVerticle {
 	private SockBusServer sockBuServer;
 	@Inject
 	private ISessionService sessionService;
+
+	@Inject
+	private ITicketService ticketService;
 
 	@Override
 	public void start() {
@@ -91,6 +104,21 @@ public class FrontVerticle extends AbstractVerticle {
 		handleRouteForKanban(router, appHandler,kanbanHandler);
 		
 
+		router.get("/public/upload/tickets/:name").handler( x -> {
+
+
+
+			String fileName = x.request().getParam("name");
+			String filePath = "D:\\Backup\\Package\\intelij\\lib\\";
+
+			Async.When(() -> ticketService.uploadTicket(filePath + fileName))
+					.doThat(tickets -> {
+						if (!x.response().ended()) x.response().end(Json.encode(tickets));
+					});
+
+
+		});
+
 		/**
 		 * Création de l'écoute sur le port du server web
 		 */
@@ -136,13 +164,20 @@ public class FrontVerticle extends AbstractVerticle {
 		
 		router.post("/api/app/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.APPLICATION_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/app/insert")				.handler(x -> appHandler.apiSet(x, EventBusNames.APPLICATION_INSERT, x.getBodyAsJson().getJsonObject("data")));
+
 		router.post("/api/state/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.STATE_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/state/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.STATE_INSERT, x.getBodyAsJson().getJsonObject("data")));
+		router.post("/api/state/delete")			.handler(x -> appHandler.apiDelete(x,StatutParameter.class.getName() , x.getBodyAsJson().getJsonObject("data")));
+
 		router.post("/api/zone/save")				.handler(x -> appHandler.apiSet(x, EventBusNames.ZONE_SAVE, x.getBodyAsJson().getJsonObject("data")));
+
 		router.post("/api/priority/save")			.handler(x -> appHandler.apiSet(x, EventBusNames.PRIORITY_SAVE, x.getBodyAsJson().getJsonObject("data")));
 		router.post("/api/priority/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.PRIORITY_INSERT, x.getBodyAsJson().getJsonObject("data")));
+		router.post("/api/priority/delete")			.handler(x -> appHandler.apiDelete(x,PriorityParameter.class.getName() , x.getBodyAsJson().getJsonObject("data")));
+
 		router.post("/api/version/insert")			.handler(x -> appHandler.apiSet(x, EventBusNames.VERSION_INSERT, x.getBodyAsJson().getJsonObject("data")));
-		router.post("/api/priority/save")			.handler(x -> appHandler.apiSet(x, EventBusNames.VERSION_SAVE, x.getBodyAsJson().getJsonObject("data")));
+		router.post("/api/version/save")			.handler(x -> appHandler.apiSet(x, EventBusNames.VERSION_SAVE, x.getBodyAsJson().getJsonObject("data")));
+
 
 		router.post("/api/global/title")			.handler(x -> appHandler.apiSet(x, EventBusNames.GLOBAL_TITLE_SET));
 		
@@ -159,7 +194,7 @@ public class FrontVerticle extends AbstractVerticle {
 		router.get("/public/dev/kanban")			.handler(x -> appHandler.apiGet(x, EventBusNames.KANBAN_FULL));
 		
 		
-		router.post("/api/state/delete")			.handler(x -> appHandler.apiDelete(x,StatutParameter.class.getName() , x.getBodyAsJson().getJsonObject("data")));
+
 		
 		
 	}
@@ -176,7 +211,7 @@ public class FrontVerticle extends AbstractVerticle {
 		router.get("/api/state/list")				.handler(x -> appHandler.apiGet(x, EventBusNames.STATE_LIST));
 		router.get("/api/zone/list")				.handler(x -> appHandler.apiGet(x, EventBusNames.ZONE_LIST));
 		router.get("/api/priority/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.PRIORITY_LIST));
-		router.get("/api/version/list")			.handler(x -> appHandler.apiGet(x, EventBusNames.VERSION_LIST));
+		router.get("/api/version/list")				.handler(x -> appHandler.apiGet(x, EventBusNames.VERSION_LIST));
 		
 		//On renvois la liste des tickets par login non archivé
 		router.get("/api/kanban/by/user/:user")		.handler(kanbanHandler::apiKanbanByUser);
@@ -198,7 +233,8 @@ public class FrontVerticle extends AbstractVerticle {
 		router.post("/public/login")				.handler(authHandler::loginHandler);
 		
 		router.get("/api/signout")					.handler(authHandler::signOut);		
-		router.get("/public/is/auth")				.handler(authHandler::isAuth);	
+		router.get("/public/is/auth")				.handler(authHandler::isAuth);
+		router.get("/api/currentUser")				.handler(authHandler::currentUser);
 	}
 
 	

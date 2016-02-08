@@ -22,7 +22,8 @@
 		</div>	
 		</md-card-content>
 		 <md-card-actions layout="row" layout-align="end center">
-		 <md-button ng-click="ctrl.delete()">supprimer</md-button>		 
+		 <md-button ng-click="ctrl.delete()" ng-if="ctrl.canDelete">supprimer</md-button>
+			 <md-button ng-click="ctrl.close()" ng-if="ctrl.canDelete == false">fermer</md-button>
           <md-button ng-click="ctrl.save()">sauver</md-button>                   
         </md-card-actions>
 </md-card>		

@@ -43,7 +43,7 @@ public class VerticleApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.ZONE_LIST, (Message<String> x) 			-> listForTicketParameter(x, ZoneParameter.class, 1, new JsonObject().put("sort", "order"), ParamTuple::new)); //zoneList(x));
 		vertx.eventBus().consumer(EventBusNames.PRIORITY_LIST, (Message<String> x) 		-> listForTicketParameter(x, PriorityParameter.class, 0, new JsonObject().put("sort", "libelle"), ParamColorTuple::new)); //priorityList(x));
 
-		vertx.eventBus().consumer(EventBusNames.VERSION_LIST, (Message<String> x) 		-> listForTicketParameter(x, VersionParameter.class, 0, new JsonObject().put("archive","false").put("sort", "dateProd"), ParamTuple::new)); //priorityList(x));
+		vertx.eventBus().consumer(EventBusNames.VERSION_LIST, (Message<String> x) 		-> listForTicketParameter(x, VersionParameter.class, 0, new JsonObject().put("sort", "dateProd"), ArchivableParamTuple::new)); //priorityList(x));
 
 		
 		// gestion du titre
@@ -65,7 +65,7 @@ public class VerticleApplicationService extends AbstractVerticle {
 		vertx.eventBus().consumer(EventBusNames.STATE_SAVE, (Message<JsonObject> x) 	-> saveAndUpdateTicket(x, StatutParameter.class, "statut",ParamColorTuple::new, Ticket::setStatut, () -> ApplicationData.get().getStatut()) );
 		vertx.eventBus().consumer(EventBusNames.ZONE_SAVE, (Message<JsonObject> x) 		-> saveAndUpdateTicket(x, ZoneParameter.class, "zone", ParamTuple::new, Ticket::setZone, () -> ApplicationData.get().getZones()) );
 		vertx.eventBus().consumer(EventBusNames.APPLICATION_SAVE,(Message<JsonObject> x)-> saveAndUpdateTicket(x, ApplicationParameter.class, "application", ParamTuple::new, Ticket::setApplication, () -> ApplicationData.get().getApplications()) );
-		vertx.eventBus().consumer(EventBusNames.VERSION_SAVE,(Message<JsonObject> x)-> saveAndUpdateTicket(x, VersionParameter.class, "version", ParamTuple::new, Ticket::setVersion, () -> ApplicationData.get().getVersions()) );
+		vertx.eventBus().consumer(EventBusNames.VERSION_SAVE,(Message<JsonObject> x)-> saveAndUpdateTicket(x, VersionParameter.class, "version", ArchivableParamTuple::new, Ticket::setVersion, () -> ApplicationData.get().getVersions()) );
 		
 		// Insertion des paramètres
 		vertx.eventBus().consumer(EventBusNames.STATE_INSERT, (Message<JsonObject> x) 	-> insert(x, StatutParameter.class));		
@@ -106,7 +106,10 @@ public class VerticleApplicationService extends AbstractVerticle {
 	private <T> void fullAdminList(Message<String> message,Class<T> clazz){
 
 		Async.When(()-> mongoService.findAll(clazz, kanbanQuery()))
-		.doThat(x -> message.reply( Json.encode(x)));
+		.doThat(x -> {
+			System.out.println(Json.encode(x));
+			message.reply( Json.encode(x));
+		});
 	}
 	
 	/**
