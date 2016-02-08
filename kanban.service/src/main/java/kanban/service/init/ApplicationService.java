@@ -132,33 +132,13 @@ public class ApplicationService extends AbstractVerticle {
 		
 		if (!ApplicationData.isInit){
 			mongoService.delete(DbUtils.index(KanbanParameter.class), () -> {
-				
-				/*Async.When(() -> mongoService.insert(ApplicationData.get()))
-						.Rule(rule -> rule)
-						.Otherwise(other -> { logger.error("Application NOT initialized -> " + other); message.reply("NOK"); })
-						.doThat(x -> {									
-							logger.debug("Application initialized");
-							ApplicationData.isInit = true;
-							message.reply("OK");					
-				});*/
-				
 				deleteAndInit(mongoService, ApplicationParameter.class, applications, 	a -> "ApplicationParameter "+ a.getCode());
 				deleteAndInit(mongoService, StatutParameter.class, 		statesTicket, 	a -> "StatutParameter " 	+ a.getCode());
 				deleteAndInit(mongoService, ZoneParameter.class, 		zoneApps, 		a -> "ZoneParameter " 		+ a.getCode());
 				deleteAndInit(mongoService, PriorityParameter.class, 	priorities, 	a -> "PriorityParameter " 	+ a.getCode());
 			});
 		}
-		
-		/*
-		List<ZoneTicket> zoneTicket = new ArrayList<>();
-		
-		ApplicationData.get().getZones().forEach(x -> zoneTicket.add(x.getZoneTicket()));
-		
-		deleteAndInit(mongoService,DbUtils.index(Application.class), applications, a -> "application " + a.getName());
-		deleteAndInit(mongoService,DbUtils.index(ZoneTicket.class), zoneTicket, s -> "zone "+s.getCodeZone());
-		deleteAndInit(mongoService,DbUtils.index(StateTicket.class), statesTicket, s -> "state "+s.getCode());
-		*/
-		
+
 		mongoService.reinitCounters();
 		
 		
@@ -171,11 +151,7 @@ public class ApplicationService extends AbstractVerticle {
 	 */
 	private void initData(Message<Object> message) {
 		logger.debug("INIT_DATA_APP -> initData");
-		//List<Application> applications = ApplicationData.get().getApplications();
-		//List<ZoneTicket> zones = new ArrayList<>();
-		
-		//ApplicationData.get().getZones().forEach(x -> zones.add(x.getZoneTicket()));
-				
+
 		List<User> users = new LinkedList<>();
 		users.add(new User("NIHU", cryptoService.genHash256("NIHU"), "Nicolas", "HUET"));
 		users.add(new User("GUTA", cryptoService.genHash256("GUTA"), "Guillaume", "TASSET"));
@@ -183,63 +159,14 @@ public class ApplicationService extends AbstractVerticle {
 		users.add(new User("CAPI", cryptoService.genHash256("CAPI"), "Catherine", "PICARDA"));
 		users.add(new User("QUGU", cryptoService.genHash256("QUGU"), "Quentin", "GUILLEE"));
 		
-		//List<StateTicket> states = ApplicationData.get().getStatesTicket();
-			/*
-		List<Ticket> tickets = new LinkedList<>();
-		tickets.add(
-				new Ticket(
-						x -> {
-							x.set_id("0");
-							x.setReference("ARS01");
-							x.setSummary("Test ARS1");
-							x.setDescription("Desc ARS1");
-							x.setApplication(new ParamTuple("DEI PART", "DEI PART"));
-							x.setZone(new ParamTuple("BackLog", "BackLog"));
-							x.setOwner(new ParamTuple("user1", "user1 user1"));
-							x.setCaisse("14445");
-							x.setStatut(new ParamColorTuple("IN_PROGRESS","En cours"));
-						}
-				));
-		tickets.add(
-				new Ticket(
-						x -> {
-							x.set_id("1");
-							x.setReference("ARS02");
-							x.setSummary("Test ARS2");
-							x.setDescription("Desc ARS2");
-							x.setApplication(new ParamTuple("DEI PART", "DEI PART"));
-							x.setZone(new ParamTuple("BackLog", "BackLog"));
-							x.setOwner(new ParamTuple("user1", "user1 user1"));
-							x.setCaisse("14445");
-							x.setStatut(new ParamColorTuple("IN_PROGRESS","En cours"));
-						}
-				));
-		tickets.add(
-				new Ticket(
-						x -> {
-							x.set_id("2");
-							x.setReference("ARS03");
-							x.setSummary("Test ARS3");
-							x.setDescription("Desc ARS3");
-							x.setApplication(new ParamTuple("DEI PRO", "DEI PRO"));
-							x.setZone(new ParamTuple("VFO", "VFO"));
-							x.setOwner(new ParamTuple("user2", "user2 user2"));
-							x.setCaisse("14445");
-							x.setStatut(new ParamColorTuple("STAND_BY","En attente"));
-						}
-				));
-		*/
 
-		
 		
 		deleteAndInit(mongoService,User.class, users, x -> "user " + x.getLogin());
 		
 		
 		mongoService.delete(DbUtils.index(Ticket.class), () -> mongoService.createIndex(indexCreated -> {
             if (indexCreated) {
-                /*for (Ticket u : tickets) {
-                    Async.When(() -> mongoService.insert(u)).doThat(x ->  genericCallback("Ticket" + u.getReference()));
-                }*/
+
 				System.out.println("Init index done...");
             }
         }));
